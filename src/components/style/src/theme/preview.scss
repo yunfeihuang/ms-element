@@ -1,0 +1,42 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+
+.e-preview{
+  background:transparent;
+  display:table;
+  user-select:none;
+  .el-dialog{
+    &__body{
+      text-align:center;
+      display:table-cell;
+      vertical-align:middle;
+      padding:0;
+    }
+    &__header{
+      padding:0;
+    }
+    &__close{
+      font-size:3rem;
+      color:#fff;
+      text-shadow:0 0 3px rgba(0,0,0,0.3);
+    }
+    &__headerbtn{
+      z-index: 10;
+    }
+    &__title{
+      display:none
+    }
+  }
+  .swiper-container{
+    height:100%;
+    width:100vw;
+  }
+  img{
+    max-width:100vw;
+    max-height:100vh;
+    transform: translate(-50%,-50%);
+    position:absolute;
+    top:50%;
+    left:50%;
+  }
+}

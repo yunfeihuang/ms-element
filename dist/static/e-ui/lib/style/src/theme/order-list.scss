@@ -1,0 +1,49 @@
+@import '../variable.scss';
+@import '../mixins.scss';
+
+.order-list{
+  &-header{
+    position: sticky;
+    top: 0;
+    font-weight: bold;
+    background:$color-background;
+    z-index:100;
+    >.el-col-24{
+      padding: 5px 0;
+      text-align: center;
+      &.tr{
+        text-align:right;
+      }
+    }
+  }
+  &-item{
+    border: 1px solid $color-divider;
+    margin: 15px 0;
+    &-hd{
+      background: $color-background;
+      padding: 10px;
+      box-sizing: border-box;
+      border-bottom: 1px solid $color-divider;
+      line-height: 1;
+      >span{
+        margin-right:20px;
+        font{
+          color:rgba($color-black, 0.7);
+        }
+      }
+      i{
+        margin-left:2px;
+      }
+      .el-button{
+        padding:0;
+      }
+    }
+    >.el-row>.el-col-24{
+      padding: 5px;
+      text-align: center;
+      &.tr{
+        text-align:right;
+      }
+    }
+  }
+}

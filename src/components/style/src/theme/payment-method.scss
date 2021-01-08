@@ -1,0 +1,48 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+
+.e-payment-method{
+  &[readonly]{
+    pointer-events:none;
+  }
+  i{
+    font-size:40px;
+    vertical-align: middle;
+    margin-right:5px;
+  }
+  .el-radio{
+    display:inline-table;
+    vertical-align: top;
+    padding-top: 0;
+    &__label{
+      display:table-cell;
+      text-align:center;
+      vertical-align:middle;
+      height:80px;
+      padding-left:0;
+    }
+    &__input{
+      display:none;
+    }
+  }
+  &--small{
+    .el-radio{
+      &__label{
+        height:40px;
+      }
+    }
+    i{
+      font-size:26px;
+    }
+  }
+  &--min{
+    .el-radio{
+      &__label{
+        height:28px;
+      }
+    }
+    i{
+      font-size:18px;
+    }
+  }
+}

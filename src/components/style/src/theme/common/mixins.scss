@@ -1,0 +1,29 @@
+@mixin scroller($color:rgba(255,255,255,0.8),$width: 4px){
+  &::-webkit-scrollbar{  
+    width: $width;
+    height:$width;
+  }  
+  &::-webkit-scrollbar-track{
+    background-color:transparent;
+  }
+  &::-webkit-scrollbar-thumb{
+    border-radius: 10px;
+    background-color:$color;
+  }
+  &:hover::-webkit-scrollbar-thumb{
+    background-color:$color;
+  }
+}
+@mixin lineClamp($clamp:1){
+  @if $clamp > 1 {
+    -webkit-line-clamp:$clamp;
+    line-clamp:$clamp;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  } @else {
+    white-space:nowrap;
+  }
+  overflow:hidden;
+  text-overflow:ellipsis;
+  word-break: break-all;
+}

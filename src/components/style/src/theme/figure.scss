@@ -1,0 +1,168 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+
+@mixin figure-scale {
+  .e-figure-image {
+    img, i{
+      transition: transform 0.5s ease 0.1s
+    }
+  }
+  &:hover{
+    .e-figure-image {
+      img, i{
+        transform:scale(1.1);
+      }
+      i{
+        display:inline-block;
+      }
+    }
+  }
+}
+@mixin figure-shadow {
+  transition: box-shadow 0.3s ease 0.1s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  &:hover{
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+@mixin figure-border {
+  transition: border 0.3s ease 0.1s;
+  border:1px solid $--border-color-base;
+  &:hover{
+    border-color:rgba($--color-primary,0.8);
+  }
+}
+@mixin figure-fadein{
+  position:relative;
+  overflow:hidden;
+  .e-figure{
+    &-text{
+      position:absolute;
+      bottom:0;
+      left:0;
+      width:100%;
+      transition: opacity 0.6s ease 0.1s;
+      background:rgba(0,0,0,0.6);
+      color:#fff;
+      opacity:0;
+    }
+    &-secondary{
+      color:inherit;
+    }
+  }
+  &:hover{
+    border-color:$--border-color-base;
+    .e-figure-text{
+      opacity:1;
+    }
+  }
+}
+@mixin figure-fadein-top{
+  position:relative;
+  overflow:hidden;
+  .e-figure{
+    &-text{
+      position:absolute;
+      top:100%;
+      left:0;
+      width:100%;
+      transition: transform 0.5s ease 0.1s;
+      background:rgba(0,0,0,0.6);
+      color:#fff;
+    }
+    &-secondary{
+      color:inherit;
+    }
+  }
+  &:hover{
+    border-color:$--border-color-base;
+    .e-figure-text{
+      transform: translate3D(0,-100%,0)
+    }
+  }
+}
+.e-figure{
+  background:$--color-white;
+  &-image{
+    overflow:hidden;
+    img{
+      width:100%;
+    }
+  }
+  &-text{
+    padding-bottom:1px;
+  }
+  &-figcaption{
+    margin:8px 0;
+    padding: 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+  }
+  &-secondary{
+    margin:8px 0;
+    padding: 0 10px;
+    font-size: 0.85em;
+    line-height: 1.6;
+    color:$--color-text-secondary;
+  }
+  &--theme{
+    &-default{
+      @include figure-scale;
+      @include figure-shadow;
+      .e-figure{
+        &-secondary{
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-height: 40px;
+        }
+      }
+    }
+    &-scale{
+      @include figure-scale;
+    }
+    &-shadow{
+      @include figure-shadow;
+    }
+    &-border{
+      @include figure-border;
+    }
+    &-fadein{
+      @include figure-fadein;
+    }
+    &-full-fadein{
+      @include figure-fadein;
+      .e-figure{
+        &-text{
+          height:100%;
+          display:flex;
+          align-items:center;
+          justify-content: center;
+          &-inner{
+            max-width:100%;
+            text-align:center;
+          }
+        }
+      }
+    }
+    &-fadein-top{
+      @include figure-fadein-top;
+    }
+    &-full-fadein-top{
+      @include figure-fadein-top;
+      .e-figure{
+        &-text{
+          height:100%;
+          display:flex;
+          align-items:center;
+          justify-content: center;
+          &-inner{
+            max-width:100%;
+            text-align:center;
+          }
+        }
+      }
+    }
+  }
+}

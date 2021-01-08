@@ -1,0 +1,49 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+
+.order-list{
+  &-header{
+    position: sticky;
+    top: 0;
+    font-weight: bold;
+    background:$--background-color-base;
+    z-index:100;
+    >.el-col-24{
+      padding: 5px 0;
+      text-align: center;
+      &.tr{
+        text-align:right;
+      }
+    }
+  }
+  &-item{
+    border: 1px solid $--border-color-base;
+    margin: 15px 0;
+    &-hd{
+      background: $--background-color-base;
+      padding: 10px;
+      box-sizing: border-box;
+      border-bottom: 1px solid $--border-color-base;
+      line-height: 1;
+      >span{
+        margin-right:20px;
+        font{
+          color:rgba($--color-text-primary, 0.7);
+        }
+      }
+      i{
+        margin-left:2px;
+      }
+      .el-button{
+        padding:0;
+      }
+    }
+    >.el-row>.el-col-24{
+      padding: 5px;
+      text-align: center;
+      &.tr{
+        text-align:right;
+      }
+    }
+  }
+}

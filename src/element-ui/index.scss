@@ -1,0 +1,269 @@
+.el-row--flex{
+  .el-col-24{
+    flex:1;
+    min-width: 0;
+  }
+}
+.el-form{
+  &-item{
+    &__label{
+      padding-right:10px;
+    }
+    &__content{
+      font-size: inherit;
+    }
+    &--small{
+      .el-input{
+        &__inner{
+          vertical-align: top;
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+.el-button{
+  padding-top:0;
+  padding-bottom:0;
+  height:40px;
+  &--mini{
+    height:auto;
+    padding:0.4rem;
+    &.is-round{
+      padding:0.4rem;
+    }
+  }
+  &--small{
+    font-size:1rem;
+    height:32px;
+  }
+  &--text{
+    height:auto;
+  }
+  &.is-readonly{
+    pointer-events: none;
+  }
+  &--text{
+    font-size:inherit;
+  }
+}
+.el-checkbox, .el-radio{
+  margin-left:0!important;
+  margin-right:15px!important;
+  &__label{
+    padding-left: 5px;
+  }
+}
+
+.el-radio-group{
+  .el-radio{
+    &--small.is-bordered{
+      line-height:32px;
+      padding-top:0;
+    }
+  }
+  &.is-checker{
+    .el-radio{
+      margin-bottom:10px;
+      margin-right:10px;
+      text-align:center;
+      box-sizing: content-box;
+      &__input{
+        display:none;
+      }
+    }
+  }
+}
+.el-checkbox-group{
+  .el-checkbox{
+    &--small.is-bordered{
+      line-height:32px;
+      padding-top:0;
+    }
+  }
+  &.is-checker{
+    .el-checkbox{
+      text-align:center;    
+      margin-bottom:10px;
+      margin-right:10px;
+      box-sizing: content-box;
+      &__input{
+        display:none;
+      }
+    }
+  }
+}
+.el-textarea{
+  &__inner{
+    font-family: inherit;
+  }
+}
+.form-search{
+  .el-input__inner{
+    width:15rem;
+    max-width: 100%;
+  }
+  .el-date-editor{
+    width:15rem;
+    .el-input__inner{
+      width: 100%;
+    }
+    &--datetimerange{
+      &.el-input,&.el-input__inner{
+        width:28.4rem;
+      }
+    }
+    &--daterange,&--timerange{
+      &.el-input,&.el-input__inner{
+        width:18.4rem;
+      }
+    }
+    &--month,&--year{
+      width:auto;
+    }
+  }
+}
+.table-primary{
+  &.el-table{
+    color: inherit;
+    font-size: inherit;
+    background:transparent;
+    thead{
+      color:inherit;
+    }
+    .el-table{
+      &__header{
+        &-wrapper{
+          background:$--background-color-base;
+        }
+        th{
+          .cell{
+            line-height: 1.4;
+          }
+        }
+      }
+    }
+    tr, th{
+      background:transparent;
+    }
+    th.is-leaf{
+      border-bottom:0;
+      padding:0.6rem 0;
+    }
+    &:before{
+      display:none;
+    }
+    .caret-wrapper{
+      margin:-10px 0;
+    }
+  }
+}
+.el-pagination{
+  font-weight:normal;
+  &.is-background{ 
+    .el-pager li:not(.disabled).active{
+      border-color:$--color-primary;
+      outline:none;
+    }
+    .btn-next, .btn-prev, .el-pager li{
+      outline:1px solid $--border-color-base;
+      outline-offset:-1px;
+      background:#fff;
+      min-width:2.4rem;
+    }
+  }
+  &__jump:last-child{
+    margin-left:0px;
+  }
+  .el-select .el-input{
+    width:80px;
+    margin:0 0 0 5px;
+    &__inner{
+      padding-left:5px!important;
+      padding-right:15px!important;
+    }
+  }
+  
+}
+.el-breadcrumb{
+  font-size:inherit;
+  margin:10px 15px;
+}
+
+.el-tabs{
+  &__item{
+    font-size:inherit;
+    height: 32px;
+    line-height: 32px;
+    box-sizing: content-box;
+  }
+  &__header{
+    margin-bottom:10px;
+  }
+  &__nav-prev,&__nav-next{
+    line-height:2.6rem;
+  }
+}
+
+.el-date-table,div.el-timeline{
+  font-size:inherit;
+}
+.el-time-panel{
+  &__btn{
+    font-size:1rem;
+  }
+}
+.el-time-spinner{
+  &__item{
+    font-size:1rem;
+  }
+}
+
+.el-upload--picture-card,
+.el-upload-list--picture-card .el-upload-list__item{
+  height:120px;
+  width:120px;
+  border-radius:0;
+}
+.el-upload--picture-card{
+  line-height:120px;
+  background:transparent;
+}
+.el-upload--placeholder{
+  display:flex;
+  height:100%;
+  width:100%;
+  line-height:1.4;
+  color:$--color-text-secondary;
+  &-inner{
+    margin:auto;
+    .e-iconfont{
+      font-size: 40px;
+      margin-bottom: 5px;
+      display: inline-block;
+    }
+  }
+  &:hover{
+    color:$--color-primary;
+    .e-iconfont{
+      color:$--color-primary;
+    }
+  }
+}
+
+.el-drawer{
+  outline:none;
+  &__header{
+    color:inherit;
+    >span{
+      font-size:1.05em;
+      outline:none;
+    }
+  }
+  &__close-btn{
+    outline:none;
+  }
+  &__container{
+    outline:none;
+  }
+}

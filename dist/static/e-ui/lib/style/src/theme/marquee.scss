@@ -1,0 +1,17 @@
+@import '../variable.scss';
+@import '../mixins.scss';
+
+.e-marquee {
+  width: 100%;
+  overflow: hidden;
+  &-box {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: auto;
+  }
+  &-item {
+    margin: 0;
+    width: 100%;
+  }
+}

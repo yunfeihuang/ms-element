@@ -1,0 +1,44 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+.e-signup{
+  background:$--color-white;
+  padding:30px 25px;
+  border-radius:3px;
+  border: 1px solid rgba(0,0,0,0.1);
+  width:320px;
+  display: inline-block;
+  text-align: left;
+  legend{
+    font-size:22px;
+    text-align:center;
+    margin-bottom:26px;
+    line-height:1;
+  }
+  .el-button{
+    width:100%;
+  }
+  .el-checkbox{
+    margin-right:0;
+  }
+  .el-form-item{
+    margin-bottom:26px;
+    &.is-argument{
+      margin-top: -20px;
+      margin-bottom: 10px;
+      .el-checkbox{
+        margin-right:0!important;
+      }
+    }
+  }
+  &-links{
+    text-align:center;
+    display:block;
+    margin-top:20px;
+    font-size:12px;
+  }
+  &-error{
+    position: relative;
+    top: -16px;
+    text-align: left;
+  }
+}

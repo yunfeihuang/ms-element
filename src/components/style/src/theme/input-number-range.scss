@@ -1,0 +1,39 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+.e-input-number-range{
+  border: 1px solid $--border-color-base;
+  border-radius: $--border-radius-base;
+  white-space: nowrap;
+  width:160px;
+  position:relative;
+  line-height: 1;
+  display:inline-block;
+  vertical-align: top;
+  &:hover{
+    border-color:#c0c4cc;
+  }
+  &-join{
+    font-size: 14px;
+    line-height:14px;
+    position:absolute;
+    top:50%;
+    left:50%;
+    margin:-7px;
+  }
+  .el-input-number,.el-input,.el-input__inner{
+    width:100%;
+    vertical-align: top;
+  }
+  .el-input-number{
+    margin:-1px 0;
+    display:inline-block;
+    width:50%;
+  }
+  .el-input__inner{
+    border:0;
+    background: transparent;
+  }
+  &.is-focus{
+    border-color:$--color-primary!important;
+  }
+}

@@ -1,0 +1,25 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+.e-scroll-in-view{
+  &--effect{
+    &-fadein{
+      opacity:0;
+      &.to-direction-top{
+        transform:translate3D(0,50%,0);
+      }
+      &.to-direction-bottom{
+        transform:translate3D(0,-50%,0);
+      }
+      &.to-direction-left{
+        transform:translate3D(50%,0,0);
+      }
+      &.to-direction-right{
+        transform:translate3D(-50%,0,0);
+      }
+      &.is-active{
+        opacity:1;
+        transform:translate3D(0,0,0);
+      }
+    }
+  }
+}

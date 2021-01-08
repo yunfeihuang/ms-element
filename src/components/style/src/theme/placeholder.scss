@@ -1,0 +1,18 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+
+.e-placeholder{
+  line-height:1;
+  min-height:300px;
+  color:#999;
+  .e-iconfont{
+    font-size:40px;
+    font-size:6rem;
+  }
+  &-text{
+    margin-top:10px;
+  }
+  &-inner{
+    text-align:center;
+  }
+}

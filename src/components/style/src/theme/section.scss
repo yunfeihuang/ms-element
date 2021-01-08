@@ -1,0 +1,28 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+.e-section{
+  background:$--color-white;
+  border-radius:3px;
+  padding:14px;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+  box-sizing:border-box;
+  &--header{
+    margin:0 0 15px 0;
+    .el-button--text{
+      padding:2px 0;
+    }
+    a{
+      line-height:1;
+    }
+  }
+  &--title{
+    font-size:$--font-size-large;
+    line-height: 1;
+    margin:0;
+  }
+}
+.e-section-grid{
+  >.e-section,>section{
+    margin:14px 0
+  }
+}

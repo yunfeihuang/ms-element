@@ -1,0 +1,26 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+
+.e-banner{
+  background:no-repeat center;
+  background-size:cover;
+  height:400px;
+  overflow:hidden;
+  color:#fff;
+  text-align:center;
+  display:table;
+  width:100%;
+  line-height:1;
+  &-inner{
+    display:table-cell;
+    vertical-align:middle;
+  }
+  &-primary{
+    font-size: 60px;
+    letter-spacing: 10px;
+  }
+  &-secondary{
+    margin-top: 30px;
+    font-size: 18px;
+  }
+}

@@ -1,0 +1,118 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+
+.ql-toolbar.ql-snow, .ql-container.ql-snow{
+  border-color: $--border-color-base;
+}
+.ql-editor{
+  min-height:200px;
+  line-height:1.75;
+  height:70vh;
+  overflow:auto;
+  em{
+    font-style:italic;
+    font-weight: inherit;
+  }
+  strong{
+    font-weight:bold;
+  }
+  h1, h2, h3, h4, h5, h6{
+    line-height:1.75;
+  }
+}
+.quill-editor{
+  line-height:1;
+  padding: 0;
+  height: auto;
+  overflow: hidden;
+  .ql-toolbar{
+    .el-upload{
+      border:0;
+    }
+  }
+}
+.quill-editor{
+  .ql-snow .ql-picker-item,
+  .ql-snow .ql-picker-label{
+    &[data-value=宋体]{
+      &:before{
+        content: '宋体'
+      }
+    }
+    &[data-value=微软雅黑]{
+      &:before{
+        content: '微软雅黑'
+      }
+    }
+    &[data-value=黑体]{
+      &:before{
+        content: '黑体'
+      }
+    }
+    &[data-value=楷体]{
+      &:before{
+        content: '楷体'
+      }
+    }
+    &[data-value=隶书]{
+      &:before{
+        content: '隶书'
+      }
+    }
+    &[data-value=arial]{
+      &:before{
+        content: 'arial'
+      }
+    }
+    &[data-value=impact]{
+      &:before{
+        content: 'impact'
+      }
+    }
+    &[data-value='12px']{
+      &:before{
+        content: '12px'
+      }
+    }
+    &[data-value='14px']{
+      &:before{
+        content: '14px'
+      }
+    }
+    &[data-value='16px']{
+      &:before{
+        content: '16px'
+      }
+    }
+    &[data-value='18px']{
+      &:before{
+        content: '18px'
+      }
+    }
+    &[data-value='20px']{
+      &:before{
+        content: '20px'
+      }
+    }
+    &[data-value='22px']{
+      &:before{
+        content: '22px'
+      }
+    }
+    &[data-value='24px']{
+      &:before{
+        content: '24px'
+      }
+    }
+    &[data-value='26px']{
+      &:before{
+        content: '26px'
+      }
+    }
+    &[data-value='28px']{
+      &:before{
+        content: '28px'
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+
+.is--sticky,.is--fixed{
+  background:$--color-white;
+  z-index:100;
+  top:0;
+  box-shadow:0 0 10px rgba(0,0,0,0.09);
+  transition: box-shadow 0.2s ease 0s;
+}
+.is--fixed{
+  position:fixed;
+  width:100%;
+}

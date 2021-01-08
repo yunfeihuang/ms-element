@@ -1,0 +1,104 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+.e-popup-layout{
+  position:fixed;
+  right:0;
+  top:0;
+  height:100%;
+  background:$--color-white;
+  z-index:1000;
+  flex-direction: column;
+  height:100%;
+  box-shadow:0 0 10px rgba(0,0,0,0.25);
+  display:flex;
+  max-width: 100%;
+  &--loading,&--error{
+    .e-popup-layout--body{
+      display:flex;
+      >div{
+        margin:auto;
+      }
+      .el-spinner-inner .path{
+        stroke: $--color-primary;
+      }
+    }
+  }
+  &--error{
+    .e-popup-layout--body{
+      >div{
+        font-size:1.2em;
+        color:#ccc;
+        text-align:center;
+        i{
+          font-size:3em;
+        }
+      }
+    }
+  }
+  &--body{
+    overflow:auto;
+    box-sizing:border-box;
+    padding: 0 15px;
+    flex:1;
+  }
+  legend{
+    font-size:1.2rem;
+    margin:15px;
+  }
+  &--footer{
+    text-align:center;
+    padding:10px;
+    .el-button{
+      min-width:100px;
+    }
+  }
+  &--size{
+    &-mini{
+      min-width:14rem;
+      width:14rem;
+    }
+    &-small{
+      min-width:26rem;
+      width:26rem;
+    }
+    &-normal{
+      min-width:43rem;
+      width:43rem;
+    }
+    &-large{
+      min-width:60rem;
+      width:60rem;
+    }
+  }
+  &--resize{
+    position:absolute;
+    top:0;
+    width:10px;
+    height:100%;
+    left:0;
+    cursor: e-resize;
+    margin-left:-5px;
+  }
+  >.el-icon-close{
+    position:absolute;
+    right:15px;
+    top:15px;
+    font-size:24px;
+    cursor: pointer;
+    &:hover{
+      color:$--color-primary;
+    }
+  }
+}
+.popup-slide-right-enter-active, .popup-slide-right-leave-active {
+  transition: transform 0.3s ease 0s
+}
+.popup-slide-right-enter, .popup-slide-right-leave-active {
+  transform: translate3d(100%,0,0);
+}
+.popup-full-slide-right-enter-active, .popup-full-slide-right-leave-active {
+  transition: transform 0.4s;
+}
+.popup-full-slide-right-enter, .popup-full-slide-right-leave-active {
+  transform:  translate3d(100%,0,0);
+}

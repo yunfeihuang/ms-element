@@ -1,0 +1,30 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+.e-danger{
+  position:relative;
+  color:$--color-danger;
+  display:inline;
+  &:before{
+    content:'';
+    position:absolute;
+    width:10px;
+    height:10px;
+    top:50%;
+    left:-15px;
+    margin-top:-4px;
+    border-radius:50%;
+    background-color:$--color-danger;
+    animation: edanger 4s infinite linear;
+  }
+}
+@keyframes edanger {
+  0% {
+    transform:scale(1);
+  }
+  50% {
+    transform:scale(0.8);
+  }
+  100% {
+    transform:scale(1);
+  }
+}
