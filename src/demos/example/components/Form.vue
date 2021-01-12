@@ -52,17 +52,18 @@
     <el-form-item label="个人介绍">
       <el-input v-model.trim="form.desc" type="textarea" :autosize="{minRows: 2}"></el-input>
     </el-form-item>
-    <!--
     <el-form-item label="即时配送">
-      <el-button v-if="!query" @click="popupManager.pushOpen('update', 'id')" type="text">打开编辑弹框（同时打开多个侧边弹框）</el-button>
-      <el-button @click="popupManager.pushOpen('detail', Math.random())" type="text">打开详情弹框（同时打开多个侧边弹框）</el-button>
+      <el-button type="text">打开编辑弹框（同时打开多个侧边弹框）</el-button>
+      <el-button @click="handleDetail" type="text">打开详情弹框（同时打开多个侧边弹框）</el-button>
     </el-form-item>
-    -->
   </el-form>
 </template>
 
 <script>
 export default {
+  mixins: [
+    $mixins.form
+  ],
   data () {
     return {
       form: { // 必须使用form来绑定表单数据
@@ -82,11 +83,15 @@ export default {
       }
     }
   },
+  mounted () {
+    console.log(this.query)
+  },
   methods: {
     fetch () {
       if (this.query) {
         Object.assign(this.form, this.query)
       }
+      console.log(this.query)
       return new Promise((resolve, reject) => {
         setTimeout(resolve, 2000)
       })
@@ -114,6 +119,9 @@ export default {
         }
       })
       */
+    },
+    handleDetail () {
+      Navigator.push(this.$target, () => import('./Detail'))
     }
   }
 }

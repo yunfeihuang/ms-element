@@ -61,6 +61,7 @@ router.afterEach(() => {
     store.commit('LOADING', false)
   }
 })
+window.Vue = Vue
 new Vue({ // eslint-disable-line
   router,
   store,

@@ -47,7 +47,8 @@ module.exports = {
       'e-ui/lib': resolve('src/components'),
       'e-ui': resolve('src/components'),
       '@element-ui': resolve('src/element-ui'),
-      'mixins': resolve('src/mixins/index.js')
+      'mixins': resolve('src/mixins/index.js'),
+      'Navigator': resolve('src/Navigator.js')
     }
   },
   module: {
@@ -129,7 +130,8 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin(),
     new webpack.ProvidePlugin({
-      $mixins: ['mixins', 'default']
+      $mixins: ['mixins', 'default'],
+      Navigator: ['Navigator', 'default']
     })
   ],
   node: {
