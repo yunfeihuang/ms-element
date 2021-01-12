@@ -43,7 +43,7 @@ let initRootFontSize = function () {
 }
 window.addEventListener('resize', initRootFontSize)
 initRootFontSize()
-
+window.Vue = Vue
 new Vue({ // eslint-disable-line
   router: new Router({
     routes

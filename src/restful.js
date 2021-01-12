@@ -24,14 +24,14 @@ export default {
         }
       },
       post (option) {
-        axios({
+        return axios({
           url,
           method: 'POST',
           ...option
         })
       },
       put (option) {
-        axios({
+        return axios({
           url,
           method: 'PUT',
           ...option
