@@ -3,7 +3,7 @@ import Drawer from '@/Drawer'
 let set = new Set()
 class Navigator {
   static push (context, importComponent, {
-    title = '',
+    title,
     direction = 'rtl',
     size = 'default',
     customClass,

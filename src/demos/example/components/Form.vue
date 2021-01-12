@@ -84,7 +84,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.query)
+    console.log(this.query, this.$target)
   },
   methods: {
     fetch () {
@@ -121,7 +121,7 @@ export default {
       */
     },
     handleDetail () {
-      Navigator.push(this.$target, () => import('./Detail'))
+      Navigator.push(this.$target, () => import('./Detail'), {})
     }
   }
 }

@@ -74,7 +74,7 @@ export default {
       default: '取消'
     }
   },
-  provide() {
+  provide () {
     return {
       '$target': this.target
     }
@@ -103,6 +103,7 @@ export default {
             res.default.mixins = []
           }
           res.default.mixins.push({
+            inject: ['$target'],
             props: ['query']
           })
           this.component = res.default
@@ -142,6 +143,8 @@ export default {
 </script>
 <style lang="scss">
   .ms-drawer{
+    max-height: 100%;
+    max-width: 100%;
     &--error,&--loading{
       margin:auto;
       font-size:1.2em;
