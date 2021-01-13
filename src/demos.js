@@ -45,7 +45,6 @@ let initRootFontSize = function () {
 }
 window.addEventListener('resize', initRootFontSize)
 initRootFontSize()
-console.log('routes', routes)
 let router = new Router({
   routes
 })
@@ -64,8 +63,7 @@ router.afterEach(() => {
 })
 window.Vue = Vue
 window.Router = Router
-window.store = store
-new Vue({ // eslint-disable-line
+window.store = storenew Vue({ // eslint-disable-line
   router,
   store,
   el: '#app',
