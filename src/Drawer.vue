@@ -11,6 +11,7 @@
           ref="component"
           :is="component"
           v-bind="props"
+          @hook:mounted="handleMounted"
         />
       </div>
       <div class="ms-drawer--footer">
@@ -136,6 +137,18 @@ export default {
       }
       document.onmouseup = () => {
         document.onmousemove = document.onmouseup = null
+      }
+    },
+    handleMounted () {
+      let node = this.$el.querySelector('.el-drawer__container')
+      if (node) {
+        node.title = '双击可以快速关闭弹框'
+        node.querySelector('.ms-drawer').title = ''
+        node.ondblclick = e => {
+          if (node === e.target) {
+            this.handleClose()
+          }
+        }
       }
     }
   }

@@ -63,7 +63,8 @@ router.afterEach(() => {
 })
 window.Vue = Vue
 window.Router = Router
-window.store = storenew Vue({ // eslint-disable-line
+window.store = store
+new Vue({ // eslint-disable-line
   router,
   store,
   el: '#app',
