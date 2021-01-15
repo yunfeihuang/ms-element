@@ -4,7 +4,7 @@ module.exports = {
   root: true,
   globals: {
     '$mixins': true,
-    'Navigator': true
+    'ms': true
   },
   parserOptions: {
     parser: 'babel-eslint'

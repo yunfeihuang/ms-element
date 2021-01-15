@@ -48,7 +48,7 @@ module.exports = {
       'e-ui': resolve('src/components'),
       '@element-ui': resolve('src/element-ui'),
       'mixins': resolve('src/mixins/index.js'),
-      'Navigator': resolve('src/Navigator.js')
+      'ms': resolve('src/ms/ms.js')
     }
   },
   module: {
@@ -131,7 +131,7 @@ module.exports = {
     new VueLoaderPlugin(),
     new webpack.ProvidePlugin({
       $mixins: ['mixins', 'default'],
-      Navigator: ['Navigator', 'default']
+      ms: ['ms', 'default']
     })
   ],
   node: {
