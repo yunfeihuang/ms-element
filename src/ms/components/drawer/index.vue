@@ -54,7 +54,7 @@
 </template>
 
 <script>
-
+console.log(ms, 'tttttttttt')
 export default {
   props: {
     target: {

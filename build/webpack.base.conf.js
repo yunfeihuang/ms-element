@@ -130,8 +130,8 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin(),
     new webpack.ProvidePlugin({
-      $mixins: ['mixins', 'default'],
-      ms: ['ms', 'default']
+      ms: ['ms', 'default'],
+      $mixins: ['mixins', 'default']
     })
   ],
   node: {

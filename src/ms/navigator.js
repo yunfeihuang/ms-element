@@ -88,10 +88,9 @@ export default {
     }
   },
   pop (context) {
-    console.log('pop')
     let array = set[context]
     if (array.length) {
-      array[array.length - 1].$emit('pop')
+      array[array.length - 1].$refs.drawer.handleClose()
     }
   }
 }

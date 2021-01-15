@@ -10,7 +10,7 @@ import DomPortal from 'vue-dom-portal'
 import filters from '@/filters'
 import '@/directives'
 import axios from '@axios'
-console.log('mixins', $mixins)
+console.log('dssssss', ms, $mixins)
 
 // register global utility filters.
 Object.keys(filters).forEach(key => {

@@ -60,6 +60,7 @@
 </template>
 
 <script>
+console.log(ms, 'tttttttttt')
 export default {
   mixins: [
     ms.mixins.form

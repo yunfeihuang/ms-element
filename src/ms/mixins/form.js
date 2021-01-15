@@ -1,5 +1,7 @@
+'use strict'
 import validator from '@/utils/validator'
 import fetch from './fetch'
+import navigator from '../navigator'
 
 export default {
   mixins: [fetch],
@@ -81,8 +83,7 @@ export default {
     },
     afterSubmit () { // 提交成功后处理
       if (this.$target) {
-        console.log(ms.navigator, this.$target)
-        ms.navigator.pop(this.$target)
+        navigator.pop(this.$target)
         this.$target.beforeFetch && this.$target.beforeFetch()
       } else {
         history.back()
