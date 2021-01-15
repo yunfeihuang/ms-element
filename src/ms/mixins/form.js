@@ -1,5 +1,8 @@
 import validator from '@/utils/validator'
+import fetch from './fetch'
+
 export default {
+  mixins: [fetch],
   props: {
     promiseSubmit: {
       type: Function
@@ -7,20 +10,17 @@ export default {
   },
   data () {
     return {
-      ...fetch.data(),
       validator,
       posting: false,
       form: {}
     }
   },
   watch: {
-    ...fetch.watch
-  },
-  mounted () {
-    this.beforeFetch()
+    posting (value) {
+      this.$emit('posting', value)
+    }
   },
   methods: {
-    ...fetch.methods,
     getFormProps (props) { // 获取el-form表单props
       return Object.assign({
         ref: 'form',
@@ -48,30 +48,44 @@ export default {
       }
     },
     beforeSubmit () {
+      console.log('fdsafdas')
       if (!this.posting) {
         if (this.promiseSubmit) {
           let promise = this.promiseSubmit(JSON.parse(JSON.stringify(this.form)))
           if (promise && promise.then) {
             this.posting = true
-            promise.then(() => {
+            promise.then(res => {
               this.posting = false
-              this.afterSubmit && this.afterSubmit()
-            }).catch(() => {
+              this.afterSubmit && this.afterSubmit(res)
+              return res
+            }).catch(err => {
               this.posting = false
+              return err
             })
           }
         } else if (this.submit) {
           let promise = this.submit()
           if (promise && promise.then) {
             this.posting = true
-            promise.then(() => {
+            promise.then(res => {
               this.posting = false
-              this.afterSubmit && this.afterSubmit()
-            }).catch(() => {
+              this.afterSubmit && this.afterSubmit(res)
+              return res
+            }).catch(err => {
               this.posting = false
+              return err
             })
           }
         }
+      }
+    },
+    afterSubmit () { // 提交成功后处理
+      if (this.$target) {
+        console.log(ms.navigator, this.$target)
+        ms.navigator.pop(this.$target)
+        this.$target.beforeFetch && this.$target.beforeFetch()
+      } else {
+        history.back()
       }
     },
     validateFail () { // 出现错误滚动到首个错误输入框并聚焦
@@ -90,15 +104,18 @@ export default {
       })
     },
     parseResponse (res) {
-      this.setFormData(res)
+      res && this.assignFormData(res)
       return res
     },
-    setFormData (data) {
+    assignFormData (data) { // 合并请示返回的数据到表单form
       this.form.keys().forEach(item => {
         this.form[item] = data[item]
       })
     },
     submit () { // 提交数据
+      return new Promise((resolve) => {
+        setTimeout(resolve, 1000)
+      })
     },
     handleSubmit () { // 提交表单事件
       this.validate()

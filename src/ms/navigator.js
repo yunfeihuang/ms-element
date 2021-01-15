@@ -1,8 +1,8 @@
 import Drawer from '@/ms/components/drawer'
 
 let set = new Set()
-class Navigator {
-  static push (context, importComponent, {
+export default {
+  push (context, importComponent, {
     title,
     direction = 'rtl',
     size = 'default',
@@ -79,20 +79,19 @@ class Navigator {
     let array = set[context] || []
     array.push(vue)
     set[context] = array
-  }
-  static replace (context, importComponent, drawer, props) {
+  },
+  replace (context, importComponent, drawer, props) {
     let array = set[context]
     if (array.length) {
       let vm = array[array.length - 1]
       vm.$refs.drawer.importComponent = importComponent
     }
-  }
-  static pop (context) {
+  },
+  pop (context) {
+    console.log('pop')
     let array = set[context]
     if (array.length) {
       array[array.length - 1].$emit('pop')
     }
   }
 }
-
-export default Navigator

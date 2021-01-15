@@ -106,6 +106,7 @@ export default {
       */
     },
     submit () { // 表单校验通过后调用的方法，一般是请求后台接口的方法
+      console.log('sssssssssssssss')
       return new Promise((resolve, reject) => {
         setTimeout(resolve, 1000)
       })

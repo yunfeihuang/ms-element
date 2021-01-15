@@ -40,12 +40,6 @@ export default {
         // title: '创建',
         query: {
           a: 'aaa'
-        },
-        footer: {
-          template: '<el-button size="small">通过</el-button>',
-          mounted () {
-            console.log('dfsafdsa', this)
-          }
         }
       })
       setTimeout(() => {

@@ -1,11 +1,5 @@
 <template>
   <e-page-list-layout>
-      <!--
-      <el-breadcrumb slot="breadcrumb">
-        <el-breadcrumb-item>XXX管理</el-breadcrumb-item>
-        <el-breadcrumb-item>XXX列表</el-breadcrumb-item>
-      </el-breadcrumb>
-      -->
       <template slot="search">
         <!--ElForm组件的v-bind="getFormProps()"传递props和@submit.native.prevent="handleSubmit"注册事件是必须的-->
         <el-form v-bind="getFormProps()" @submit.native.prevent="handleSubmit">
@@ -95,9 +89,6 @@ export default {
       return this.$axios({
         url: '/list',
         params: this.query
-      }).then(res => {
-        this.pageData = res.data
-        return res
       })
     }
   }

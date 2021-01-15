@@ -14,6 +14,7 @@
           v-bind="props"
           @hook:mounted="handleMounted"
           @loading="handleLoading"
+          @posting="handleLoading"
         />
       </div>
       <div class="ms-drawer--footer" v-if="slots.footer">

@@ -7,6 +7,36 @@ export default {
   },
   watch: {
     loading (value) {
+      this.watchLoading(value)
+    }
+  },
+  mounted () {
+    this.beforeFetch()
+  },
+  methods: {
+    beforeFetch () {
+      let promise = this.fetch()
+      if (promise && promise.then) {
+        this.loading = true
+        return promise.then(res => {
+          this.loading = false
+          this.res = this.parseResponse(res)
+          return res
+        }).catch(err => {
+          this.loading = false
+          return err
+        })
+      }
+    },
+    parseResponse (res) {
+      return res
+    },
+    fetch () {
+      return new Promise((resolve, reject) => {
+        setTimeout(resolve, 1000)
+      })
+    },
+    watchLoading (value) {
       if (this.$target) {
         this.$emit('loading', value)
       } else {
@@ -24,35 +54,5 @@ export default {
         }
       }
     }
-  },
-  mounted () {
-    this.beforeFetch()
-  },
-  methods: {
-    beforeFetch () {
-      let promise = this.fetch()
-      if (promise && promise.then) {
-        this.loading = true
-        return promise.then(res => {
-          console.log(res)
-          this.loading = false
-          this.res = this.parseResponse(res)
-          return res
-        }).catch(err => {
-          this.loading = false
-          return err
-        })
-      }
-    },
-    parseResponse (res) {
-      return res
-    },
-    fetch () {
-      return new Promise((resolve, reject) => {
-        setTimeout(resolve, 1000)
-      })
-    }
   }
 }
-
-
