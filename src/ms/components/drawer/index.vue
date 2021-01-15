@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import globalMixins from '@/mixins/global'
+
 export default {
   props: {
     target: {
@@ -161,7 +161,7 @@ export default {
           }
         }
       }
-      if (this.$refs.component && this.$refs.component.handleSubmit) {
+      if (this.$refs.component && this.$refs.component.handleSubmit && this.$refs.component.form) {
         this.isFormComponent = true
       }
     }

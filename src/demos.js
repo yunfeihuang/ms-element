@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import routes from './router'
+import routes from './ms/router'
 import store from './store'
 import App from './Demos.vue'
 import '@/styles/import.scss'

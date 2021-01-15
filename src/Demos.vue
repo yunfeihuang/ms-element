@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import MsFrameLayout from '@/ms/frame-layout'
+import MsFrameLayout from '@/ms/components/frame-layout'
 export default {
   components: {
     MsFrameLayout

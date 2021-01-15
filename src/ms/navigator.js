@@ -1,4 +1,4 @@
-import Drawer from '@/Drawer'
+import Drawer from '@/ms/components/drawer'
 
 let set = new Set()
 class Navigator {
@@ -18,7 +18,9 @@ class Navigator {
     confirmText,
     resetText,
     cancelText,
-    query
+    query,
+    header,
+    footer
   }) {
     let el = document.createElement('div')
     context.$el.appendChild(el)
@@ -53,7 +55,11 @@ class Navigator {
           },
           confirmText,
           resetText,
-          cancelText
+          cancelText,
+          slots: {
+            header,
+            footer
+          }
         },
         on: {
           closed: function () {

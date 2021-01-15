@@ -1,0 +1,109 @@
+<template>
+  <e-page-list-layout>
+      <!--
+      <el-breadcrumb slot="breadcrumb">
+        <el-breadcrumb-item>XXX管理</el-breadcrumb-item>
+        <el-breadcrumb-item>XXX列表</el-breadcrumb-item>
+      </el-breadcrumb>
+      -->
+      <template slot="search">
+        <!--ElForm组件的v-bind="getFormProps()"传递props和@submit.native.prevent="handleSubmit"注册事件是必须的-->
+        <el-form v-bind="getFormProps()" @submit.native.prevent="handleSubmit">
+          <el-form-item label="姓名">
+            <el-input v-model.trim="query.keyword" placeholder="请输入姓名"></el-input>
+          </el-form-item>
+          <!--native-type="submit"是修改button type属性为submit-->
+          <el-button native-type="submit" size="small">搜索</el-button>
+        </el-form>
+      </template>
+      <!--v-bind="getTableProps()"是必须的-->
+      <el-table slot="table"
+        v-bind="getTableProps()"
+        v-on="getTableListeners()"
+        :data="pageData.data">
+        <el-table-column
+          type="selection"
+          width="58">
+        </el-table-column>
+        <el-table-column
+          v-bind="getIndexColumnProps()">
+        </el-table-column>
+        <el-table-column
+          label="姓名">
+          <template slot-scope="scope">
+            {{scope.row.name}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          width="60"
+          label="年龄">
+          <template slot-scope="scope">
+            {{scope.row.age}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="邮箱">
+          <template slot-scope="scope">
+            {{scope.row.email}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          width="60"
+          label="状态">
+          <template slot-scope="scope">
+            {{scope.row.state}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="地址" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column
+          sortable="custom"
+          prop="date"
+          label="创建日期" show-overflow-tooltip>
+        </el-table-column>
+      </el-table>
+      <template slot="action">
+        <el-button size="small">导入</el-button>
+        <el-button :disabled="multipleSelectionAll.length==0" size="small">导出</el-button>
+      </template>
+    </e-page-list-layout>
+</template>
+
+<script>
+export default {
+  mixins: [
+    ms.mixins.pageList
+  ],
+  data () {
+    return {
+      query: this.getQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象
+        keyword: '',
+        status: [],
+        start: null,
+        end: null,
+        datetime: null,
+        start_time: '',
+        end_time: '',
+        ...this.defaultQuery
+      })
+    }
+  },
+  methods: {
+    fetch (query) { // 获取数据的方法，必须要重写
+      return this.$axios({
+        url: '/list',
+        params: this.query
+      }).then(res => {
+        this.pageData = res.data
+        return res
+      })
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="scss">
+</style>

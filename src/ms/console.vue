@@ -3,7 +3,7 @@
     <el-row :gutter="14">
       <el-col :xl="12" :sm="8" :md="6" :lg="4" v-for="item in 6" :key="item">
         <el-card>
-          <div class="statis-item">
+          <div class="statis-item" @click="handle1">
             <h2>数据统计标题{{item}}</h2>
             <em>1000</em>
           </div>
@@ -32,6 +32,25 @@ export default {
   data () {
     return {
       option1: option
+    }
+  },
+  methods: {
+    handle1 () {
+      ms.navigator.push(this, Form, {
+        // title: '创建',
+        query: {
+          a: 'aaa'
+        },
+        footer: {
+          template: '<el-button size="small">通过</el-button>',
+          mounted () {
+            console.log('dfsafdsa', this)
+          }
+        }
+      })
+      setTimeout(() => {
+        // ms.navigator.replace(this, () => import('./example/components/Detail'))
+      }, 5000)
     }
   }
 }
