@@ -6,6 +6,7 @@ import App from './Demos.vue'
 import '@/styles/import.scss'
 import ElementUI from '@element-ui'
 import * as EUI from './components/management'
+import * as MS from './ms/components'
 import DomPortal from 'vue-dom-portal'
 import filters from '@/filters'
 import '@/directives'
@@ -20,6 +21,7 @@ Vue.use(Router)
 Vue.use(DomPortal)
 Vue.use(ElementUI)
 Vue.use(EUI)
+Vue.use(MS)
 Vue.prototype.$axios = axios
 
 if (process.env.NODE_ENV === 'development') {

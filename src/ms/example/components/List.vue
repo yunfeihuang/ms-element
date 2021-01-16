@@ -1,5 +1,5 @@
 <template>
-  <e-page-list-layout>
+  <ms-page-list-layout>
       <template slot="search">
         <!--ElForm组件的v-bind="getFormProps()"传递props和@submit.native.prevent="handleSubmit"注册事件是必须的-->
         <el-form v-bind="getFormProps()" @submit.native.prevent="handleSubmit">
@@ -62,7 +62,7 @@
         <el-button size="small">导入</el-button>
         <el-button :disabled="multipleSelectionAll.length==0" size="small">导出</el-button>
       </template>
-    </e-page-list-layout>
+    </ms-page-list-layout>
 </template>
 
 <script>
@@ -70,7 +70,13 @@ export default {
   mixins: [
     ms.mixins.pageList
   ],
+  props: {
+    history: {
+      default: false
+    }
+  },
   data () {
+    console.log('ssssssssssssssss')
     return {
       query: this.getQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象
         keyword: '',
@@ -80,14 +86,14 @@ export default {
         datetime: null,
         start_time: '',
         end_time: '',
-        ...this.defaultQuery
+        ...this.params
       })
     }
   },
   methods: {
     fetch (query) { // 获取数据的方法，必须要重写
       return this.$axios({
-        url: '/list',
+        url: '/user',
         params: this.query
       })
     }

@@ -37,4 +37,7 @@ export default {
 }
 </script>
 <style lang="scss">
+  .ms-loading-element{
+    position: relative;
+  }
 </style>

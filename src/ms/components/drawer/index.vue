@@ -48,6 +48,7 @@
 
 <script>
 export default {
+  componentName: 'MsDrawer',
   props: {
     target: {
       type: Object

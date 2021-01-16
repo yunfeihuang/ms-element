@@ -43,7 +43,7 @@ export default {
             this.$loadingInstance.close()
           }
           this.$loadingInstance = this.$loading({ // 实例化loading对象
-            target: this.$el
+            target: this.$el.querySelector('.ms-loading-element') || this.$el
           })
         } else {
           if (this.$loadingInstance) {

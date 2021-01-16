@@ -1,71 +1,21 @@
 <template>
   <div>
     <!--PageListLayout有四个插槽:breadcrumb,search,table,pagination(这个是默认存在的)-->
-    <e-page-list-layout>
-      <!--
-      <el-breadcrumb slot="breadcrumb">
-        <el-breadcrumb-item>XXX管理</el-breadcrumb-item>
-        <el-breadcrumb-item>XXX列表</el-breadcrumb-item>
-      </el-breadcrumb>
-      -->
+    <ms-page-list-layout>
       <template slot="search">
         <el-tabs v-model="query.active" type="card" @tab-click="handleTab">
           <el-tab-pane label="黄金" name="first"></el-tab-pane>
           <el-tab-pane label="白金" name="second"></el-tab-pane>
           <el-tab-pane label="白银" name="third"></el-tab-pane>
         </el-tabs>
-        <query-form :model="query" :items="formItems" v-bind="getFormProps()" @submit="handleSubmit">
+        <ms-query-form :model="query" :items="formItems" v-bind="getFormProps()" @submit="handleSubmit">
           <el-date-picker
             slot="date"
             type="daterange"
             value-format="timestamp">
           </el-date-picker>
           <el-button size="small" @click="handleCreate()">创建</el-button>
-        </query-form>
-      </template>
-      <template slot="search-high">
-        <el-col v-bind="getColProps()">
-          <el-form-item label="姓名">
-            <el-input v-model.trim="highQuery.keyword" placeholder="请输入姓名"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col v-bind="getColProps()">
-          <el-form-item label="状态">
-            <el-select v-model="highQuery.status" placeholder="请选择" multiple collapse-tags>
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col v-bind="getColProps()">
-          <el-form-item label="工作时间">
-            <el-date-picker
-              type="daterange"
-              value-format="timestamp"
-              :value="highQuery.start_time ? [highQuery.start_time, highQuery.end_time] : null"
-              @input="handleDateRangeInput($event, ['start_time', 'end_time'], 'highQuery')">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col v-bind="getColProps()">
-          <el-form-item label="邮箱">
-            <el-input v-model.trim="highQuery.email" placeholder="请输入邮箱"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col v-bind="getColProps()">
-          <el-form-item label="年龄">
-            <el-input v-model.trim="highQuery.age" placeholder="请输入年龄"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col v-bind="getColProps()">
-          <el-form-item label="地址">
-            <el-input v-model.trim="highQuery.address" placeholder="请输入地址"></el-input>
-          </el-form-item>
-        </el-col>
+        </ms-query-form>
       </template>
       <!--v-bind="getTableProps()"是必须的-->
       <el-table slot="table"
@@ -132,18 +82,14 @@
         <el-button size="small">导入</el-button>
         <el-button :disabled="multipleSelectionAll.length==0" size="small" @click="handleExport">导出</el-button>
       </template>
-    </e-page-list-layout>
+    </ms-page-list-layout>
   </div>
 </template>
 
 <script>
-import QueryForm from '@/ms/components/query-form'
 const Form = () => import('./components/Form')
-console.log('dsafdsa', ms)
+
 export default {
-  components: {
-    QueryForm
-  },
   mixins: [
     ms.mixins.pageList
   ],
@@ -194,14 +140,6 @@ export default {
         end_time: '',
         ...this.$route.query
       }),
-      highQuery: this.getHighQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象
-        keyword: '',
-        status: [],
-        start: null,
-        end: null,
-        start_time: '',
-        end_time: ''
-      }),
       multipleSelectionProp: 'id', // 设置返回的数据列表唯一标识属性名
       options: [{
         value: '启用',
@@ -218,10 +156,8 @@ export default {
   },
   methods: {
     fetch (query) { // 获取数据的方法，必须要重写
-      this.$axios({
+      return this.$axios({
         url: '/user'
-      }).then(res => {
-        this.pageData = res.data
       })
     },
     handleDelete () {
@@ -247,7 +183,10 @@ export default {
       ms.navigator.push(this, () => import('./components/List'), {
         title: '列表',
         direction: 'ttb',
-        size: '80%'
+        size: '80%',
+        params: {
+          keyword: '黄运飞'
+        }
       })
     },
     handleOpen (row) {

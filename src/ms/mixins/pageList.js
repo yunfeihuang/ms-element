@@ -1,5 +1,4 @@
 import fetch from './fetch'
-
 export default {
   mixins: [fetch],
   props: {
@@ -7,18 +6,12 @@ export default {
       type: Boolean,
       default: true
     },
-    loadingText: {
-      type: String,
-      default: '努力加载中'
-    },
-    defaultQuery: {
+    params: {
       type: [Object]
     }
   },
   data () {
     return {
-      searchMode: 'default',
-      highVisible: false,
       multipleSelectionAll: [], // 全部选中的数据
       multipleSelection: [], // 当前页选中的数据
       pageData: {
@@ -50,15 +43,11 @@ export default {
   mounted () {
     this.handleResize()
     window.addEventListener('resize', this.handleResize, false)
-    !this.history && this.closeDrawerLoading()
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {
-    handleHighToggle (visible) {
-      this.highVisible = typeof visible === 'boolean' ? visible : !this.highVisible
-    },
     handleTab () {
       let query = Object.assign(this.query, {page: 1})
       this.$router.replace({
@@ -66,13 +55,13 @@ export default {
         query
       })
     },
-    handleDateRangeInput (value, keys = ['start_time', 'end_time'], queryKey = 'query') {
+    handleDateRangeInput (value, keys = ['start_time', 'end_time']) {
       if (value && value[0]) {
-        this[queryKey][keys[0]] = value[0]
-        this[queryKey][keys[1]] = value[1]
+        this.query[keys[0]] = value[0]
+        this.query[keys[1]] = value[1]
       } else {
         keys.forEach(item => {
-          this[queryKey][item] = null
+          this.query[item] = null
         })
       }
     },
@@ -97,21 +86,21 @@ export default {
     },
     handleResize () {
       this.$nextTick(() => {
-        let node = this.$el.querySelector('.e-page-list-layout--table')
+        let node = this.$el.querySelector('.ms-page-list-layout--table')
         node && (this.tableBodyHeight = node.offsetHeight + '')
       })
     },
     initial () { // 初始化
       this.$paginationProps = {} // 分页props
       this.$nextTick(() => {
-        this.beforeFetch(this.searchMode === 'high' ? this.highQuery : this.query) // 第二个表示是初始时调用
+        this.beforeFetch(this.query) // 第二个表示是初始时调用
       })
     },
     getQuery (query) { // 获取请求参数
-      if (this.defaultQuery && !this.popupName) {
-        Object.keys(this.defaultQuery).forEach(key => {
+      if (this.params) {
+        Object.keys(this.params).forEach(key => {
           if (!query[key]) {
-            query[key] = this.defaultQuery[key]
+            query[key] = this.params[key]
           }
         })
       }
@@ -120,15 +109,7 @@ export default {
           ...query
         }
       }
-      return Object.assign({page: 1, rows: 20}, this.$route.query, query)
-    },
-    getHighQuery (query) {
-      if (!this.$initHighQuery && query) { // 保存初始化查询对象
-        this.$initHighQuery = {
-          ...query
-        }
-      }
-      return Object.assign({page: 1, rows: 20}, query)
+      return Object.assign({page: 1, rows: 20}, this.params || {}, this.$route ? this.$route.query : {}, query)
     },
     getPaginationProps (data = {}) { // 获取分页默认props
       if (data.count !== undefined) {
@@ -195,11 +176,12 @@ export default {
       setTimeout(() => {
         this.$sizeChangeTimer = false
       }, 500)
-      let query = Object.assign({}, this.searchMode === 'high' ? this.highQuery : this.query, {page: 1, rows: value})
+      let query = Object.assign({}, this.query, {page: 1, rows: value})
       this.updateRoute && this.updateRoute(query)
     },
     updateRoute (query) { // 更新URL地址
       if (this.history) {
+        let _query = {...query}
         /*
         for (let name in _query) { // 清除 值为null|undefined
           if (_query[name] === null || _query[name] === undefined || _query[name] === '') {
@@ -207,60 +189,15 @@ export default {
           }
         }
         */
-        this.$router.push({path: this.$route.path, query: query})
+        this.$router.push({path: this.$route.path, query: _query})
       } else {
-        if (this.searchMode === 'high') {
-          this.highQuery = query
-        } else {
-          this.query = query
-        }
-        this.beforeFetch(query)
+        this.query = query
+        this.beforeFetch(this.query)
       }
     },
     handleSubmit () { // 表单提交事件
-      this.$refs.queryForm.validate((valid) => {
-        if (valid) {
-          this.query.page = 1
-          this.updateRoute(this.query)
-        }
-      })
-    },
-    handleHighSubmit () {
-      this.$refs.highQueryForm.validate((valid) => {
-        if (valid) {
-          this.searchMode = 'high'
-          this.handleHighToggle()
-          this.highQuery.page = 1
-          this.updateRoute(this.highQuery)
-        }
-      })
-    },
-    closeDrawerLoading () {
-      let mask = this.$el.closest('.e-drawer').querySelector('.e-drawer--mask')
-      mask.style.opacity = 0
-      setTimeout(() => {
-        mask.style.display = 'none'
-      }, 310)
-    },
-    openLoading () { // 开启加载效果
-      if (!this.history) {
-        let node = this.$el.querySelector('.e-page-list-layout--table')
-        if (node) {
-          this.closeLoading()
-          node.style.position = 'relative'
-          this.$loadingInstance = this.$loading({ // 实例化loading对象
-            target: node,
-            fullscreen: false,
-            text: this.loadingText
-          })
-        }
-      }
-    },
-    closeLoading () { // 结束加载效果
-      if (!this.history && this.$loadingInstance) { // 结束loading效果
-        this.$loadingInstance.close()
-        this.$loadingInstance = null
-      }
+      this.query.page = 1
+      this.updateRoute(this.query)
     },
     getFormProps (props) { // 获取默认表单props
       return Object.assign({
@@ -268,49 +205,14 @@ export default {
         novalidate: 'novalidate',
         inline: true,
         size: 'small',
-        ref: 'queryForm',
+        ref: 'query',
         model: this.query
       }, props)
     },
-    getHighFormProps (props) { // 获取默认表单props
-      return Object.assign({
-        novalidate: 'novalidate',
-        size: 'small',
-        ref: 'highQueryForm',
-        model: this.highQuery,
-        labelWidth: '7rem'
-      }, props)
-    },
-    getColProps (props) {
-      return {
-        xl: 4,
-        lg: 6,
-        md: 8,
-        sm: 12,
-        ...props
-      }
-    },
     handleReset () {
       this.query = Object.assign({page: 1, rows: 20}, this.$initQuery)
-      this.$refs.queryForm && this.$refs.queryForm.resetFields && this.$refs.queryForm.resetFields()
-    },
-    handleHighReset () {
-      this.highQuery = Object.assign({page: 1, rows: 20}, this.$initHighQuery)
-      this.$refs.highQueryForm && this.$refs.highQueryForm.resetFields && this.$refs.highQueryForm.resetFields()
-    },
-    handleHighCancel () {
-      this.searchMode = 'default'
-      this.highVisible = false
-    },
-    beforeFetch (query) { // 获取数据前
-      this.$toFetch = true // 是否去获取数据行为
-      if (this.fetch) {
-        let promise = this.fetch(query)
-        if (promise && !this.history) {
-          this.$nextTick(this.openLoading)
-          promise.then(this.closeLoading).catch(this.closeLoading)
-        }
-      }
+      this.beforeFetch(this.query)
+      // this.$refs.query && this.$refs.query.resetFields && this.$refs.query.resetFields()
     },
     handleSortChange (...args) {
       console.log(args)
@@ -343,18 +245,18 @@ export default {
       }
       this.multipleSelection = value
     },
+    parseResponse (res) {
+      this.pageData = res.data
+      return res
+    },
     fetch (query) {} // 需要被重写， 初始化会执行，路由参数变化也会执行
   },
   beforeRouteUpdate (to, from, next) { // 监听route地址变化
     if (to.path === from.path) {
-      if (this.searchMode === 'high') {
-        this.highQuery = Object.assign({}, this.highQuery, to.query, {page: to.query.page || 1, rows: to.query.rows || 20})
-      } else {
-        this.query = Object.assign({}, this.$initQuery, to.query, {page: to.query.page || 1, rows: to.query.rows || 20})
-      }
+      this.query = Object.assign({}, this.$initQuery, to.query, {page: to.query.page || 1, rows: to.query.rows || 20})
       this.$routeUpdateTimer && clearTimeout(this.$routeUpdateTimer)
       this.$routeUpdateTimer = setTimeout(() => {
-        this.beforeFetch(this.searchMode === 'high' ? this.highQuery : this.query)
+        this.beforeFetch(this.query)
       }, 100)
     }
     next()
@@ -364,19 +266,9 @@ export default {
   },
   updated () {
     this.handleResize()
-    if (!this.history) {
-      this.$beforeUpdateTimer = null
-    }
-    if (this.$toFetch && (this.$store && this.$store.state && !this.$store.state.loading)) {
-      this.$toFetch = false
+    if (this.loading) {
       let node = this.$el.querySelector('.el-table__body-wrapper') || this.$el.querySelector('.scroller')
       node && (node.scrollTop = 0)
-    }
-    let position = this.$el.querySelector('.page-list-refresh-position')
-    if (position) {
-      if (position.getBoundingClientRect().top < 0) {
-        position.scrollIntoView && position.scrollIntoView()
-      }
     }
   }
 }

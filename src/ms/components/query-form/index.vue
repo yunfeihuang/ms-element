@@ -32,6 +32,7 @@
 import ElementUI from '@element-ui'
 
 export default {
+  componentName: 'MsQueryForm',
   props: {
     items: {
       type: Array,
