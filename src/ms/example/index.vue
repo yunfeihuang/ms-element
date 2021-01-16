@@ -139,7 +139,7 @@
 <script>
 import QueryForm from '@/ms/components/query-form'
 const Form = () => import('./components/Form')
-
+console.log('dsafdsa', ms)
 export default {
   components: {
     QueryForm
@@ -147,6 +147,13 @@ export default {
   mixins: [
     ms.mixins.pageList
   ],
+  props: {
+    restful: {
+      default () {
+        return ms.restful('/user')
+      }
+    }
+  },
   data () {
     return {
       formItems: [
@@ -212,7 +219,7 @@ export default {
   methods: {
     fetch (query) { // 获取数据的方法，必须要重写
       this.$axios({
-        url: '/list'
+        url: '/user'
       }).then(res => {
         this.pageData = res.data
       })
@@ -227,12 +234,12 @@ export default {
         })
       })
     },
-    handleCreate (query) {
-      ms.navigator.push(this, Form, {query})
+    handleCreate (params) {
+      ms.navigator.push(this, Form, {params, title: params ? '编辑' : '创建'})
     },
-    handleDetail (query) {
+    handleDetail (params) {
       ms.navigator.push(this, () => import('./components/Detail'), {
-        query,
+        params,
         title: '详情'
       })
     },

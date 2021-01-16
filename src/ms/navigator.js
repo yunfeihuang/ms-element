@@ -18,7 +18,7 @@ export default {
     confirmText,
     resetText,
     cancelText,
-    query,
+    params,
     header,
     footer
   }) {
@@ -51,7 +51,7 @@ export default {
             showClose
           },
           props: {
-            query
+            params
           },
           confirmText,
           resetText,

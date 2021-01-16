@@ -47,7 +47,6 @@
 </template>
 
 <script>
-console.log(ms, 'tttttttttt')
 export default {
   props: {
     target: {
@@ -111,7 +110,7 @@ export default {
           res.default.mixins.push({
             inject: ['$target'],
             props: {
-              query: {},
+              params: {},
               promiseSubmit: {
                 type: [Function]
               }

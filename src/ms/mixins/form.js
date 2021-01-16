@@ -107,7 +107,7 @@ export default {
       return res
     },
     assignFormData (data) { // 合并请示返回的数据到表单form
-      this.form.keys().forEach(item => {
+      Object.keys(this.form).forEach(item => {
         this.form[item] = data[item]
       })
     },

@@ -40,17 +40,8 @@ export default {
   methods: {
     fetch () {
       return new Promise((resolve, reject) => {
-        setTimeout(resolve(this.query), 1000)
+        setTimeout(resolve(this.params), 2000)
       })
-      /*
-      if (this.query) {
-        return this.$axios({
-          url: `/v1/account/${this.query.id}`
-        }).then(res => {
-          this.detail = res.data
-        })
-      }
-      */
     }
   }
 }

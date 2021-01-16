@@ -1,5 +1,8 @@
-import list from './list'
+import user from './user'
 
 export default [
-  ['get', '/list', list]
+  ['get', '/user', user.get],
+  ['post', '/user', user.post],
+  ['put', '/user', user.post],
+  ['delete', '/user', user.delete]
 ]

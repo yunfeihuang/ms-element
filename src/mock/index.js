@@ -5,7 +5,7 @@ import res from './res'
 export default () => {
   let mock = new adapter(axios, { delayResponse: 2000 }) // eslint-disable-line
   mock.onAny().reply(config => {
-    console.log(config)
+    console.log('mock', config)
     let result = res.find(item => {
       return config.baseURL ? config.baseURL + item[1] : item[1] === config.url && item[0].toUpperCase() === config.method.toUpperCase()
     })

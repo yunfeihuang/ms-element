@@ -83,44 +83,22 @@ export default {
     }
   },
   mounted () {
-    console.log(this.query, this.$target)
+    console.log(this.params, this.$target)
   },
   methods: {
     fetch () {
-      if (this.query) {
-        Object.assign(this.form, this.query)
-      }
       return new Promise((resolve, reject) => {
-        setTimeout(resolve, 2000)
+        setTimeout(resolve(this.params), 2000)
       })
-      /*
-      if (this.query) {
-        return this.$axios({
-          url: `/v1/account/${this.query.id}`
-        }).then(res => {
-          Object.assign(this.form, res.data)
-        })
-      }
-      */
     },
     submit () { // 表单校验通过后调用的方法，一般是请求后台接口的方法
       return new Promise((resolve, reject) => {
         setTimeout(resolve, 1000)
       })
-      /*
-      return axios({
-        url: this.query ? `/v1/account/${this.query.id}` : '/v1/account',
-        method: this.query ? 'PUT' : 'POST',
-        data: this.form,
-        options: {
-          context: this
-        }
-      })
-      */
     },
     handleDetail () {
       ms.navigator.push(this.$target, () => import('./Detail'), {
-        query: this.query
+        params: this.params
       })
     }
   }
