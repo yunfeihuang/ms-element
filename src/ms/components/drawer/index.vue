@@ -5,7 +5,7 @@
     @close="handleClose"
     @opened="handleOpened"
     @closed="handleClosed">
-    <div class="ms-drawer--layout">
+    <div class="ms-drawer--layout" v-loading="loading">
       <component v-if="slots.header" :is="slots.header"></component>
       <div class="ms-drawer--body scroller">
         <component
@@ -40,13 +40,6 @@
           @click="handleClose">
           {{cancelText}}
         </el-button>
-      </div>
-    </div>
-    <div v-if="loading" class="el-loading-mask ms-drawer--mask">
-      <div class="el-loading-spinner">
-        <svg viewBox="25 25 50 50" class="circular">
-          <circle cx="50" cy="50" r="20" fill="none" class="path"></circle>
-        </svg>
       </div>
     </div>
     <div class="ms-drawer--resize" @mousedown.prevent="handleMouseDown"/>
@@ -117,10 +110,18 @@ export default {
           }
           res.default.mixins.push({
             inject: ['$target'],
-            props: ['query']
+            props: {
+              query: {},
+              promiseSubmit: {
+                type: [Function]
+              }
+            }
           })
           this.component = res.default
-          this.loading = false
+        }).finally(res => {
+          setTimeout(() => {
+            this.loading = false
+          })
         })
       }
     },

@@ -20,7 +20,7 @@
             type="daterange"
             value-format="timestamp">
           </el-date-picker>
-          <el-button size="small" @click="handleCreate">创建</el-button>
+          <el-button size="small" @click="handleCreate()">创建</el-button>
         </query-form>
       </template>
       <template slot="search-high">

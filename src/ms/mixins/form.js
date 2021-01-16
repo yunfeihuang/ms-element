@@ -1,7 +1,6 @@
 'use strict'
 import validator from '@/utils/validator'
 import fetch from './fetch'
-import navigator from '../navigator'
 
 export default {
   mixins: [fetch],
@@ -50,7 +49,6 @@ export default {
       }
     },
     beforeSubmit () {
-      console.log('fdsafdas')
       if (!this.posting) {
         if (this.promiseSubmit) {
           let promise = this.promiseSubmit(JSON.parse(JSON.stringify(this.form)))
@@ -83,7 +81,7 @@ export default {
     },
     afterSubmit () { // 提交成功后处理
       if (this.$target) {
-        navigator.pop(this.$target)
+        window.$ms.navigator.pop(this.$target)
         this.$target.beforeFetch && this.$target.beforeFetch()
       } else {
         history.back()

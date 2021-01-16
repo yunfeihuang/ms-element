@@ -2,7 +2,7 @@ export default {
   data () {
     return {
       loading: false,
-      res: null
+      res: {}
     }
   },
   watch: {
@@ -19,12 +19,10 @@ export default {
       if (promise && promise.then) {
         this.loading = true
         return promise.then(res => {
-          this.loading = false
           this.res = this.parseResponse(res)
           return res
-        }).catch(err => {
+        }).finally(res => {
           this.loading = false
-          return err
         })
       }
     },
@@ -33,7 +31,7 @@ export default {
     },
     fetch () {
       return new Promise((resolve, reject) => {
-        setTimeout(resolve, 1000)
+        setTimeout(resolve({}), 1000)
       })
     },
     watchLoading (value) {

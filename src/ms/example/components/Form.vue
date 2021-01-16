@@ -53,14 +53,12 @@
       <el-input v-model.trim="form.desc" type="textarea" :autosize="{minRows: 2}"></el-input>
     </el-form-item>
     <el-form-item label="即时配送">
-      <el-button type="text">打开编辑弹框（同时打开多个侧边弹框）</el-button>
       <el-button @click="handleDetail" type="text">打开详情弹框（同时打开多个侧边弹框）</el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <script>
-console.log(ms, 'tttttttttt')
 export default {
   mixins: [
     ms.mixins.form
@@ -92,7 +90,6 @@ export default {
       if (this.query) {
         Object.assign(this.form, this.query)
       }
-      console.log(this.query)
       return new Promise((resolve, reject) => {
         setTimeout(resolve, 2000)
       })
@@ -107,7 +104,6 @@ export default {
       */
     },
     submit () { // 表单校验通过后调用的方法，一般是请求后台接口的方法
-      console.log('sssssssssssssss')
       return new Promise((resolve, reject) => {
         setTimeout(resolve, 1000)
       })
@@ -123,7 +119,9 @@ export default {
       */
     },
     handleDetail () {
-      ms.navigator.push(this.$target, () => import('./Detail'), {})
+      ms.navigator.push(this.$target, () => import('./Detail'), {
+        query: this.query
+      })
     }
   }
 }
