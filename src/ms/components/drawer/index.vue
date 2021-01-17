@@ -5,8 +5,8 @@
     @close="handleClose"
     @opened="handleOpened"
     @closed="handleClosed">
+    <component v-if="titleSlot" slot="title" :is="titleSlot"></component>
     <div class="ms-drawer--layout" v-loading="loading">
-      <component v-if="slots.header" :is="slots.header"></component>
       <div class="ms-drawer--body scroller">
         <component
           ref="component"
@@ -17,8 +17,8 @@
           @posting="handlePosting"
         />
       </div>
-      <div class="ms-drawer--footer" v-if="slots.footer">
-        <component  :is="slots.footer"></component>
+      <div class="ms-drawer--footer" v-if="footerSlot">
+        <component :is="footerSlot"></component>
       </div>
       <div class="ms-drawer--footer" v-else-if="isFormComponent">
         <el-button
@@ -74,11 +74,12 @@ export default {
       type: String,
       default: '取消'
     },
-    slots: {}
+    titleSlot: {},
+    footerSlot: {}
   },
   provide () {
     return {
-      '$target': this.target
+      $drawer: this
     }
   },
   watch: {
@@ -108,7 +109,7 @@ export default {
       this.loading = value
     },
     loadComponent () {
-      if (this.importComponent) {
+      if (this.importComponent && this.importComponent instanceof Promise) {
         this.loading = true
         this.loadingDone = () => {
           this.loading = false
@@ -118,7 +119,7 @@ export default {
             res.default.mixins = []
           }
           res.default.mixins.push({
-            inject: ['$target'],
+            inject: ['$drawer'],
             props: {
               params: {},
               done: {
@@ -135,6 +136,9 @@ export default {
             this.loadingDone && this.loadingDone()
           }, 100)
         })
+      } else {
+        this.component = this.importComponent
+        this.loading = false
       }
     },
     handleSubmit () {

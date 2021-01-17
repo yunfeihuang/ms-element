@@ -35,7 +35,7 @@ export default {
       })
     },
     watchLoading (value) {
-      if (this.$target) {
+      if (this.$drawer) {
         this.$emit('loading', value)
       } else {
         if (value) {

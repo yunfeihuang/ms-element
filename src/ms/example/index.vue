@@ -71,7 +71,7 @@
             <el-button type="text" @click="handleCreate(scope.row)">编辑</el-button>
             <el-button type="text" @click="handleDetail(scope.row)">详情</el-button>
             <el-button type="text" @click="handleList">列表弹框</el-button>
-            <el-button type="text" @click="pushOpen('coustom',scope.row)">自定义弹框</el-button>
+            <el-button type="text" @click="handleCustom(scope.row)">自定义弹框</el-button>
             <el-button type="text" @click="handleOpen">iframe弹框</el-button>
             <el-button type="text" @click="$router.push({path: '/example/detail', query: scope.row})">页面式详情</el-button>
             <el-button type="text" @click="handleDelete">删除</el-button>
@@ -179,6 +179,60 @@ export default {
         title: '详情'
       })
     },
+    handleCustom (params) {
+      ms.navigator.push(this, {
+        mixins: [
+          ms.mixins.form
+        ],
+        data () {
+          return {
+            form: {
+              pass: true,
+              value: ''
+            }
+          }
+        },
+        metbods: {
+          fetch () {
+            return new Promise((resolve, reject) => {
+              setTimeout(resolve(this.params), 2000)
+            })
+          },
+          submit () { // 表单校验通过后调用的方法，一般是请求后台接口的方法
+            return new Promise((resolve, reject) => {
+              setTimeout(resolve, 1000)
+            })
+          },
+        },
+        template: `
+          <el-form v-bind="getFormProps()" @submit.native.prevent="handleSubmit">
+            <el-form-item label="是否通过">
+              <el-switch v-model="form.pass"/>
+            </el-form-item>
+            <el-form-item label="拒绝理由" prop="value" :rules="form.pass ? [] : [{required: true, message: '请输入拒绝理由'}]">
+              <el-input v-model="form.value" type="textarea"/>
+            </el-form-item>
+          </el-form>
+        `
+      }, {
+        params,
+        title: '详情',
+        titleSlot: {
+          template: '<div>custom title</div>'
+        },
+        footerSlot: {
+          inject: [
+            '$drawer'
+          ],
+          template: `
+            <div>
+              <el-button size="small" type="primary" @click="$drawer.handleSubmit">通过</el-button>
+              <el-button size="small" type="danger">拒绝</el-button>
+            </div>
+          `
+        },
+      })
+    },
     handleList () {
       ms.navigator.push(this, () => import('./components/List'), {
         title: '列表',
@@ -193,7 +247,6 @@ export default {
       ms.navigator.open(this, this.$route.fullPath, {
         title: '弹窗列表'
       })
-      // this.$open('弹窗表单', import('./components/Detail'))
     },
     handleExport (type, event) {
       this.$confirm('确认执行此批量操作？', '提示', {

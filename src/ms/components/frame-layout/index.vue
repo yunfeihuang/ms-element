@@ -6,8 +6,7 @@
         v-if="$slots['logo'] || $scopedSlots['logo']"
         title="收起/展开左侧菜单"
         class="ms-frame-layout--logo"
-        :style="logoStyle"
-        @click="isCollapse=!isCollapse">
+        :style="logoStyle">
         <slot name="logo" v-bind="{isCollapse:isCollapse}"></slot>
       </div>
       <div class="ms-frame-layout--aside-inner scroller">
@@ -563,7 +562,7 @@ export default {
     .ms-frame-layout--aside,.ms-frame-layout--header{
       display:none;
     }
-    .e-page-list-layout{
+    .ms-page-list-layout{
       border:0;
     }
   }

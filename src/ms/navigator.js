@@ -21,8 +21,8 @@ export default {
     promiseSubmit,
     done,
     params,
-    header,
-    footer
+    titleSlot,
+    footerSlot
   }) {
     let el = document.createElement('div')
     context.$el.appendChild(el)
@@ -73,10 +73,8 @@ export default {
           confirmText,
           resetText,
           cancelText,
-          slots: {
-            header,
-            footer
-          }
+          titleSlot,
+          footerSlot
         },
         on: {
           closed: function () {
