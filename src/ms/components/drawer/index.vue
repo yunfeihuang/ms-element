@@ -112,8 +112,11 @@ export default {
             inject: ['$target'],
             props: {
               params: {},
+              done: {
+                type: Function
+              },
               promiseSubmit: {
-                type: [Function]
+                type: Function
               }
             }
           })

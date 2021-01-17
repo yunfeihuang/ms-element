@@ -18,6 +18,8 @@ export default {
     confirmText,
     resetText,
     cancelText,
+    promiseSubmit,
+    done,
     params,
     header,
     footer
@@ -31,6 +33,15 @@ export default {
       }
     }
     customClass && classnames.push(customClass)
+    if (!done) {
+      if (context.query && context.pageData && context.getTableProps) {
+        done = () => {
+          this.pop(context)
+          context.beforeFetch && context.beforeFetch()
+        }
+      }
+    }
+
     const vue = new window.Vue({ // eslint-disable-line
       el,
       render: h => h(Drawer, {
@@ -51,7 +62,9 @@ export default {
             showClose
           },
           props: {
-            params
+            params,
+            promiseSubmit,
+            done
           },
           confirmText,
           resetText,

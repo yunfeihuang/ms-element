@@ -183,7 +183,7 @@ export default {
       ms.navigator.push(this, () => import('./components/List'), {
         title: '列表',
         direction: 'ttb',
-        size: '80%',
+        size: '100vh',
         params: {
           keyword: '黄运飞'
         }

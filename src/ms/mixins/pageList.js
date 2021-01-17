@@ -1,6 +1,11 @@
 import fetch from './fetch'
 export default {
   mixins: [fetch],
+  provide () {
+    return {
+      'pageList': this
+    }
+  },
   props: {
     history: { // 列表分页是否产生历史记录
       type: Boolean,

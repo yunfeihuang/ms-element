@@ -80,9 +80,8 @@ export default {
       }
     },
     afterSubmit () { // 提交成功后处理
-      if (this.$target) {
-        window.$ms.navigator.pop(this.$target)
-        this.$target.beforeFetch && this.$target.beforeFetch()
+      if (this.done) {
+        this.done()
       } else {
         history.back()
       }
