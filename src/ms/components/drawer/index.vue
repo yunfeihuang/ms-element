@@ -263,6 +263,7 @@ export default {
         margin-bottom:15px;
         padding:15px;
         padding-bottom:0;
+        line-height:1;
         >span{
           font-size:1.2rem;
         }

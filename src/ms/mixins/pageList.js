@@ -11,7 +11,7 @@ export default {
       type: Boolean
     },
     params: {
-      type: [Object]
+      type: Object
     }
   },
   computed: {
@@ -97,6 +97,13 @@ export default {
       this.$nextTick(() => {
         let node = this.$el.querySelector('.ms-page-list-layout--table')
         node && (this.tableBodyHeight = node.offsetHeight + '')
+        if (process.browser && document.ontouchstart !== undefined) {
+          let el = this.$el.querySelector('.ms-page-list-layout')
+          if (el) {
+            el.style.minHeight = "100%"
+            el.style.height = 'auto'
+          }
+        }
       })
     },
     initial () { // 初始化
@@ -129,10 +136,10 @@ export default {
         let rows = query.rows ? Number(query.rows) : 20
         let page = query.page ? Number(query.page) : 1
         let layout = 'total, prev, pager, next, sizes, jumper'
-        let pagerCount = 7
-        if (process.browser && this.$store && this.$store.state && this.$store.state.isMobile) {
-          layout = 'total, pager, sizes, jumper'
-          pagerCount = 5
+        let pagerCount = 6
+        if (process.browser && document.ontouchstart !== undefined) {
+          layout = 'total, prev, pager, next, sizes'
+          pagerCount = 3
         }
         this.$paginationProps = {
           pagerCount,
@@ -157,7 +164,7 @@ export default {
       return Object.assign({
         ref: 'table',
         class: 'table-primary',
-        height: this.tableBodyHeight,
+        height: document.ontouchstart !== undefined ? undefined : this.tableBodyHeight,
         size: 'small'
       }, props)
     },

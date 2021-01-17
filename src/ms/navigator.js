@@ -44,6 +44,9 @@ export default {
 
     const vue = new window.Vue({ // eslint-disable-line
       el,
+      parent: context,
+      router: context.$router,
+      store: context.$store,
       render: h => h(Drawer, {
         props: {
           target: context,
@@ -106,5 +109,55 @@ export default {
     if (array.length) {
       array[array.length - 1].$refs.drawer.handleClose()
     }
+  },
+  open: function (context, to, props) {
+    let src = `${context.$router.mode === 'history' ? '' : window.location.pathname}${context.$router.resolve(to).href}`
+    let node = document.createElement('div')
+    document.body.appendChild(node)
+    let _props = {
+      top: '5vh',
+      width: '90%',
+      destroyOnClose: true,
+      closeOnClickModal: false,
+      ...props
+    }
+    new Vue({ // eslint-disable-line
+      el: node,
+      parent: context,
+      router: context.$router,
+      store: context.$store,
+      data () {
+        return {
+          visible: false,
+          loading: false
+        }
+      },
+      mounted () {
+        this.visible = true
+      },
+      render (createElement) {
+        return (
+          <el-dialog
+            custom-class="e-dialog-iframe"
+            visible={this.visible}
+            {...{ attrs: _props }}
+            onOpened={this.handleOpened}
+            onClose={this.handleClose}>
+            <iframe src={src} frameborder="0" onLoad={this.handleLoad}></iframe>
+          </el-dialog>
+        )
+      },
+      methods: {
+        handleClose () {
+          this.visible = false
+        },
+        handleOpened () {
+          this.loading = true
+        },
+        handleLoad () {
+          this.loading = false
+        }
+      }
+    })
   }
 }

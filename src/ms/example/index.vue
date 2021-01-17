@@ -190,7 +190,9 @@ export default {
       })
     },
     handleOpen (row) {
-      this.$open('弹窗列表', this.$route.fullPath)
+      ms.navigator.open(this, this.$route.fullPath, {
+        title: '弹窗列表'
+      })
       // this.$open('弹窗表单', import('./components/Detail'))
     },
     handleExport (type, event) {
