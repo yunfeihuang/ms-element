@@ -14,7 +14,7 @@
           v-bind="props"
           @hook:mounted="handleMounted"
           @loading="handleLoading"
-          @posting="handleLoading"
+          @posting="handlePosting"
         />
       </div>
       <div class="ms-drawer--footer" v-if="slots.footer">
@@ -99,11 +99,20 @@ export default {
   },
   methods: {
     handleLoading (value) {
+      if (value) {
+        this.loadingDone = null
+      }
+      this.loading = value
+    },
+    handlePosting (value) {
       this.loading = value
     },
     loadComponent () {
       if (this.importComponent) {
         this.loading = true
+        this.loadingDone = () => {
+          this.loading = false
+        }
         this.importComponent().then(res => {
           if (!res.default.mixins) {
             res.default.mixins = []
@@ -123,8 +132,8 @@ export default {
           this.component = res.default
         }).finally(res => {
           setTimeout(() => {
-            this.loading = false
-          })
+            this.loadingDone && this.loadingDone()
+          }, 100)
         })
       }
     },
@@ -214,11 +223,12 @@ export default {
       flex:auto;
       padding: 0 15px;
       position: relative;
-      .e-page-list-layout{
+      .ms-page-list-layout{
         margin:0;
         border:0;
         &--table{
           padding:0;
+          width:calc(100% - 30px);
         }
         .form-search{
           margin-left:0;

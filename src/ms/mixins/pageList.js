@@ -8,11 +8,15 @@ export default {
   },
   props: {
     history: { // 列表分页是否产生历史记录
-      type: Boolean,
-      default: true
+      type: Boolean
     },
     params: {
       type: [Object]
+    }
+  },
+  computed: {
+    isHistory () {
+      return this.$parent._routerViewCache !== undefined ? true : this.history
     }
   },
   data () {
@@ -185,7 +189,7 @@ export default {
       this.updateRoute && this.updateRoute(query)
     },
     updateRoute (query) { // 更新URL地址
-      if (this.history) {
+      if (this.isHistory) {
         let _query = {...query}
         /*
         for (let name in _query) { // 清除 值为null|undefined

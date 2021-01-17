@@ -51,6 +51,7 @@ export default {
           drawer: {
             title,
             direction,
+            size,
             destroyOnClose,
             customClass: classnames.join(' '),
             modal,

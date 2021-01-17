@@ -57,7 +57,7 @@ export default {
   flex-direction: column;
   position:absolute;
   width:100%;
-  min-height:100%;
+  height:100%;
   box-sizing:border-box;
   background: $--color-white;
   background-clip: content-box;

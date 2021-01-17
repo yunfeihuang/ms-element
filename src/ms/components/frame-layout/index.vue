@@ -263,7 +263,7 @@ export default {
       flex-direction:column;
       width:$frame-layout--aside-width;
       transition: width 0.3s ease 0s;
-      box-shadow:0 $frame-layout--header-height 3px rgba(0, 0, 0, 0.15);
+      box-shadow:0 0 3px rgba(0, 0, 0, 0.15);
       position:relative;
       z-index:10;
       &.is-collapse{
@@ -289,6 +289,8 @@ export default {
       position:relative;
       z-index:10;
       min-height:$frame-layout--header-height;
+      margin-left:1px;
+      background:#fff;
       .el-dropdown{
         color:inherit;
       }
