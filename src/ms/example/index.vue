@@ -202,7 +202,7 @@ export default {
             return new Promise((resolve, reject) => {
               setTimeout(resolve, 1000)
             })
-          },
+          }
         },
         template: `
           <el-form v-bind="getFormProps()" @submit.native.prevent="handleSubmit">
@@ -230,7 +230,7 @@ export default {
               <el-button size="small" type="danger">拒绝</el-button>
             </div>
           `
-        },
+        }
       })
     },
     handleList () {

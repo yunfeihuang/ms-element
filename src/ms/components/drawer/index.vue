@@ -109,12 +109,15 @@ export default {
       this.loading = value
     },
     loadComponent () {
-      if (this.importComponent && this.importComponent instanceof Promise) {
-        this.loading = true
-        this.loadingDone = () => {
-          this.loading = false
+      if (this.importComponent && this.importComponent instanceof Function) {
+        let promise = this.importComponent()
+        if (promise) {
+          this.loading = true
+          this.loadingDone = () => {
+            this.loading = false
+          }
         }
-        this.importComponent().then(res => {
+        promise.then(res => {
           if (!res.default.mixins) {
             res.default.mixins = []
           }

@@ -100,7 +100,7 @@ export default {
         if (process.browser && document.ontouchstart !== undefined) {
           let el = this.$el.querySelector('.ms-page-list-layout')
           if (el) {
-            el.style.minHeight = "100%"
+            el.style.minHeight = '100%'
             el.style.height = 'auto'
           }
         }
@@ -165,7 +165,8 @@ export default {
         ref: 'table',
         class: 'table-primary',
         height: document.ontouchstart !== undefined ? undefined : this.tableBodyHeight,
-        size: 'small'
+        size: 'small',
+        data: this.pageData.data
       }, props)
     },
     getTableListeners () {

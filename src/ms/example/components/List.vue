@@ -13,8 +13,7 @@
       <!--v-bind="getTableProps()"是必须的-->
       <el-table slot="table"
         v-bind="getTableProps()"
-        v-on="getTableListeners()"
-        :data="pageData.data">
+        v-on="getTableListeners()">
         <el-table-column
           type="selection"
           width="58">
