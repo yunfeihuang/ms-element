@@ -136,7 +136,7 @@ export default {
         let rows = query.rows ? Number(query.rows) : 20
         let page = query.page ? Number(query.page) : 1
         let layout = 'total, prev, pager, next, sizes, jumper'
-        let pagerCount = 6
+        let pagerCount = 7
         if (process.browser && document.ontouchstart !== undefined) {
           layout = 'total, prev, pager, next, sizes'
           pagerCount = 3
@@ -150,6 +150,7 @@ export default {
           total: data.total,
           pageSizes: [10, 15, 20, 30, 40, 50, 100]
         }
+        console.log('this.$paginationProps', this.$paginationProps)
         return this.$paginationProps
       } else {
         return {
