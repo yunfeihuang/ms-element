@@ -71,9 +71,9 @@
           </template>
           <slot v-else name="header"></slot>
         </el-row>
-        <div class="ms-frame-layout--tabs" v-if="tabs.length">
-          <el-tabs v-model="tab.path" @tab-click="handleTab" editable @edit="handleTabsEdit">
-            <el-tab-pane v-for="(item,index) in tabs" :label="item.meta.title" :name="item.path" :key="index"></el-tab-pane>
+        <div class="ms-frame-layout--tabs" v-if="pages.length">
+          <el-tabs v-model="active" @tab-click="handleTab" editable @edit="handleTabsEdit">
+            <el-tab-pane v-for="(item,index) in pages" :label="item.route.meta.title" :name="item.route.path.replaceAll('/', '__')" :key="index"></el-tab-pane>
           </el-tabs>
         </div>
       </div>
@@ -122,30 +122,49 @@ export default {
   watch: {
     $route (value) {
       console.log(value, this.$router)
-      let tabs = [...this.tabs]
+      let pages = [...this.pages]
       if (value.matched && value.matched.length) {
-        if (tabs.every(item => item.path !== value.path)) {
-          tabs.push(value)
-          this.tabs = tabs
-          this.tab = value
+        if (pages.every(item => item.route.path !== value.path)) {
           let el = document.createElement('div')
           this.$el.querySelector('.ms-frame-layout--body').appendChild(el)
-          new window.Vue({ // eslint-disable-line
+          var $vm = new window.Vue({ // eslint-disable-line
             el,
-            router: new window.Router({routes: this.$router.options.routes.filter(item => item.meta.group === value.meta.group)}),
-            store: window.store,
-            template: '<router-view></router-view>'
+            router: new window.Router({routes: this.$router.options.routes.filter(item => item.path === value.path)}),
+            store: this.$store,
+            template: '<router-view v-show="show"></router-view>',
+            mounted () {
+              this.$emit('ready')
+            },
+            watch: {
+              show (value) {
+                this.$emit(value ? 'show' : 'hidden')
+              }
+            },
+            data () {
+              return {
+                show: true
+              }
+            },
+            destroyed () {
+              this.$el.parentNode.removeChild(this.$el)
+            }
           })
+          pages.push({
+            vm: $vm,
+            route: value
+          })
+          this.pages = pages
+          this.pageVisibleChange(value.path)
         } else {
-          this.tab = this.tabs.find(item => item.path === value.path)
+          this.pageVisibleChange(value.path)
         }
       }
     }
   },
   data () {
     return {
-      tabs: [],
-      tab: 'frist',
+      pages: [],
+      active: null,
       isCollapse: document.ontouchstart !== undefined
     }
   },
@@ -205,30 +224,49 @@ export default {
     }
   },
   methods: {
+    pageVisibleChange (path) {
+      if (path) {
+        this.active = path.replaceAll('/', '__')
+      }
+      this.pages.forEach(item => {
+        let is = item.route.path === path
+        if (item.vm) {
+          item.vm.show = is
+        }
+        if (is) {
+          item.route = this.$route
+        }
+      })
+    },
+    pageRemove (path) {
+      let index = 0
+      let vm = null
+      let active = null
+      let pages = this.pages.filter((item, i) => {
+        if (item.route.path === path) {
+          vm = item.vm
+          index = i
+          return false
+        } else {
+          return true
+        }
+      })
+      if (pages[index]) {
+        active = pages[index].route.path
+      } else if (pages[pages.length - 1]) {
+        active = pages[pages.length - 1].route.path
+      }
+      this.pages = pages
+      this.pageVisibleChange(active)
+      vm && vm.$destroy && vm.$destroy()
+    },
     handleTab (tab, event) {
-      console.log(tab, event)
-      this.tab = this.tabs.find(item => item.path === tab.name)
+      this.pageVisibleChange(tab.name.replaceAll('__', '/'))
     },
     handleTabsEdit (targetName, action) {
       console.log(targetName, action)
       if (action === 'remove') {
-        let index = 0
-        let _item = this.tabs.find((item, i) => {
-          if (item.path === targetName) {
-            index = i
-            return true
-          }
-          return false
-        })
-        let tabs = this.tabs.filter(item => item !== _item)
-        if (tabs[index]) {
-          this.tab = tabs[index]
-        } else if (tabs[tabs.length - 1]) {
-          this.tab = tabs[tabs.length - 1]
-        } else {
-          this.tab = null
-        }
-        this.tabs = tabs
+        this.pageRemove(targetName.replaceAll('__', '/'))
       }
     }
   }

@@ -52,9 +52,11 @@ export default {
   mounted () {
     this.handleResize()
     window.addEventListener('resize', this.handleResize, false)
+    this.$root.$on('show', this.handleResize)
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.handleResize)
+    this.$root.$off('show', this.handleResize)
   },
   methods: {
     triggerFetch (query) {
