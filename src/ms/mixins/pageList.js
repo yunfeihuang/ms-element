@@ -57,6 +57,12 @@ export default {
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {
+    triggerFetch (query) {
+      this.$fetchTimer && clearTimeout(this.$fetchTimer)
+      this.$fetchTimer = setTimeout(() => {
+        this.beforeFetch(query)
+      })
+    },
     handleTab () {
       let query = Object.assign(this.query, {page: 1})
       this.$router.replace({
@@ -108,9 +114,6 @@ export default {
     },
     initial () { // 初始化
       this.$paginationProps = {} // 分页props
-      this.$nextTick(() => {
-        this.beforeFetch(this.query) // 第二个表示是初始时调用
-      })
     },
     getQuery (query) { // 获取请求参数
       if (this.params) {
@@ -150,7 +153,6 @@ export default {
           total: data.total,
           pageSizes: [10, 15, 20, 30, 40, 50, 100]
         }
-        console.log('this.$paginationProps', this.$paginationProps)
         return this.$paginationProps
       } else {
         return {
@@ -177,23 +179,12 @@ export default {
       }
     },
     handleCurrentChange (value) { // 修改页数事件
-      if (value != this.query.page && !this.$sizeChangeTimer) { //eslint-disable-line
+      if (value != this.query.page) { //eslint-disable-line
         let query = Object.assign({}, this.query, {page: value})
         this.updateRoute && this.updateRoute(query)
-        let node = this.$el.querySelector('.el-pagination')
-        if (node) { // 阻止频繁点击
-          node.style.pointerEvents = 'none'
-          setTimeout(() => {
-            node.style.pointerEvents = ''
-          }, 1000)
-        }
       }
     },
     handleSizeChange (value) { // 修改分页条数事件
-      this.$sizeChangeTimer = true // 避免页数修改后当前页Change事件重复触发
-      setTimeout(() => {
-        this.$sizeChangeTimer = false
-      }, 500)
       let query = Object.assign({}, this.query, {page: 1, rows: value})
       this.updateRoute && this.updateRoute(query)
     },
@@ -210,7 +201,7 @@ export default {
         this.$router.push({path: this.$route.path, query: _query})
       } else {
         this.query = query
-        this.beforeFetch(this.query)
+        this.triggerFetch(this.query)
       }
     },
     handleSubmit () { // 表单提交事件
@@ -229,7 +220,7 @@ export default {
     },
     handleReset () {
       this.query = Object.assign({page: 1, rows: 20}, this.$initQuery)
-      this.beforeFetch(this.query)
+      this.triggerFetch(this.query)
       // this.$refs.query && this.$refs.query.resetFields && this.$refs.query.resetFields()
     },
     handleSortChange (...args) {
@@ -272,10 +263,7 @@ export default {
   beforeRouteUpdate (to, from, next) { // 监听route地址变化
     if (to.path === from.path) {
       this.query = Object.assign({}, this.$initQuery, to.query, {page: to.query.page || 1, rows: to.query.rows || 20})
-      this.$routeUpdateTimer && clearTimeout(this.$routeUpdateTimer)
-      this.$routeUpdateTimer = setTimeout(() => {
-        this.beforeFetch(this.query)
-      }, 100)
+      this.triggerFetch(this.query)
     }
     next()
   },
