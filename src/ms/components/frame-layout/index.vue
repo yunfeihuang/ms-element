@@ -121,49 +121,14 @@ export default {
   },
   watch: {
     $route (value) {
-      console.log(value, this.$router)
-      let pages = [...this.pages]
-      if (value.matched && value.matched.length) {
-        if (pages.every(item => item.route.path !== value.path)) {
-          let el = document.createElement('div')
-          this.$el.querySelector('.ms-frame-layout--body').appendChild(el)
-          var $vm = new window.Vue({ // eslint-disable-line
-            el,
-            router: new window.Router({routes: this.$router.options.routes.filter(item => item.path === value.path)}),
-            store: this.$store,
-            template: '<router-view v-show="show"></router-view>',
-            mounted () {
-              this.$emit('ready')
-            },
-            watch: {
-              show (value) {
-                this.$emit(value ? 'show' : 'hidden')
-              }
-            },
-            data () {
-              return {
-                show: true
-              }
-            },
-            destroyed () {
-              this.$el.parentNode.removeChild(this.$el)
-            }
-          })
-          pages.push({
-            vm: $vm,
-            route: value
-          })
-          this.pages = pages
-          this.pageVisibleChange(value.path)
-        } else {
-          this.pageVisibleChange(value.path)
-        }
-      }
+      console.log('value', value)
+      this.pageChange(value)
     }
   },
   data () {
     return {
       pages: [],
+      currentPage: null,
       active: null,
       isCollapse: document.ontouchstart !== undefined
     }
@@ -224,6 +189,59 @@ export default {
     }
   },
   methods: {
+    pageChange (value) {
+      let pages = [...this.pages]
+      if (value.matched && value.matched.length) {
+        if (pages.every(item => item.route.path !== value.path)) {
+          let el = document.createElement('div')
+          this.$el.querySelector('.ms-frame-layout--body').appendChild(el)
+          let router = new window.Router({
+            routes: this.$router.options.routes.filter(item => item.path === value.path)
+          })
+          router.beforeEach((to, from, next) => {
+            console.log(to, from)
+            if (to.path === from.path) {
+              pages.forEach(item => {
+                if (item.vm && item.vm.show) {
+                  item.route = to
+                }
+              })
+            }
+            next()
+          })
+          var $vm = new window.Vue({ // eslint-disable-line
+            el,
+            router: router,
+            store: this.$store,
+            template: '<router-view v-show="show"></router-view>',
+            mounted () {
+              this.$emit('ready')
+            },
+            watch: {
+              show (value) {
+                this.$emit(value ? 'show' : 'hidden')
+              }
+            },
+            data () {
+              return {
+                show: true
+              }
+            },
+            destroyed () {
+              this.$el.parentNode.removeChild(this.$el)
+            }
+          })
+          pages.push({
+            vm: $vm,
+            route: value
+          })
+          this.pages = pages
+          this.pageVisibleChange(value.path)
+        } else {
+          this.pageVisibleChange(value.path)
+        }
+      }
+    },
     pageVisibleChange (path) {
       if (path) {
         this.active = path.replaceAll('/', '__')
@@ -232,9 +250,6 @@ export default {
         let is = item.route.path === path
         if (item.vm) {
           item.vm.show = is
-        }
-        if (is) {
-          item.route = this.$route
         }
       })
     },
@@ -257,11 +272,16 @@ export default {
         active = pages[pages.length - 1].route.path
       }
       this.pages = pages
-      this.pageVisibleChange(active)
+      // this.pageVisibleChange(active)
       vm && vm.$destroy && vm.$destroy()
     },
     handleTab (tab, event) {
-      this.pageVisibleChange(tab.name.replaceAll('__', '/'))
+      this.pages.forEach(item => {
+        if (item.route.path === tab.name.replaceAll('__', '/')) {
+          console.log('item.route', item.route)
+          this.$router.push(item.route)
+        }
+      })
     },
     handleTabsEdit (targetName, action) {
       console.log(targetName, action)
