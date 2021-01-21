@@ -11,7 +11,8 @@ export default {
     modal,
     closeOnPressEscape,
     beforeClose,
-    appendToBody,
+    appendToBody = true,
+    modalAppendToBody = true,
     wrapperClosable = false,
     withHeader,
     showClose,
@@ -61,6 +62,7 @@ export default {
             closeOnPressEscape,
             beforeClose,
             appendToBody,
+            modalAppendToBody,
             wrapperClosable,
             withHeader,
             showClose

@@ -5,8 +5,7 @@
       <div
         v-if="$slots['logo'] || $scopedSlots['logo']"
         title="收起/展开左侧菜单"
-        class="ms-frame-layout--logo"
-        :style="logoStyle">
+        class="ms-frame-layout--logo">
         <slot name="logo" v-bind="{isCollapse:isCollapse}"></slot>
       </div>
       <div class="ms-frame-layout--aside-inner scroller">
@@ -72,8 +71,8 @@
           <slot v-else name="header"></slot>
         </el-row>
         <div class="ms-frame-layout--tabs" v-if="pages.length">
-          <el-tabs v-model="active" @tab-click="handleTab" editable @edit="handleTabsEdit">
-            <el-tab-pane v-for="(item,index) in pages" :label="item.route.meta.title" :name="item.route.path.replaceAll('/', '__')" :key="index"></el-tab-pane>
+          <el-tabs :value="active" @tab-click="handleTab" editable @edit="handleTabsEdit">
+            <el-tab-pane v-for="(item,index) in pages" :label="item.route.meta.title" :name="item.resolvePath" :key="index"></el-tab-pane>
           </el-tabs>
         </div>
       </div>
@@ -121,19 +120,25 @@ export default {
   },
   watch: {
     $route (value) {
-      console.log('value', value)
       this.pageChange(value)
     }
   },
   data () {
     return {
       pages: [],
-      currentPage: null,
-      active: null,
       isCollapse: document.ontouchstart !== undefined
     }
   },
   computed: {
+    active () {
+      if (this.pages.length) {
+        let item = this.pages.find(item => item && item.vm && item.vm.show)
+        if (item) {
+          return item.resolvePath
+        }
+      }
+      return null
+    },
     _menus () {
       return this.menus.map(item => {
         if (item.route) {
@@ -161,12 +166,6 @@ export default {
         }
       }
       return result
-    },
-    logoStyle () {
-      if (this.theme === 'dark-header') {
-        return this.headerStyle
-      }
-      return {}
     },
     asideStyle () {
       return {
@@ -199,7 +198,6 @@ export default {
             routes: this.$router.options.routes.filter(item => item.path === value.path)
           })
           router.beforeEach((to, from, next) => {
-            console.log(to, from)
             if (to.path === from.path) {
               pages.forEach(item => {
                 if (item.vm && item.vm.show) {
@@ -213,7 +211,7 @@ export default {
             el,
             router: router,
             store: this.$store,
-            template: '<router-view v-show="show"></router-view>',
+            template: `<router-view class="page-router-view" :class="{'is-active': show}"></router-view>`,
             mounted () {
               this.$emit('ready')
             },
@@ -231,34 +229,50 @@ export default {
               this.$el.parentNode.removeChild(this.$el)
             }
           })
-          pages.push({
-            vm: $vm,
-            route: value
+          let index = 0
+          let currentPage = pages.find((item, i) => {
+            if (item.vm.show) {
+              index = i
+            }
+            return item.vm.show
           })
-          this.pages = pages
-          this.pageVisibleChange(value.path)
+          let addPage = {
+            vm: $vm,
+            route: value,
+            resolvePath: value.path.replaceAll('/', '__')
+          }
+          if (currentPage) {
+            currentPage.vm.show = false
+            if (pages.length > 1) {
+              pages[index] = [currentPage, addPage]
+              this.pages = pages.flat()
+            } else {
+              pages.push(addPage)
+              this.pages = pages
+            }
+          } else {
+            this.pages = [addPage]
+          }
         } else {
           this.pageVisibleChange(value.path)
         }
       }
     },
     pageVisibleChange (path) {
-      if (path) {
-        this.active = path.replaceAll('/', '__')
-      }
       this.pages.forEach(item => {
         let is = item.route.path === path
         if (item.vm) {
           item.vm.show = is
         }
       })
+      console.log('this.pages', this.pages)
     },
     pageRemove (path) {
       let index = 0
       let vm = null
       let active = null
       let pages = this.pages.filter((item, i) => {
-        if (item.route.path === path) {
+        if (item.resolvePath === path) {
           vm = item.vm
           index = i
           return false
@@ -272,21 +286,19 @@ export default {
         active = pages[pages.length - 1].route.path
       }
       this.pages = pages
-      // this.pageVisibleChange(active)
+      this.pageVisibleChange(active)
       vm && vm.$destroy && vm.$destroy()
     },
     handleTab (tab, event) {
       this.pages.forEach(item => {
-        if (item.route.path === tab.name.replaceAll('__', '/')) {
-          console.log('item.route', item.route)
+        if (item.resolvePath === tab.name) {
           this.$router.push(item.route)
         }
       })
     },
     handleTabsEdit (targetName, action) {
-      console.log(targetName, action)
       if (action === 'remove') {
-        this.pageRemove(targetName.replaceAll('__', '/'))
+        this.pageRemove(targetName)
       }
     }
   }
@@ -402,71 +414,11 @@ export default {
       vertical-align:middle;
       padding-left:10px;
     }
-    &--nav{
-      &-item{
-        display:inline-block;
-        position:relative;
-        &.is-popup:hover{
-          .ms-frame-layout--nav-menu{
-            &-popup{
-              display:block;
-            }
-            &-trigger{
-              border-color:#ddd;
-              border-bottom-color:$--color-white;
-              z-index:11;
-              background:$--color-white;
-            }
-          }
-        }
-        &:hover{
-          color:$--color-primary;
-        }
-      }
-      &-trigger{
-        display:inline-block;
-        padding:0 10px;
-        cursor:pointer;
-        border-left: 1px solid transparent;
-        border-right: 1px solid transparent;
-        border-bottom: 1px solid transparent;
-        position:relative;
-        i{
-          margin-right:4px;
-          vertical-align: middle;
-        }
-        .el-badge__content{
-          margin-top:10px;
-        }
-      }
-      &-popup{
-        display:none;
-        position:absolute;
-        background:#fff;
-        border:1px solid rgba(0,0,0,0.1);
-        width:300px;
-        height:400px;
-        top:100%;
-        right:0;
-        z-index: 10;
-        box-shadow:0 3px 8px rgba(0,0,0,0.1);
-      }
-    }
     &--body{
       position:relative;
       flex: 1;
       min-width: 0;
       background:$--background-color-base;
-    }
-    &--breadcrumb{
-      display:inline-block;
-      vertical-align:middle;
-      .el-breadcrumb{
-        &__inner{
-          color:inherit!important;
-          font-weight:normal;
-        }
-      }
     }
     &--menus{
       width:100%;
@@ -548,70 +500,6 @@ export default {
         }
       }
     }
-    &--theme{
-      &-dark{
-        .ms-frame-layout{
-          &--logo{
-            i{
-              color:inherit;
-            }
-          }
-          &--aside{
-            .el-submenu{
-              &__title{
-                &:hover{
-                  background:rgba(255,255,255,0.15)!important;
-                }
-                i{
-                  color:inherit;
-                }
-              }
-            }
-            .el-menu-item{
-              &:hover{
-                background:rgba(255,255,255,0.15)!important;
-              }
-              &.is-active{
-                background:rgba(255,255,255,0.45)!important;
-              }
-            }
-          }
-          &--nav{
-            &-item{
-              &:hover{
-                color:#fff;
-              }
-            }
-          }
-          &--body{
-            position:relative;
-            z-index:10;
-            border-top-left-radius:3px;
-          }
-        }
-        &-header{
-          .ms-frame-layout{
-            &--logo{
-              i{
-                color:inherit;
-              }
-            }
-            &--nav{
-              &-item{
-                &:hover{
-                  color:#fff;
-                }
-              }
-            }
-            &--body{
-              position:relative;
-              z-index:10;
-              border-top-left-radius:3px;
-            }
-          }
-        }
-      }
-    }
     &--menu-icon{
       display:inline-block;
     }
@@ -622,6 +510,21 @@ export default {
     }
     .ms-page-list-layout{
       border:0;
+    }
+  }
+  .page-router-view{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+    overflow:hidden;
+    box-sizing: border-box;
+    &.is-active{
+      visibility: visible;
+      z-index: 1;
+      overflow:visible;
     }
   }
 </style>
