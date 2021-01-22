@@ -70,7 +70,7 @@
           </template>
           <slot v-else name="header"></slot>
         </el-row>
-        <div class="ms-frame-layout--tabs" v-if="apps.length" :key="apps.length">
+        <div class="ms-frame-layout--tabs" v-if="apps.length">
           <el-tabs :value="active" @tab-click="handleTab" editable @edit="handleTabsEdit">
             <el-tab-pane v-for="(item,index) in apps" :label="item.route.meta.title" :name="item.resolvePath" :key="index"></el-tab-pane>
           </el-tabs>
