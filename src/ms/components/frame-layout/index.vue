@@ -70,7 +70,7 @@
           </template>
           <slot v-else name="header"></slot>
         </el-row>
-        <div class="ms-frame-layout--tabs" v-if="pages.length">
+        <div class="ms-frame-layout--tabs" v-if="pages.length" :key="pages.length">
           <el-tabs :value="active" @tab-click="handleTab" editable @edit="handleTabsEdit">
             <el-tab-pane v-for="(item,index) in pages" :label="item.route.meta.title" :name="item.resolvePath" :key="index"></el-tab-pane>
           </el-tabs>
@@ -199,8 +199,8 @@ export default {
           })
           router.beforeEach((to, from, next) => {
             if (to.path === from.path) {
-              pages.forEach(item => {
-                if (item.vm && item.vm.show) {
+              this.pages.forEach(item => {
+                if (item.route.path == to.path) {
                   item.route = to
                 }
               })
@@ -222,7 +222,7 @@ export default {
             },
             data () {
               return {
-                show: true
+                show: false
               }
             },
             destroyed () {
@@ -242,20 +242,13 @@ export default {
             resolvePath: value.path.replaceAll('/', '__')
           }
           if (currentPage) {
-            currentPage.vm.show = false
-            if (pages.length > 1) {
-              pages[index] = [currentPage, addPage]
-              this.pages = pages.flat()
-            } else {
-              pages.push(addPage)
-              this.pages = pages
-            }
+            pages[index] = [currentPage, addPage]
+            this.pages = pages.flat()
           } else {
             this.pages = [addPage]
           }
-        } else {
-          this.pageVisibleChange(value.path)
         }
+        this.pageVisibleChange(value.path)
       }
     },
     pageVisibleChange (path) {
@@ -265,29 +258,33 @@ export default {
           item.vm.show = is
         }
       })
-      console.log('this.pages', this.pages)
     },
     pageRemove (path) {
       let index = 0
-      let vm = null
-      let active = null
+      let page = null
+      let next = null
       let pages = this.pages.filter((item, i) => {
         if (item.resolvePath === path) {
-          vm = item.vm
+          page = item
           index = i
           return false
         } else {
           return true
         }
       })
-      if (pages[index]) {
-        active = pages[index].route.path
-      } else if (pages[pages.length - 1]) {
-        active = pages[pages.length - 1].route.path
+      if (page.vm.show) {
+        if (pages[index]) {
+          next = pages[index]
+        } else if (pages[pages.length - 1]) {
+          next = pages[pages.length - 1]
+        }
       }
       this.pages = pages
-      this.pageVisibleChange(active)
-      vm && vm.$destroy && vm.$destroy()
+      if (next) {
+        this.$router.push(next.route)
+      }
+      page.vm && page.vm.$destroy && page.vm.$destroy()
+      console.log('this.pages', this.pages)
     },
     handleTab (tab, event) {
       this.pages.forEach(item => {

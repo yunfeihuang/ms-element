@@ -10,7 +10,6 @@ export default [
     path: '/example',
     component: () => import('@/ms/example'),
     meta: {
-      group: 'example',
       title: '示例列表'
     }
   },
@@ -18,7 +17,6 @@ export default [
     path: '/example/detail',
     component: () => import('@/ms/example/detail'),
     meta: {
-      group: 'example',
       title: '示例详情'
     }
   }
