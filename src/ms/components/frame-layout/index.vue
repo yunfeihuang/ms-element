@@ -70,9 +70,9 @@
           </template>
           <slot v-else name="header"></slot>
         </el-row>
-        <div class="ms-frame-layout--tabs" v-if="pages.length" :key="pages.length">
+        <div class="ms-frame-layout--tabs" v-if="apps.length" :key="apps.length">
           <el-tabs :value="active" @tab-click="handleTab" editable @edit="handleTabsEdit">
-            <el-tab-pane v-for="(item,index) in pages" :label="item.route.meta.title" :name="item.resolvePath" :key="index"></el-tab-pane>
+            <el-tab-pane v-for="(item,index) in apps" :label="item.route.meta.title" :name="item.resolvePath" :key="index"></el-tab-pane>
           </el-tabs>
         </div>
       </div>
@@ -120,24 +120,53 @@ export default {
   },
   watch: {
     $route (value) {
-      this.pageChange(value)
+      // this.pageChange(value)
+      if (value.matched && value.matched.length) {
+        if (this.apps.every(item => item.route.path !== value.path)) {
+          let $vm = this.createRouterApp(value)
+          this.pushApp({
+            vm: $vm,
+            route: value,
+            resolvePath: value.path.replaceAll('/', '__')
+          })
+        } else {
+          this.currentApp = this.getAppByPath(value.path)
+        }
+      }
     }
   },
   data () {
     return {
-      pages: [],
+      apps: [],
       isCollapse: document.ontouchstart !== undefined
     }
   },
   computed: {
     active () {
-      if (this.pages.length) {
-        let item = this.pages.find(item => item && item.vm && item.vm.show)
-        if (item) {
-          return item.resolvePath
-        }
+      if (this.currentApp) {
+        return this.currentApp.resolvePath
       }
       return null
+    },
+    currentApp: {
+      get () {
+        let self = this
+        return this.apps.find((item, index) => {
+          if (item.vm.show) {
+            self.currentAppIndex = index
+            return true
+          }
+          return false
+        })
+      },
+      set (value) {
+        this.apps.forEach(item => {
+          item.vm.show = value === item
+          if (value === item && item.route.path !== this.$route.path) {
+            this.$router.push(item.route)
+          }
+        })
+      }
     },
     _menus () {
       return this.menus.map(item => {
@@ -188,114 +217,80 @@ export default {
     }
   },
   methods: {
-    pageChange (value) {
-      let pages = [...this.pages]
-      if (value.matched && value.matched.length) {
-        if (pages.every(item => item.route.path !== value.path)) {
-          let el = document.createElement('div')
-          this.$el.querySelector('.ms-frame-layout--body').appendChild(el)
-          let router = new window.Router({
-            routes: this.$router.options.routes.filter(item => item.path === value.path)
-          })
-          router.beforeEach((to, from, next) => {
-            if (to.path === from.path) {
-              this.pages.forEach(item => {
-                if (item.route.path == to.path) {
-                  item.route = to
-                }
-              })
-            }
-            next()
-          })
-          var $vm = new window.Vue({ // eslint-disable-line
-            el,
-            router: router,
-            store: this.$store,
-            template: `<router-view class="page-router-view" :class="{'is-active': show}"></router-view>`,
-            mounted () {
-              this.$emit('ready')
-            },
-            watch: {
-              show (value) {
-                this.$emit(value ? 'show' : 'hidden')
-              }
-            },
-            data () {
-              return {
-                show: false
-              }
-            },
-            destroyed () {
-              this.$el.parentNode.removeChild(this.$el)
+    createRouterApp (route) {
+      let el = document.createElement('div')
+      this.$el.querySelector('.ms-frame-layout--body').appendChild(el)
+      let router = new window.Router({
+        routes: this.$router.options.routes.filter(item => item.path === route.path)
+      })
+      router.beforeEach((to, from, next) => {
+        if (to.path === from.path) {
+          this.apps.forEach(item => {
+            if (item.route.path === to.path) {
+              item.route = to
             }
           })
-          let index = 0
-          let currentPage = pages.find((item, i) => {
-            if (item.vm.show) {
-              index = i
-            }
-            return item.vm.show
-          })
-          let addPage = {
-            vm: $vm,
-            route: value,
-            resolvePath: value.path.replaceAll('/', '__')
-          }
-          if (currentPage) {
-            pages[index] = [currentPage, addPage]
-            this.pages = pages.flat()
-          } else {
-            this.pages = [addPage]
-          }
         }
-        this.pageVisibleChange(value.path)
-      }
-    },
-    pageVisibleChange (path) {
-      this.pages.forEach(item => {
-        let is = item.route.path === path
-        if (item.vm) {
-          item.vm.show = is
+        next()
+      })
+      return new window.Vue({ // eslint-disable-line
+        el,
+        router: router,
+        store: this.$store,
+        template: `<router-view class="page-router-view" :class="{'is-active': show}"></router-view>`,
+        mounted () {
+          this.$emit('ready')
+        },
+        watch: {
+          show (value) {
+            this.$emit(value ? 'show' : 'hidden')
+          }
+        },
+        data () {
+          return {
+            show: false
+          }
+        },
+        destroyed () {
+          this.$el.parentNode.removeChild(this.$el)
         }
       })
     },
-    pageRemove (path) {
-      let index = 0
-      let page = null
-      let next = null
-      let pages = this.pages.filter((item, i) => {
-        if (item.resolvePath === path) {
-          page = item
-          index = i
-          return false
-        } else {
-          return true
-        }
-      })
-      if (page.vm.show) {
-        if (pages[index]) {
-          next = pages[index]
-        } else if (pages[pages.length - 1]) {
-          next = pages[pages.length - 1]
-        }
+    getAppByPath (path) {
+      return this.apps.find(item => item.route.path === path)
+    },
+    pushApp (value) {
+      let apps = [...this.apps]
+      let currentApp = this.currentApp
+      if (currentApp) {
+        apps[this.currentAppIndex] = [currentApp, value]
+        this.apps = apps.flat()
+      } else {
+        this.apps = [value]
       }
-      this.pages = pages
-      if (next) {
-        this.$router.push(next.route)
+      this.currentApp = value
+    },
+    removeApp (value) {
+      let apps = [...this.apps]
+      let index = apps.findIndex(item => item === value)
+      apps = apps.filter(item => item !== value)
+      if (apps[index]) {
+        this.currentApp = apps[index]
+      } else if (apps[index - 1]) {
+        this.currentApp = apps[index - 1]
+      } else {
+        this.currentApp = null
       }
-      page.vm && page.vm.$destroy && page.vm.$destroy()
-      console.log('this.pages', this.pages)
+      this.apps = apps
+      value.vm && value.vm.$destroy && value.vm.$destroy()
     },
     handleTab (tab, event) {
-      this.pages.forEach(item => {
-        if (item.resolvePath === tab.name) {
-          this.$router.push(item.route)
-        }
-      })
+      this.currentApp = this.getAppByPath(tab.name.replaceAll('__', '/'))
     },
     handleTabsEdit (targetName, action) {
       if (action === 'remove') {
-        this.pageRemove(targetName)
+        let app = this.getAppByPath(targetName.replaceAll('__', '/'))
+        app && this.removeApp(app)
       }
     }
   }

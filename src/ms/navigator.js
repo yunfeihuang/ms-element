@@ -90,7 +90,7 @@ export default {
         ref: 'drawer'
       }),
       destroyed () {
-        this.$el.parentNode.removeChild(this.$el)
+        this.$el.parentNode && this.$el.parentNode.removeChild(this.$el)
       }
     })
     let array = set[context] || []

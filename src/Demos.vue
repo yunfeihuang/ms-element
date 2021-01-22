@@ -23,6 +23,10 @@ export default {
           route: '/'
         },
         {
+          title: '控制台1',
+          route: '/1'
+        },
+        {
           title: '用户管理',
           options: [
             {
