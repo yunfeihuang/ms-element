@@ -138,7 +138,7 @@ export default {
       render (createElement) {
         return (
           <el-dialog
-            custom-class="e-dialog-iframe"
+            custom-class="ms-dialog"
             visible={this.visible}
             {...{ attrs: _props }}
             onOpened={this.handleOpened}
@@ -156,6 +156,38 @@ export default {
         },
         handleLoad () {
           this.loading = false
+        }
+      }
+    })
+  },
+  preview (props = {}) {
+    let node = document.createElement('div')
+    document.body.appendChild(node)
+    let _props = {
+      appendToBody: true,
+      modalAppendToBody: true,
+      destroyOnClose: true,
+      ...props
+    }
+    new Vue({ // eslint-disable-line
+      el: node,
+      data () {
+        return {
+          visible: _props.visible || true
+        }
+      },
+      render (createElement) {
+        return (
+          <ms-preview
+            visible={this.visible}
+            {...{ attrs: _props }}
+            onClose={this.handleClose}>
+          </ms-preview>
+        )
+      },
+      methods: {
+        handleClose () {
+          this.visible = false
         }
       }
     })

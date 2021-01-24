@@ -3,7 +3,7 @@ export default {
   mixins: [fetch],
   provide () {
     return {
-      'pageList': this
+      'msPageList': this
     }
   },
   props: {
@@ -125,8 +125,8 @@ export default {
           }
         })
       }
-      if (!this.$initQuery && query) { // 保存初始化查询对象
-        this.$initQuery = {
+      if (!this.$$query && query) { // 保存初始化查询对象
+        this.$$query = {
           ...query
         }
       }
@@ -221,7 +221,7 @@ export default {
       }, props)
     },
     handleReset () {
-      this.query = Object.assign({page: 1, rows: 20}, this.$initQuery)
+      this.query = Object.assign({page: 1, rows: 20}, this.$$query)
       this.triggerFetch(this.query)
       // this.$refs.query && this.$refs.query.resetFields && this.$refs.query.resetFields()
     },
@@ -264,7 +264,7 @@ export default {
   },
   beforeRouteUpdate (to, from, next) { // 监听route地址变化
     if (to.path === from.path) {
-      this.query = Object.assign({}, this.$initQuery, to.query, {page: to.query.page || 1, rows: to.query.rows || 20})
+      this.query = Object.assign({}, this.$$query, to.query, {page: to.query.page || 1, rows: to.query.rows || 20})
       this.triggerFetch(this.query)
     }
     next()

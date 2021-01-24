@@ -6,6 +6,7 @@
     :style="data.staticStyle && data.style ? [data.staticStyle,data.style] : data.staticStyle || data.style"
     v-bind="data.attrs"
     v-on="listeners">
+    {{data.attrs}}
     <template v-if="props.src">
       <el-carousel :initial-index="props.initialIndex" style="width: 100vw;" height="100vh" v-if="props.src.forEach" :autoplay="false">
         <el-carousel-item v-for="(item,index) in props.src" :key="index">

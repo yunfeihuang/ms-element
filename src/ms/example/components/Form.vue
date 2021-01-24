@@ -83,7 +83,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.params, this.$drawer.target)
+    console.log(this.params, this.msDrawer.target)
   },
   methods: {
     fetch () {
@@ -97,7 +97,7 @@ export default {
       })
     },
     handleDetail () {
-      ms.navigator.push(this.$drawer.target, () => import('./Detail'), {
+      ms.navigator.push(this.msDrawer.target, () => import('./Detail'), {
         params: this.params
       })
     }

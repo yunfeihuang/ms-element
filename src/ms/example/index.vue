@@ -176,7 +176,8 @@ export default {
     handleDetail (params) {
       ms.navigator.push(this, () => import('./components/Detail'), {
         params,
-        title: '详情'
+        title: '详情',
+        size: 'large'
       })
     },
     handleCustom (params) {
@@ -222,11 +223,11 @@ export default {
         },
         footerSlot: {
           inject: [
-            '$drawer'
+            'msDrawer'
           ],
           template: `
             <div>
-              <el-button size="small" type="primary" @click="$drawer.handleSubmit">通过</el-button>
+              <el-button size="small" type="primary" @click="msDrawer.handleSubmit">通过</el-button>
               <el-button size="small" type="danger">拒绝</el-button>
             </div>
           `
@@ -244,8 +245,15 @@ export default {
       })
     },
     handleOpen (row) {
+      /*
       ms.navigator.open(this, this.$route.fullPath, {
         title: '弹窗列表'
+      })
+      */
+      ms.navigator.preview({
+        src: [
+          '/static/images/img_qr.jpg'
+        ]
       })
     },
     handleExport (type, event) {

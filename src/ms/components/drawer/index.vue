@@ -79,7 +79,7 @@ export default {
   },
   provide () {
     return {
-      $drawer: this
+      msDrawer: this
     }
   },
   watch: {
@@ -122,7 +122,7 @@ export default {
             res.default.mixins = []
           }
           res.default.mixins.push({
-            inject: ['$drawer'],
+            inject: ['msDrawer'],
             props: {
               params: {},
               done: {
@@ -190,6 +190,7 @@ export default {
 }
 </script>
 <style lang="scss">
+  $width: 42rem;
   .ms-drawer{
     max-height: 100%;
     max-width: 100%;
@@ -214,12 +215,12 @@ export default {
       width:26rem;
     }
     &--default{
-      min-width:43rem;
-      width:43rem;
+      min-width:$width;
+      width:$width;
     }
     &--large{
-      min-width:62rem;
-      width:62rem;
+      min-width:$width * 1.8;
+      width:$width * 1.8;
     }
     &--layout{
       display:flex;

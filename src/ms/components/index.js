@@ -1,12 +1,14 @@
 import FrameLayout from './frame-layout'
 import Drawer from './drawer'
 import PageListLayout from './page-list-layout'
+import Preview from './preview'
 import QueryForm from './query-form'
 
 const components = [
   FrameLayout,
   Drawer,
   PageListLayout,
+  Preview,
   QueryForm
 ]
 const install = (Vue) => {

@@ -64,7 +64,6 @@
             <el-col>
               <slot name="title" v-if="$slots['title']"></slot>
               <div class="ms-frame-layout--title" v-else>{{title}}</div>
-              <div v-if="breadcrumb" :key="$route.path" class="ms-frame-layout--breadcrumb"></div>
             </el-col>
             <slot name="nav"></slot>
           </template>
@@ -89,6 +88,11 @@
 <script>
 export default {
   componentName: 'MsFrameLayout',
+  provide () {
+    return {
+      'msFrameLayout': this
+    }
+  },
   props: {
     isTabs: {
       type: Boolean,
@@ -112,15 +116,10 @@ export default {
     },
     backgroundColor: {
       type: String
-    },
-    breadcrumb: {
-      type: Boolean,
-      default: true
     }
   },
   watch: {
     $route (value) {
-      // this.pageChange(value)
       if (value.matched && value.matched.length) {
         if (this.apps.every(item => item.route.path !== value.path)) {
           let $vm = this.createRouterApp(value)
@@ -237,7 +236,7 @@ export default {
         el,
         router: router,
         store: this.$store,
-        template: `<router-view class="page-router-view" :class="{'is-active': show}"></router-view>`,
+        template: `<router-view class="app-router-view" :class="{'is-active': show}"></router-view>`,
         mounted () {
           this.$emit('ready')
         },
@@ -306,7 +305,6 @@ export default {
     &--logo{
       text-align:center;
       height:$frame-layout--logo-height;
-      cursor: pointer;
       box-sizing: border-box;
       display:flex;
       img{
@@ -503,8 +501,11 @@ export default {
     .ms-page-list-layout{
       border:0;
     }
+    .v-modal{
+      background:#fff;
+    }
   }
-  .page-router-view{
+  .app-router-view{
     position: absolute;
     left: 0;
     top: 0;
@@ -517,6 +518,76 @@ export default {
       visibility: visible;
       z-index: 1;
       overflow:visible;
+    }
+  }
+  div.ms-dialog{
+    .el-dialog{
+      &__body{
+        padding:0;
+        max-height: 90vh;
+        overflow:auto;
+        position: relative;
+        iframe{
+          width:100%;
+          height:80vh;
+          display: block;
+        }
+      }
+      &__header{
+        padding:10px;
+        border-bottom:1px solid $--border-color-base;
+        line-height:1;
+      }
+      &__title{
+        line-height:1;
+        font-size: 1.3em;
+      }
+      &__headerbtn{
+        top: 7px;
+        right: 10px;
+      }
+      &__close{
+        font-size:22px;
+      }
+    }
+  }
+  div.ms-preview{
+    background:transparent;
+    display:table;
+    user-select:none;
+    .el-dialog{
+      &__body{
+        text-align:center;
+        display:table-cell;
+        vertical-align:middle;
+        padding:0;
+      }
+      &__header{
+        padding:0;
+      }
+      &__close{
+        font-size:3rem;
+        color:#fff;
+        text-shadow:0 0 3px rgba(0,0,0,0.3);
+      }
+      &__headerbtn{
+        z-index: 10;
+      }
+      &__title{
+        display:none
+      }
+    }
+    .swiper-container{
+      height:100%;
+      width:100vw;
+    }
+    img{
+      max-width:100vw;
+      max-height:100vh;
+      transform: translate(-50%,-50%);
+      position:absolute;
+      top:50%;
+      left:50%;
     }
   }
 </style>
