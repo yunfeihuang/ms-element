@@ -35,7 +35,7 @@ export default {
       })
     },
     watchLoading (value) {
-      if (this.msDrawer) {
+      if (this['msDrawer']) {
         this.$emit('loading', value)
       } else {
         if (value) {
