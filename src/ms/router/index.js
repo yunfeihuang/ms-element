@@ -1,3 +1,6 @@
+const Layout = {
+  template: `<router-view/>`
+}
 export default [
   {
     path: '/',
@@ -15,16 +18,22 @@ export default [
   },
   {
     path: '/example',
-    component: () => import('@/ms/example'),
-    meta: {
-      title: '示例列表'
-    }
-  },
-  {
-    path: '/example/detail',
-    component: () => import('@/ms/example/detail'),
-    meta: {
-      title: '示例详情'
-    }
+    component: Layout,
+    children: [
+      {
+        path: '',
+        component: () => import('@/ms/example'),
+        meta: {
+          title: '示例列表'
+        }
+      },
+      {
+        path: '/example/detail',
+        component: () => import('@/ms/example/detail'),
+        meta: {
+          title: '示例详情'
+        }
+      }
+    ]
   }
 ]

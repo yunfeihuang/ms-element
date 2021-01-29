@@ -245,16 +245,16 @@ export default {
       })
     },
     handleOpen (row) {
-      /*
-      ms.navigator.open(this, this.$route.fullPath, {
+      ms.navigator.open(this, () => import('./components/List'), {
         title: '弹窗列表'
       })
-      */
+      /*
       ms.navigator.preview({
         src: [
           '/static/images/img_qr.jpg'
         ]
       })
+      */
     },
     handleExport (type, event) {
       this.$confirm('确认执行此批量操作？', '提示', {

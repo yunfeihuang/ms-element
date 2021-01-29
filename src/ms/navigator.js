@@ -111,7 +111,16 @@ export default {
     }
   },
   open: function (context, to, props) {
-    let src = `${context.$router.mode === 'history' ? '' : window.location.pathname}${context.$router.resolve(to).href}`
+    let src = null
+    let AsyncComponent = null
+    if (typeof to === 'string' || (typeof to === 'object' && to.path)) {
+      src = `${context.$router.mode === 'history' ? '' : window.location.pathname}${context.$router.resolve(to).href}`
+    } else if (typeof to === 'function') {
+      AsyncComponent = () => ({
+        component: to
+      })
+    }
+    console.log('AsyncComponent', AsyncComponent)
     let node = document.createElement('div')
     document.body.appendChild(node)
     let _props = {
@@ -143,7 +152,7 @@ export default {
             {...{ attrs: _props }}
             onOpened={this.handleOpened}
             onClose={this.handleClose}>
-            <iframe src={src} frameborder="0" onLoad={this.handleLoad}></iframe>
+            {AsyncComponent ? <AsyncComponent/> : <iframe src={src} frameborder="0" onLoad={this.handleLoad}></iframe>}
           </el-dialog>
         )
       },

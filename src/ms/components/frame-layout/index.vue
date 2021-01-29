@@ -73,13 +73,18 @@
           <el-tabs :value="active" @tab-click="handleTab" editable @edit="handleTabsEdit">
             <el-tab-pane v-for="(item,index) in apps" :label="item.route.meta.title" :name="item.resolvePath" :key="index"></el-tab-pane>
           </el-tabs>
+          <el-dropdown trigger="click" @command="handleCommand">
+            <i class="el-icon-arrow-down ms-frame-layout--tabs-action"></i>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="all">关闭所有</el-dropdown-item>
+              <el-dropdown-item :disabled="currentAppIndex ==  0" command="left">关闭左边页签</el-dropdown-item>
+              <el-dropdown-item :disabled="currentAppIndex == apps.length - 1" command="right">关闭右边页签</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
       </div>
       <div class="ms-frame-layout--body scroller">
-        <slot v-if="!isTabs"></slot>
-        <!--
-        <component v-for="(item,index) in tabs" :key="index" :is="item.matched[0].components.default" v-show="item == tab"></component>
-        -->
+        <slot v-if="!isCreateApp"></slot>
       </div>
     </div>
   </div>
@@ -95,6 +100,10 @@ export default {
   },
   props: {
     isTabs: {
+      type: Boolean,
+      default: true
+    },
+    isCreateApp: {
       type: Boolean,
       default: true
     },
@@ -120,16 +129,23 @@ export default {
   },
   watch: {
     $route (value) {
-      if (value.matched && value.matched.length) {
-        if (this.apps.every(item => item.route.path !== value.path)) {
-          let $vm = this.createRouterApp(value)
-          this.pushApp({
-            vm: $vm,
-            route: value,
-            resolvePath: value.path.replaceAll('/', '__')
-          })
-        } else {
-          this.currentApp = this.getAppByPath(value.path)
+      if (this.isTabs) {
+        if (value.matched && value.matched.length) {
+          if (this.apps.every(item => item.route.path !== value.path)) {
+            let $vm = null
+            if (this.isCreateApp) {
+              $vm = this.createRouterApp(value)
+            } else {
+              $vm = {show: false}
+            }
+            this.pushApp({
+              vm: $vm,
+              route: value,
+              resolvePath: value.path.replaceAll('/', '__')
+            })
+          } else {
+            this.currentApp = this.getAppByPath(value.path)
+          }
         }
       }
     }
@@ -137,6 +153,7 @@ export default {
   data () {
     return {
       apps: [],
+      currentAppIndex: 0,
       isCollapse: document.ontouchstart !== undefined
     }
   },
@@ -151,16 +168,20 @@ export default {
       get () {
         let self = this
         return this.apps.find((item, index) => {
-          if (item.vm.show) {
-            self.currentAppIndex = index
-            return true
+          if (item.vm) {
+            if (item.vm.show) {
+              self.currentAppIndex = index
+              return true
+            }
           }
           return false
         })
       },
       set (value) {
         this.apps.forEach(item => {
-          item.vm.show = value === item
+          if (item.vm) {
+            item.vm.show = value === item
+          }
           if (value === item && item.route.path !== this.$route.path) {
             this.$router.push(item.route)
           }
@@ -214,6 +235,15 @@ export default {
     if (window.top !== window) {
       document.body.classList.add('is-iframe')
     }
+    if (this.isTabs && !this.isCreateApp) {
+      this.$router.beforeEach((to, from, next) => {
+        let app = this.getAppByPath(from.path)
+        if (app) {
+          app.route = from
+        }
+        next()
+      })
+    }
   },
   methods: {
     createRouterApp (route) {
@@ -223,6 +253,7 @@ export default {
         routes: this.$router.options.routes.filter(item => item.path === route.path)
       })
       router.beforeEach((to, from, next) => {
+        console.log(to, from)
         if (to.path === from.path) {
           this.apps.forEach(item => {
             if (item.route.path === to.path) {
@@ -290,6 +321,30 @@ export default {
       if (action === 'remove') {
         let app = this.getAppByPath(targetName.replaceAll('__', '/'))
         app && this.removeApp(app)
+      }
+    },
+    handleCommand (value) {
+      if (value === 'all') {
+        this.apps.forEach(item => {
+          item.vm && item.vm.$destroy && item.vm.$destroy()
+        })
+        this.apps = []
+      } else if (value === 'left') {
+        this.apps = this.apps.filter((item, index) => {
+          if (index < this.currentAppIndex) {
+            item.vm && item.vm.$destroy && item.vm.$destroy()
+            return false
+          }
+          return true
+        })
+      } else {
+        this.apps = this.apps.filter((item, index) => {
+          if (index > this.currentAppIndex) {
+            item.vm && item.vm.$destroy && item.vm.$destroy()
+            return false
+          }
+          return true
+        })
       }
     }
   }
@@ -364,7 +419,14 @@ export default {
       background:#fff;
       padding-left:20px;
       border-top:1px solid #f5f5f5;
+      display:flex;
+      align-items: center;
+      &-action{
+        padding: 10px;
+        cursor: pointer;
+      }
       .el-tabs{
+        flex:auto;
         &__header{
           margin-bottom:0;
         }
