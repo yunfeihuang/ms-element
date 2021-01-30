@@ -5,6 +5,10 @@
     <template slot="logo" slot-scope="scope">
       <i :style="`font-size:${scope.isCollapse?14:26}px;font-style:normal;`">LOGO</i>
     </template>
+    <div slot="nav" class="actions">
+      <router-link to="/">个人中心</router-link>
+      <router-link to="/">消息</router-link>
+    </div>
     <router-view></router-view>
   </ms-frame-layout>
 </template>
@@ -43,5 +47,10 @@ export default {
 <style lang="scss">
   .ms-loading-element{
     position: relative;
+  }
+  .actions{
+    a{
+      margin-right:10px;
+    }
   }
 </style>

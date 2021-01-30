@@ -10,8 +10,8 @@ import ElementUI from '@element-ui'
 import * as EUI from './components/management'
 import * as MS from './ms/components'
 import DomPortal from 'vue-dom-portal'
-import filters from '@/filters'
-import '@/directives'
+import filters from './filters'
+import '@/ms/directives'
 import axios from '@axios'
 
 // register global utility filters.

@@ -30,6 +30,12 @@
           v-bind="getIndexColumnProps()">
         </el-table-column>
         <el-table-column
+          label="头像">
+          <template slot-scope="scope">
+            <img src="/static/images/img_qr.jpg" v-preview style="width:30px;height:30px">
+          </template>
+        </el-table-column>
+        <el-table-column
           label="姓名">
           <template slot-scope="scope">
             {{scope.row.name}}

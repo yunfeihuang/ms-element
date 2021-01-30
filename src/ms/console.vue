@@ -3,7 +3,7 @@
     <el-row :gutter="14">
       <el-col :xl="12" :sm="8" :md="6" :lg="4" v-for="item in 6" :key="item">
         <el-card>
-          <div class="statis-item" @click="handle1">
+          <div class="statis-item">
             <h2>数据统计标题{{item}}</h2>
             <em>1000</em>
           </div>
@@ -24,8 +24,6 @@
 <script>
 import PolylineChart from '@/demos/components/chart/Polyline'
 let option = JSON.parse('{"xAxis":{"type":"category","boundaryGap":false,"data":["2019-11-25","2019-11-26","2019-11-27","2019-11-28","2019-11-29","2019-11-30","2019-12-01","2019-12-02","2019-12-03","2019-12-04","2019-12-05","2019-12-06","2019-12-07","2019-12-08","2019-12-09","2019-12-10","2019-12-11","2019-12-12","2019-12-13","2019-12-14","2019-12-15","2019-12-16","2019-12-17","2019-12-18","2019-12-19","2019-12-20","2019-12-21","2019-12-22","2019-12-23","2019-12-24"]},"series":[{"data":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,21000,25796,0,0,0,0,0,0,0,0,0,0,0,0,0],"type":"line","smooth":true,"itemStyle":{"normal":{"color":"#409EFF","lineStyle":{"color":"#409EFF"}}},"areaStyle":{"color":"rgba(102,177,255,0.5)"}}]}')
-const Form = () => import('./example/components/Form')
-// console.log('rrrrrrrr', ms, $mixins)
 
 export default {
   components: {
@@ -34,19 +32,6 @@ export default {
   data () {
     return {
       option1: option
-    }
-  },
-  methods: {
-    handle1 () {
-      ms.navigator.push(this, Form, {
-        // title: '创建',
-        query: {
-          a: 'aaa'
-        }
-      })
-      setTimeout(() => {
-        // ms.navigator.replace(this, () => import('./example/components/Detail'))
-      }, 5000)
     }
   }
 }

@@ -7,8 +7,8 @@
         class="ms-frame-layout--logo">
         <slot name="logo" v-bind="{isCollapse:isCollapse}"></slot>
       </div>
-      <div class="ms-frame-layout--aside-inner scroller">
-        <slot v-if="$slots['aside']" name="aside" v-bind="{isCollapse:isCollapse}"></slot>
+      <div class="ms-frame-layout--menu scroller">
+        <slot v-if="$slots['menu']" name="menu" v-bind="{isCollapse:isCollapse}"></slot>
         <el-menu
           class="ms-frame-layout--menus"
           :collapse="isCollapse"
@@ -431,12 +431,12 @@ export default {
       &.is-collapse{
         width:$frame-layout--aside-collapse-width;
       }
-      &-inner{
+    }
+    &--menu{
         flex:1;
         min-width: 0;
         margin-top:5px;
       }
-    }
     &--content{
       flex: 1;
       min-width: 0;
