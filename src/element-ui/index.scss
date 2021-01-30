@@ -269,4 +269,10 @@
 }
 .el-dialog__body{
   font-size:inherit;
+  .v-modal,.el-drawer__wrapper{
+    position: absolute;
+  }
+  .el-drawer__container{
+    background:rgba(255,255,255,0.6);
+  }
 }

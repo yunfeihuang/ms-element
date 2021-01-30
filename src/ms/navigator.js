@@ -27,6 +27,12 @@ export default {
   }) {
     let el = document.createElement('div')
     context.$el.appendChild(el)
+    if (context.$el.closest && context.$el.closest('.el-dialog')) {
+      if (modal === undefined) {
+        modal = false
+      }
+      appendToBody = false
+    }
     let classnames = ['ms-drawer']
     if (['ltr', 'rtl'].indexOf(direction) > -1 && size) {
       if (['mini', 'small', 'default', 'large'].indexOf(size) > -1) {
@@ -136,24 +142,26 @@ export default {
         }
       },
       mounted () {
-        this.visible = true,
-        to().then(res => {
-          if (!res.default.mixins) {
-            res.default.mixins = []
-          }
-          res.default.mixins.push({
-            props: {
-              params: {},
-              done: {
-                type: Function
-              },
-              promiseSubmit: {
-                type: Function
-              }
+        this.visible = true
+        if (typeof to === 'function') {
+          to().then(res => {
+            if (!res.default.mixins) {
+              res.default.mixins = []
             }
+            res.default.mixins.push({
+              props: {
+                params: {},
+                done: {
+                  type: Function
+                },
+                promiseSubmit: {
+                  type: Function
+                }
+              }
+            })
+            this.component = res.default
           })
-          this.component = res.default
-        })
+        }
       },
       render (createElement) {
         const Component = this.component

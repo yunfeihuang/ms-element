@@ -608,9 +608,6 @@ export default {
     .ms-frame-layout--aside,.ms-frame-layout--header{
       display:none;
     }
-    .ms-page-list-layout{
-      border:0;
-    }
     .v-modal{
       background:#fff;
     }

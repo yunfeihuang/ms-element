@@ -77,6 +77,11 @@ export default {
     }
   }
 }
+.is-iframe{
+  .ms-page-list-layout{
+    border:0;
+  }
+}
 .el-dialog__body .ms-page-list-layout{
   min-height: 85vh;
 }

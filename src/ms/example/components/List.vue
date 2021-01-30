@@ -8,6 +8,7 @@
           </el-form-item>
           <!--native-type="submit"是修改button type属性为submit-->
           <el-button native-type="submit" size="small">搜索</el-button>
+          <el-button size="small" @click="handleCreate()">创建</el-button>
         </el-form>
       </template>
       <!--v-bind="getTableProps()"是必须的-->
