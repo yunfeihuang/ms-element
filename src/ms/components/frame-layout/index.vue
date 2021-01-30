@@ -84,6 +84,7 @@
       </div>
       <div class="ms-frame-layout--body scroller">
         <router-view v-if="!isCreateApp" class="ms-frame-layout--slot"></router-view>
+        <slot></slot>
       </div>
     </div>
   </div>
@@ -104,7 +105,7 @@ export default {
     },
     isCreateApp: {
       type: Boolean,
-      default: false
+      default: true
     },
     defaultRoute: {
       type: [Object],
