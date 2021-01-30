@@ -621,6 +621,7 @@ export default {
     visibility: hidden;
     overflow:hidden;
     box-sizing: border-box;
+    background-color:#F5F7FA;
     &.is-active{
       visibility: visible;
       z-index: 1;

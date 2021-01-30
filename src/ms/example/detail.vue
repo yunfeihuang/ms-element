@@ -1,6 +1,6 @@
 <template>
-  <div style="padding:18px;margin:10px;background:#fff;">
-    <Detail :params="$route.query"/>
+  <div style="padding:10px;">
+    <Detail :params="$route.query" style="background:#fff;padding: 20px;"/>
   </div>
 </template>
 
