@@ -65,6 +65,7 @@
 </template>
 
 <script>
+const Form = () => import('./Form')
 export default {
   mixins: [
     ms.mixins.pageList
@@ -88,6 +89,12 @@ export default {
       return this.$axios({
         url: '/user',
         params: this.query
+      })
+    },
+    handleCreate (params) {
+      ms.navigator.push(this, Form, {
+        params,
+        title: params ? '编辑' : '创建'
       })
     }
   }

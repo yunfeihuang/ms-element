@@ -130,7 +130,7 @@ export default {
           ...query
         }
       }
-      return Object.assign({page: 1, rows: 20}, this.params || {}, this.$route ? this.$route.query : {}, query)
+      return Object.assign({page: 1, rows: 20}, this.params || {}, this.$route && this.isHistory ? this.$route.query : {}, query)
     },
     getPaginationProps (data = {}) { // 获取分页默认props
       if (data.count !== undefined) {

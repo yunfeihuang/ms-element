@@ -229,20 +229,9 @@ export default {
     }
     &--body{
       flex:auto;
-      padding: 0 15px;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
       position: relative;
-      .ms-page-list-layout{
-        margin:0;
-        border:0;
-        &--table{
-          padding:0;
-          width:calc(100% - 30px);
-        }
-        .form-search{
-          margin-left:0;
-          margin-top:0;
-        }
-      }
     }
     &--footer{
       text-align:center;

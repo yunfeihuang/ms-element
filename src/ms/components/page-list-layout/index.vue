@@ -52,16 +52,39 @@ export default {
 }
 </script>
 <style lang="scss">
+.ms-frame-layout--body{
+  .ms-page-list-layout{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background-clip: content-box;
+    border: 10px solid transparent;
+  }
+}
+.ms-drawer--body{
+  .ms-page-list-layout{
+    margin:0;
+    border:0;
+    position:absolute;
+    width:100%;
+    height:100%;
+    &--table{
+      padding:0;
+    }
+    .form-search{
+      margin-left:0;
+      margin-top:0;
+    }
+  }
+}
+.el-dialog__body .ms-page-list-layout{
+  min-height: 85vh;
+}
 .ms-page-list-layout{
   display:flex;
   flex-direction: column;
-  position:absolute;
-  width:100%;
-  height:100%;
   box-sizing:border-box;
   background: $--color-white;
-  background-clip: content-box;
-  border: 10px solid transparent;
   &--table{
     overflow: hidden;
     box-sizing:border-box;

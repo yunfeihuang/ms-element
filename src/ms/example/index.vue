@@ -252,7 +252,10 @@ export default {
     },
     handleOpen (row) {
       ms.navigator.open(this, () => import('./components/List'), {
-        title: '弹窗列表'
+        title: '弹窗列表',
+        params: {
+          keyword: '黄运飞'
+        }
       })
       /*
       ms.navigator.preview({

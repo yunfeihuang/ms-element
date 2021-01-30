@@ -112,15 +112,9 @@ export default {
   },
   open: function (context, to, props) {
     let src = null
-    let AsyncComponent = null
     if (typeof to === 'string' || (typeof to === 'object' && to.path)) {
       src = `${context.$router.mode === 'history' ? '' : window.location.pathname}${context.$router.resolve(to).href}`
-    } else if (typeof to === 'function') {
-      AsyncComponent = () => ({
-        component: to
-      })
     }
-    console.log('AsyncComponent', AsyncComponent)
     let node = document.createElement('div')
     document.body.appendChild(node)
     let _props = {
@@ -138,13 +132,31 @@ export default {
       data () {
         return {
           visible: false,
-          loading: false
+          component: null
         }
       },
       mounted () {
-        this.visible = true
+        this.visible = true,
+        to().then(res => {
+          if (!res.default.mixins) {
+            res.default.mixins = []
+          }
+          res.default.mixins.push({
+            props: {
+              params: {},
+              done: {
+                type: Function
+              },
+              promiseSubmit: {
+                type: Function
+              }
+            }
+          })
+          this.component = res.default
+        })
       },
       render (createElement) {
+        const Component = this.component
         return (
           <el-dialog
             custom-class="ms-dialog"
@@ -152,7 +164,7 @@ export default {
             {...{ attrs: _props }}
             onOpened={this.handleOpened}
             onClose={this.handleClose}>
-            {AsyncComponent ? <AsyncComponent/> : <iframe src={src} frameborder="0" onLoad={this.handleLoad}></iframe>}
+            {typeof to === 'function' ? this.component ? <Component params={props.params}/> : '<el-loading/>' : <iframe src={src} frameborder="0" onLoad={this.handleLoad}></iframe>}
           </el-dialog>
         )
       },
