@@ -141,15 +141,33 @@ export default {
           if (this.apps.every(item => item.route.path !== value.path)) {
             this.createRouter(value)
           } else {
+            let app = this.getAppByPath(value.path)
+            if (this.isCreateApp && app && app.vm && Object.keys(app.vm).length < 2) {
+              app.vm = this.createRouterApp(value)
+            }
             this.currentApp = this.getAppByPath(value.path)
           }
         }
       }
+    },
+    apps (value) {
+      let apps = value.map(item => {
+        let {route, resolvePath, vm} = item
+        let {matched, ...others} = route
+        return {
+          resolvePath,
+          vm: {
+            show: vm.show
+          },
+          route: others
+        }
+      })
+      sessionStorage.setItem('--ms-apps', JSON.stringify(apps))
     }
   },
   data () {
     return {
-      apps: [],
+      apps: sessionStorage.getItem('--ms-apps') ? JSON.parse(sessionStorage.getItem('--ms-apps')) : [],
       currentAppIndex: 0,
       isCollapse: document.ontouchstart !== undefined
     }
@@ -336,8 +354,12 @@ export default {
     },
     handleTabsEdit (targetName, action) {
       if (action === 'remove') {
-        let app = this.getAppByPath(targetName.replaceAll('__', '/'))
-        app && this.removeApp(app)
+        if (this.apps.length === 1) {
+          this.handleCommand('all')
+        } else {
+          let app = this.getAppByPath(targetName.replaceAll('__', '/'))
+          app && this.removeApp(app)
+        }
       }
     },
     handleCommand (value) {

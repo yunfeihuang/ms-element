@@ -1,6 +1,9 @@
+/*
 const Layout = {
   template: `<router-view/>`
 }
+*/
+
 export default [
   {
     path: '/',
