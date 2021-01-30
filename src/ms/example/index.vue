@@ -8,7 +8,7 @@
           <el-tab-pane label="白金" name="second"></el-tab-pane>
           <el-tab-pane label="白银" name="third"></el-tab-pane>
         </el-tabs>
-        <ms-query-form :model="query" :items="formItems" v-bind="getFormProps()" @submit="handleSubmit">
+        <ms-query-form :option="formItems" @submit="handleSubmit">
           <el-date-picker
             slot="date"
             type="daterange"

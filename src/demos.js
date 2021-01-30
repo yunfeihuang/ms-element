@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 import routes from './ms/router'
 import store from './store'
 import App from './Demos.vue'
@@ -49,18 +51,16 @@ initRootFontSize()
 let router = new Router({
   routes
 })
+let loadedRoutes = []
 router.beforeEach((to, from, next) => {
-  window.$$loadingTimer && clearTimeout(window.$$loadingTimer)
-  store.commit('LOADING', true)
+  if (!loadedRoutes.find(item => item.path === to.path)) {
+    loadedRoutes.push(to)
+    NProgress.start()
+  }
   next()
 })
 router.afterEach(() => {
-  window.$$loadingTimer = setTimeout(() => {
-    store.commit('LOADING', false)
-  }, 200)
-  window.$$onComplete = () => {
-    store.commit('LOADING', false)
-  }
+  NProgress.done()
 })
 window.Vue = Vue
 window.Router = Router

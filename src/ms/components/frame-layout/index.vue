@@ -4,7 +4,6 @@
     <div class="ms-frame-layout--aside" :style="asideStyle" :class="{'is-collapse': isCollapse}">
       <div
         v-if="$slots['logo'] || $scopedSlots['logo']"
-        title="收起/展开左侧菜单"
         class="ms-frame-layout--logo">
         <slot name="logo" v-bind="{isCollapse:isCollapse}"></slot>
       </div>
@@ -59,7 +58,7 @@
         <el-row
           type="flex"
           align="middle" :style="headerStyle">
-          <i class="ms-frame-layout--collapse" :class="!isCollapse ? 'el-icon-s-fold': 'el-icon-s-unfold'"  @click="isCollapse=!isCollapse"></i>
+          <i title="收起/展开左侧菜单" class="ms-frame-layout--collapse" :class="!isCollapse ? 'el-icon-s-fold': 'el-icon-s-unfold'"  @click="isCollapse=!isCollapse"></i>
           <template v-if="!$slots['header']">
             <el-col>
               <slot name="title" v-if="$slots['title']"></slot>
@@ -107,6 +106,14 @@ export default {
       type: Boolean,
       default: true
     },
+    defaultRoute: {
+      type: [Object],
+      default () {
+        return {
+          path: '/'
+        }
+      }
+    },
     title: {
       type: String
     },
@@ -132,17 +139,7 @@ export default {
       if (this.isTabs) {
         if (value.matched && value.matched.length) {
           if (this.apps.every(item => item.route.path !== value.path)) {
-            let $vm = null
-            if (this.isCreateApp) {
-              $vm = this.createRouterApp(value)
-            } else {
-              $vm = {show: false}
-            }
-            this.pushApp({
-              vm: $vm,
-              route: value,
-              resolvePath: value.path.replaceAll('/', '__')
-            })
+            this.createRouter(value)
           } else {
             this.currentApp = this.getAppByPath(value.path)
           }
@@ -246,6 +243,19 @@ export default {
     }
   },
   methods: {
+    createRouter (value) {
+      let $vm = null
+      if (this.isCreateApp) {
+        $vm = this.createRouterApp(value)
+      } else {
+        $vm = {show: false}
+      }
+      this.pushApp({
+        vm: $vm,
+        route: value,
+        resolvePath: value.path.replaceAll('/', '__')
+      })
+    },
     createRouterApp (route) {
       let el = document.createElement('div')
       this.$el.querySelector('.ms-frame-layout--body').appendChild(el)
@@ -253,7 +263,6 @@ export default {
         routes: this.$router.options.routes.filter(item => item.path === route.path)
       })
       router.beforeEach((to, from, next) => {
-        console.log(to, from)
         if (to.path === from.path) {
           this.apps.forEach(item => {
             if (item.route.path === to.path) {
@@ -261,7 +270,15 @@ export default {
             }
           })
         }
-        next()
+        if (!to.matched || to.matched.length === 0) {
+          this.$router.push({
+            path: to.path,
+            params: to.params,
+            query: to.query
+          })
+        } else {
+          next()
+        }
       })
       return new window.Vue({ // eslint-disable-line
         el,
@@ -325,10 +342,19 @@ export default {
     },
     handleCommand (value) {
       if (value === 'all') {
-        this.apps.forEach(item => {
-          item.vm && item.vm.$destroy && item.vm.$destroy()
+        this.apps = this.apps.filter(item => {
+          if (this.defaultRoute && this.defaultRoute.path === item.route.path) {
+            return true
+          } else {
+            item.vm && item.vm.$destroy && item.vm.$destroy()
+            return false
+          }
         })
-        this.apps = []
+        if (this.apps && this.apps[0]) {
+          this.currentApp = this.apps[0]
+        } else {
+          this.defaultRoute && this.$router.push(this.defaultRoute)
+        }
       } else if (value === 'left') {
         this.apps = this.apps.filter((item, index) => {
           if (index < this.currentAppIndex) {

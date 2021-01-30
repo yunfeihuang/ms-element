@@ -97,6 +97,7 @@ export default {
       })
     },
     handleDetail () {
+      console.log('this.params', this.params)
       ms.navigator.push(this.msDrawer.target, () => import('./Detail'), {
         params: this.params
       })

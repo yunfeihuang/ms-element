@@ -18,22 +18,16 @@ export default [
   },
   {
     path: '/example',
-    component: Layout,
-    children: [
-      {
-        path: '',
-        component: () => import('@/ms/example'),
-        meta: {
-          title: '示例列表'
-        }
-      },
-      {
-        path: '/example/detail',
-        component: () => import('@/ms/example/detail'),
-        meta: {
-          title: '示例详情'
-        }
-      }
-    ]
+    component: () => import('@/ms/example'),
+    meta: {
+      title: '示例列表'
+    }
+  },
+  {
+    path: '/example/detail',
+    component: () => import('@/ms/example/detail'),
+    meta: {
+      title: '示例详情'
+    }
   }
 ]

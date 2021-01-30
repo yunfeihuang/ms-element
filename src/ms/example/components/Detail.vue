@@ -40,7 +40,7 @@ export default {
   methods: {
     fetch () {
       return new Promise((resolve, reject) => {
-        setTimeout(resolve(this.params), 2000)
+        setTimeout(resolve(this.params || this.$attrs.params), 2000)
       })
     }
   }

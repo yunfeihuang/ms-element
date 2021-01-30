@@ -1,17 +1,7 @@
 <template>
-  <e-detail-layout>
-    <el-breadcrumb slot="breadcrumb">
-      <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item to="/example">用户列表</el-breadcrumb-item>
-      <el-breadcrumb-item>用户详情</el-breadcrumb-item>
-    </el-breadcrumb>
-    <!--
-    <div>
-      <e-developing></e-developing>
-    </div>
-    -->
-    <Detail :query="$route.query"/>
-  </e-detail-layout>
+  <div style="padding:18px;margin:10px;background:#fff;">
+    <Detail :params="$route.query"/>
+  </div>
 </template>
 
 <script>
@@ -20,11 +10,6 @@ export default {
   mixins: [ms.mixins.fetch],
   components: {
     Detail
-  },
-  methods: {
-    handleClick () {
-      console.log('handleClick')
-    }
   }
 }
 </script>

@@ -1,11 +1,11 @@
 <template>
-  <el-form v-bind="$props" @submit.native.prevent="handleSubmit">
+  <el-form v-bind="msPageList.getFormProps()" @submit.native.prevent="handleSubmit">
     <slot name="prepend"></slot>
-    <el-form-item v-for="(item,index) in items" :key="index" :label="item.label" :prop="item.prop">
+    <el-form-item v-for="(item,index) in option" :key="index" :label="item.label" :prop="item.prop">
       <slot v-if="$scopedSlots[item.prop] || $slots[item.prop]" :name="item.prop" v-bind="item"></slot>
       <el-select
         v-else-if="item.options"
-        v-model="model[item.prop]"
+        v-model="msPageList.query[item.prop]"
         :placeholder="item.props && item.props.placeholder ? item.props.placeholder : `请选择${item.label}`"
         v-bind="item.props">
         <el-option
@@ -17,7 +17,7 @@
       </el-select>
       <el-input
         v-else
-        v-model.trim="model[item.prop]" :placeholder="item.props && item.props.placeholder ? item.props.placeholder : `请输入${item.label}`"
+        v-model.trim="msPageList.query[item.prop]" :placeholder="item.props && item.props.placeholder ? item.props.placeholder : `请输入${item.label}`"
         v-bind="item.props">
       </el-input>
     </el-form-item>
@@ -29,18 +29,16 @@
 </template>
 
 <script>
-import ElementUI from '@element-ui'
-
 export default {
   componentName: 'MsQueryForm',
+  inject: ['msPageList'],
   props: {
-    items: {
+    option: {
       type: Array,
       default () {
         return []
       }
-    },
-    ...ElementUI.Form.props
+    }
   },
   mounted () {
     this.initReactiveData()
@@ -48,14 +46,14 @@ export default {
   methods: {
     initReactiveData () {
       let data = {}
-      this.items.forEach(item => {
+      this.option.forEach(item => {
         if (!(this.$scopedSlots[item.prop] || this.$slots[item.prop])) {
-          if (this.model[item.prop] === undefined) {
+          if (this.msPageList.query[item.prop] === undefined) {
             data[item.prop] = item.value || null
           }
         }
       })
-      this.$set(this.model, data)
+      this.$set(this.msPageList.query, data)
     },
     handleSubmit () {
       this.$emit('submit')
