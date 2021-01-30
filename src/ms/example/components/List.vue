@@ -71,6 +71,11 @@ export default {
   mixins: [
     ms.mixins.pageList
   ],
+  props: {
+    history: {
+      default: false
+    }
+  },
   data () {
     return {
       query: this.getQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象

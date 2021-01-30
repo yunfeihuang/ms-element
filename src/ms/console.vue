@@ -1,6 +1,6 @@
 <template>
   <div class="console">
-    <el-row :gutter="14">
+    <el-row :gutter="10">
       <el-col :xl="12" :sm="8" :md="6" :lg="4" v-for="item in 6" :key="item">
         <el-card>
           <div class="statis-item">
@@ -10,7 +10,7 @@
         </el-card>
       </el-col>
     </el-row>
-    <el-row :gutter="14">
+    <el-row :gutter="10">
       <el-col :lg="12" v-for="item in 4" :key="item">
         <el-card>
           <h2>客户增量统计{{item}}</h2>
@@ -38,10 +38,10 @@ export default {
 </script>
 <style lang="scss">
   .console{
-    padding:7px 14px;
+    background:#F5F7FA;
     >.el-row{
       >.el-col{
-        margin:7px 0;
+        margin:5px 0;
       }
     }
     .el-card{

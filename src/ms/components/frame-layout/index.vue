@@ -83,7 +83,7 @@
         </div>
       </div>
       <div class="ms-frame-layout--body scroller">
-        <slot v-if="!isCreateApp"></slot>
+        <router-view v-if="!isCreateApp" class="ms-frame-layout--slot"></router-view>
       </div>
     </div>
   </div>
@@ -104,7 +104,7 @@ export default {
     },
     isCreateApp: {
       type: Boolean,
-      default: true
+      default: false
     },
     defaultRoute: {
       type: [Object],
@@ -603,6 +603,13 @@ export default {
     &--menu-icon{
       display:inline-block;
     }
+    &--slot{
+      border: solid 10px#F5F7FA;
+      background-color:#fff;
+      min-height: 100%;
+      box-sizing: border-box;
+      position:relative;
+    }
   }
   .is-iframe{
     .ms-frame-layout--aside,.ms-frame-layout--header{
@@ -621,11 +628,14 @@ export default {
     visibility: hidden;
     overflow:hidden;
     box-sizing: border-box;
-    background-color:#F5F7FA;
+    border: solid 10px#F5F7FA;
+    background-color:#fff;
     &.is-active{
       visibility: visible;
       z-index: 1;
       overflow:visible;
+      min-height: 100%;
+      height:auto;
     }
   }
   div.ms-dialog{

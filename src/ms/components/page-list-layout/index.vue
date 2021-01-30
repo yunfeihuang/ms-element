@@ -57,8 +57,6 @@ export default {
     position:absolute;
     width:100%;
     height:100%;
-    background-clip: content-box;
-    border: 10px solid transparent;
   }
 }
 .ms-drawer--body{

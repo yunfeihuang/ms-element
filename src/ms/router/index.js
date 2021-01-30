@@ -13,10 +13,17 @@ export default [
     }
   },
   {
-    path: '/1',
-    component: () => import('@/ms/console'),
+    path: '/profile',
+    component: () => import('@/ms/profile'),
     meta: {
-      title: '控制台1'
+      title: '个人中心'
+    }
+  },
+  {
+    path: '/message',
+    component: () => import('@/ms/message'),
+    meta: {
+      title: '消息'
     }
   },
   {

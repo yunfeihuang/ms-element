@@ -1,95 +1,93 @@
 <template>
-  <div>
-    <!--PageListLayout有四个插槽:breadcrumb,search,table,pagination(这个是默认存在的)-->
-    <ms-page-list-layout>
-      <template slot="search">
-        <el-tabs v-model="query.active" type="card" @tab-click="handleTab">
-          <el-tab-pane label="黄金" name="first"></el-tab-pane>
-          <el-tab-pane label="白金" name="second"></el-tab-pane>
-          <el-tab-pane label="白银" name="third"></el-tab-pane>
-        </el-tabs>
-        <ms-query-form :option="formItems" @submit="handleSubmit">
-          <el-date-picker
-            slot="date"
-            type="daterange"
-            value-format="timestamp">
-          </el-date-picker>
-          <el-button size="small" @click="handleCreate()">创建</el-button>
-        </ms-query-form>
-      </template>
-      <!--v-bind="getTableProps()"是必须的-->
-      <el-table slot="table"
-        v-bind="getTableProps()"
-        v-on="getTableListeners()"
-        :data="pageData.data">
-        <el-table-column
-          type="selection"
-          width="58">
-        </el-table-column>
-        <el-table-column
-          v-bind="getIndexColumnProps()">
-        </el-table-column>
-        <el-table-column
-          label="头像">
-          <template slot-scope="scope">
-            <img src="/static/images/img_qr.jpg" v-preview style="width:30px;height:30px">
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="姓名">
-          <template slot-scope="scope">
-            {{scope.row.name}}
-          </template>
-        </el-table-column>
-        <el-table-column
-          width="60"
-          label="年龄">
-          <template slot-scope="scope">
-            {{scope.row.age}}
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="邮箱">
-          <template slot-scope="scope">
-            {{scope.row.email}}
-          </template>
-        </el-table-column>
-        <el-table-column
-          width="60"
-          label="状态">
-          <template slot-scope="scope">
-            {{scope.row.state}}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          label="地址" show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column
-          sortable="custom"
-          prop="date"
-          label="创建日期" show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column
-          width="450"
-          label="操作">
-          <template slot-scope="scope">
-            <el-button type="text" @click="handleCreate(scope.row)">编辑</el-button>
-            <el-button type="text" @click="handleDetail(scope.row)">详情</el-button>
-            <el-button type="text" @click="handleList">列表弹框</el-button>
-            <el-button type="text" @click="handleCustom(scope.row)">自定义弹框</el-button>
-            <el-button type="text" @click="handleOpen">iframe弹框</el-button>
-            <el-button type="text" @click="$router.push({path: '/example/detail', query: scope.row})">页面式详情</el-button>
-            <el-button type="text" @click="handleDelete">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <template slot="action">
-        <el-button size="small">导入</el-button>
-        <el-button :disabled="multipleSelectionAll.length==0" size="small" @click="handleExport">导出</el-button>
-      </template>
-    </ms-page-list-layout>
-  </div>
+  <!--PageListLayout有四个插槽:breadcrumb,search,table,pagination(这个是默认存在的)-->
+  <ms-page-list-layout>
+    <template slot="search">
+      <el-tabs v-model="query.active" type="card" @tab-click="handleTab">
+        <el-tab-pane label="黄金" name="first"></el-tab-pane>
+        <el-tab-pane label="白金" name="second"></el-tab-pane>
+        <el-tab-pane label="白银" name="third"></el-tab-pane>
+      </el-tabs>
+      <ms-query-form :option="formItems" @submit="handleSubmit">
+        <el-date-picker
+          slot="date"
+          type="daterange"
+          value-format="timestamp">
+        </el-date-picker>
+        <el-button size="small" @click="handleCreate()">创建</el-button>
+      </ms-query-form>
+    </template>
+    <!--v-bind="getTableProps()"是必须的-->
+    <el-table slot="table"
+      v-bind="getTableProps()"
+      v-on="getTableListeners()"
+      :data="pageData.data">
+      <el-table-column
+        type="selection"
+        width="58">
+      </el-table-column>
+      <el-table-column
+        v-bind="getIndexColumnProps()">
+      </el-table-column>
+      <el-table-column
+        label="头像">
+        <template slot-scope="scope">
+          <img src="/static/images/img_qr.jpg" v-preview style="width:30px;height:30px">
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="姓名">
+        <template slot-scope="scope">
+          {{scope.row.name}}
+        </template>
+      </el-table-column>
+      <el-table-column
+        width="60"
+        label="年龄">
+        <template slot-scope="scope">
+          {{scope.row.age}}
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="邮箱">
+        <template slot-scope="scope">
+          {{scope.row.email}}
+        </template>
+      </el-table-column>
+      <el-table-column
+        width="60"
+        label="状态">
+        <template slot-scope="scope">
+          {{scope.row.state}}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="address"
+        label="地址" show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column
+        sortable="custom"
+        prop="date"
+        label="创建日期" show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column
+        width="450"
+        label="操作">
+        <template slot-scope="scope">
+          <el-button type="text" @click="handleCreate(scope.row)">编辑</el-button>
+          <el-button type="text" @click="handleDetail(scope.row)">详情</el-button>
+          <el-button type="text" @click="handleList">列表弹框</el-button>
+          <el-button type="text" @click="handleCustom(scope.row)">自定义弹框</el-button>
+          <el-button type="text" @click="handleOpen">iframe弹框</el-button>
+          <el-button type="text" @click="$router.push({path: '/example/detail', query: scope.row})">页面式详情</el-button>
+          <el-button type="text" @click="handleDelete">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <template slot="action">
+      <el-button size="small">导入</el-button>
+      <el-button :disabled="multipleSelectionAll.length==0" size="small" @click="handleExport">导出</el-button>
+    </template>
+  </ms-page-list-layout>
 </template>
 
 <script>

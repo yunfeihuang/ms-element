@@ -43,6 +43,9 @@ export default {
         setTimeout(resolve(this.params || this.$attrs.params), 2000)
       })
     }
+  },
+  mounted () {
+    console.log('detail', this)
   }
 }
 </script>

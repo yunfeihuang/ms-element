@@ -6,10 +6,9 @@
       <i :style="`font-size:${scope.isCollapse?14:26}px;font-style:normal;`">LOGO</i>
     </template>
     <div slot="nav" class="actions">
-      <router-link to="/">个人中心</router-link>
-      <router-link to="/">消息</router-link>
+      <router-link to="/profile">个人中心</router-link>
+      <router-link to="/message">消息</router-link>
     </div>
-    <router-view></router-view>
   </ms-frame-layout>
 </template>
 
@@ -25,10 +24,6 @@ export default {
         {
           title: '控制台',
           route: '/'
-        },
-        {
-          title: '控制台1',
-          route: '/1'
         },
         {
           title: '用户管理',

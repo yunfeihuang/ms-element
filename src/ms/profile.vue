@@ -1,16 +1,12 @@
 <template>
   <div style="padding:10px;">
-    <Detail :params="$route.query"/>
+    <div style="background:#fff">profile</div>
   </div>
 </template>
 
 <script>
-import Detail from './components/Detail'
 export default {
-  mixins: [ms.mixins.fetch],
-  components: {
-    Detail
-  }
+  mixins: [ms.mixins.fetch]
 }
 </script>
 
