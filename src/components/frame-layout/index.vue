@@ -10,7 +10,7 @@
         @click="isCollapse=!isCollapse">
         <slot name="logo" v-bind="{isCollapse:isCollapse}"></slot>
       </div>
-      <div class="e-frame-layout--aside-inner scroller">
+      <div class="e-frame-layout--aside-inner ms-scroller">
         <slot v-if="$slots['aside']" name="aside" v-bind="{isCollapse:isCollapse}"></slot>
         <el-menu
           class="e-frame-layout--menus"
@@ -70,7 +70,7 @@
         <slot name="nav"></slot>
       </el-row>
       <slot v-else name="header"></slot>
-      <div class="e-frame-layout--body scroller">
+      <div class="e-frame-layout--body ms-scroller">
         <slot></slot>
       </div>
     </div>

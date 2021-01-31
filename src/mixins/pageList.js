@@ -366,7 +366,7 @@ export default {
     }
     if (this.$toFetch && (this.$store && this.$store.state && !this.$store.state.loading)) {
       this.$toFetch = false
-      let node = this.$el.querySelector('.el-table__body-wrapper') || this.$el.querySelector('.scroller')
+      let node = this.$el.querySelector('.el-table__body-wrapper') || this.$el.querySelector('.ms-scroller')
       node && (node.scrollTop = 0)
     }
     let position = this.$el.querySelector('.page-list-refresh-position')

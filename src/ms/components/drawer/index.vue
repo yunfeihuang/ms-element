@@ -7,7 +7,7 @@
     @closed="handleClosed">
     <component v-if="titleSlot" slot="title" :is="titleSlot"></component>
     <div class="ms-drawer--layout" v-loading="loading">
-      <div class="ms-drawer--body scroller">
+      <div class="ms-drawer--body ms-scroller">
         <component
           ref="component"
           :is="component"
@@ -229,8 +229,7 @@ export default {
     }
     &--body{
       flex:auto;
-      border-left: 15px solid transparent;
-      border-right: 15px solid transparent;
+      padding: 0 15px;
       position: relative;
     }
     &--footer{

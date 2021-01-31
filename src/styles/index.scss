@@ -125,7 +125,7 @@ div#nprogress{
     transition:opacity 0.3s ease 0s;
   }
 }
-.scroller,.el-table__body-wrapper{
+.ms-scroller,.el-table__body-wrapper{
   overflow:auto;
   @include scroller(#ddd,6px);
 }

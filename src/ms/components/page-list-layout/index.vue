@@ -7,7 +7,7 @@
     <slot name="breadcrumb"></slot>
     <slot name="tabs"></slot>
     <slot name="search"></slot>
-    <div class="ms-page-list-layout--table ms-loading-element" :class="{'scroller': props.isScroll}">
+    <div class="ms-page-list-layout--table ms-loading-element" :class="{'ms-scroller': props.isScroll}">
       <slot name="table"></slot>
     </div>
     <el-row type="flex" align="middle" class="ms-page-list-layout--footer">
@@ -61,9 +61,7 @@ export default {
 }
 .ms-drawer--body{
   .ms-page-list-layout{
-    margin:0;
-    border:0;
-    position:absolute;
+    position: relative;;
     width:100%;
     height:100%;
     &--table{
@@ -87,7 +85,7 @@ export default {
   display:flex;
   flex-direction: column;
   box-sizing:border-box;
-  background: $--color-white;
+  background-color: $--color-white;
   &--table{
     overflow: hidden;
     box-sizing:border-box;
@@ -176,7 +174,7 @@ export default {
         padding:0 15px;
       }
     }
-    .scroller{
+    .ms-scroller{
       max-height:68vh;
     }
   }

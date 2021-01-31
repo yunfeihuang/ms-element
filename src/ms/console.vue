@@ -38,7 +38,7 @@ export default {
 </script>
 <style lang="scss">
   .console{
-    background:#F5F7FA;
+    background-color:$--background-color-base;
     >.el-row{
       >.el-col{
         margin:5px 0;

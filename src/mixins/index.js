@@ -82,7 +82,7 @@ popupManager.$ = (name, importFunction, render) => {
             }
             return (
               <div class="e-drawer--layout">
-                <div class="e-drawer--body scroller">
+                <div class="e-drawer--body ms-scroller">
                   <ImportComponent
                     ref={'import-component-' + name}
                     popupManager={parent}

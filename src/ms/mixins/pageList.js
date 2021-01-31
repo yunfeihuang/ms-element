@@ -275,7 +275,7 @@ export default {
   updated () {
     this.handleResize()
     if (this.loading) {
-      let node = this.$el.querySelector('.el-table__body-wrapper') || this.$el.querySelector('.scroller')
+      let node = this.$el.querySelector('.el-table__body-wrapper') || this.$el.querySelector('.ms-scroller')
       node && (node.scrollTop = 0)
     }
   }

@@ -7,7 +7,7 @@
         class="ms-frame-layout--logo">
         <slot name="logo" v-bind="{isCollapse:isCollapse}"></slot>
       </div>
-      <div class="ms-frame-layout--menu scroller">
+      <div class="ms-frame-layout--menu ms-scroller">
         <slot v-if="$slots['menu']" name="menu" v-bind="{isCollapse:isCollapse}"></slot>
         <el-menu
           class="ms-frame-layout--menus"
@@ -82,8 +82,8 @@
           </el-dropdown>
         </div>
       </div>
-      <div class="ms-frame-layout--body scroller">
-        <router-view v-if="!isCreateApp" class="ms-frame-layout--slot"></router-view>
+      <div class="ms-frame-layout--body">
+        <router-view v-if="!isCreateApp" class="ms-frame-layout--slot ms-scroller"></router-view>
         <slot></slot>
       </div>
     </div>
@@ -105,7 +105,7 @@ export default {
     },
     isCreateApp: {
       type: Boolean,
-      default: true
+      default: false
     },
     defaultRoute: {
       type: [Object],
@@ -303,7 +303,7 @@ export default {
         el,
         router: router,
         store: this.$store,
-        template: `<router-view class="app-router-view" :class="{'is-active': show}"></router-view>`,
+        template: `<router-view class="app-router-view ms-scroller" :class="{'is-active': show}"></router-view>`,
         mounted () {
           this.$emit('ready')
         },
@@ -605,11 +605,16 @@ export default {
       display:inline-block;
     }
     &--slot{
-      border: solid 10px#F5F7FA;
-      background-color:#fff;
-      min-height: 100%;
+      background-color:$--color-white;
+      height: 100%;
       box-sizing: border-box;
       position:relative;
+      background-clip: content-box;
+      position: absolute;
+      width: 100%;
+      padding: 10px;
+      left:0;
+      top:0;
     }
   }
   .is-iframe{
@@ -627,16 +632,13 @@ export default {
     width: 100%;
     height: 100%;
     visibility: hidden;
-    overflow:hidden;
     box-sizing: border-box;
-    border: solid 10px#F5F7FA;
-    background-color:#fff;
+    padding: 10px;
+    background-color:$--color-white;
+    background-clip: content-box;
     &.is-active{
       visibility: visible;
       z-index: 1;
-      overflow:visible;
-      min-height: 100%;
-      height:auto;
     }
   }
   div.ms-dialog{

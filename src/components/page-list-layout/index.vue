@@ -26,7 +26,7 @@
       size="auto"
       @close="parent.handleHighToggle(false)">
       <el-form v-bind="parent.getHighFormProps()" @submit.native.prevent="parent.handleHighSubmit">
-        <el-row :gutter="10" class="scroller">
+        <el-row :gutter="10" class="ms-scroller">
           <slot name="search-high"></slot>
         </el-row>
         <el-form-item label=" ">
@@ -37,7 +37,7 @@
         </el-form-item>
       </el-form>
     </el-drawer>
-    <div class="e-page-list-layout--table" :class="{'scroller': props.isScroll}">
+    <div class="e-page-list-layout--table" :class="{'ms-scroller': props.isScroll}">
       <slot name="table"></slot>
     </div>
     <el-row type="flex" align="middle" class="e-page-list-layout--footer">
