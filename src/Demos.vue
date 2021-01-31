@@ -25,7 +25,7 @@ export default {
           title: '用户管理',
           options: [
             {
-              route: '/example',
+              route: '/user',
               title: '用户列表'
             }
           ]

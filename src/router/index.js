@@ -7,35 +7,35 @@ const Layout = {
 export default [
   {
     path: '/',
-    component: () => import('@/ms/console'),
+    component: () => import('@/example/console'),
     meta: {
       title: '控制台'
     }
   },
   {
     path: '/profile',
-    component: () => import('@/ms/profile'),
+    component: () => import('@/example/profile'),
     meta: {
       title: '个人中心'
     }
   },
   {
     path: '/message',
-    component: () => import('@/ms/message'),
+    component: () => import('@/example/message'),
     meta: {
       title: '消息'
     }
   },
   {
-    path: '/example',
-    component: () => import('@/ms/example'),
+    path: '/user',
+    component: () => import('@/example/user'),
     meta: {
       title: '示例列表'
     }
   },
   {
-    path: '/example/detail',
-    component: () => import('@/ms/example/detail'),
+    path: '/user/detail',
+    component: () => import('@/example/user/detail'),
     meta: {
       title: '示例详情'
     }

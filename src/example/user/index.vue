@@ -82,7 +82,7 @@
               <el-dropdown-item @click.native="handleCustom(scope.row)">自定义弹框</el-dropdown-item>
               <el-dropdown-item @click.native="handleOpen">iframe弹框</el-dropdown-item>
               <el-dropdown-item @click.native="handleOpenComponent">引入组件弹框</el-dropdown-item>
-              <el-dropdown-item @click.native="$router.push({path: '/example/detail', query: scope.row})">页面式详情</el-dropdown-item>
+              <el-dropdown-item @click.native="$router.push({path: '/user/detail', query: scope.row})">页面式详情</el-dropdown-item>
               <el-dropdown-item @click.native="handleDelete">删除</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>

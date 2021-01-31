@@ -41,14 +41,8 @@ module.exports = {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
       '@axios': resolve('src/axios'),
-      '@areaJSON': resolve('static/area.json'),
-      'e-ui/lib/style/theme': resolve('src/components/style/src/theme'),
-      'e-ui/lib/mixins': resolve('src/mixins'),
-      'e-ui/lib': resolve('src/components'),
-      'e-ui': resolve('src/components'),
       '@element-ui': resolve('src/element-ui'),
-      'mixins': resolve('src/mixins/index.js'),
-      'ms': resolve('src/ms/ms.js')
+      'ms': resolve('src/ms.js')
     }
   },
   module: {
