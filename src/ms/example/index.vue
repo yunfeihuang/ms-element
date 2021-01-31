@@ -118,6 +118,7 @@ export default {
         {
           prop: 'keyword',
           label: '关键字',
+          component: 'el-input',
           props: {
             placeholder: '请输入姓名或手机搜索'
           }
@@ -125,7 +126,7 @@ export default {
         {
           prop: 'status',
           label: '用户状态',
-          options: [
+          option: [
             {
               label: '启用',
               value: '1'

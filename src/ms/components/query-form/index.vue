@@ -1,31 +1,11 @@
 <template>
-  <el-form v-bind="msPageList.getFormProps()" @submit.native.prevent="handleSubmit">
+  <ms-form :option="option" v-bind="msPageList.getFormProps()" @submit.native.prevent="msPageList.handleSubmit">
     <slot name="prepend"></slot>
-    <el-form-item v-for="(item,index) in option" :key="index" :label="item.label" :prop="item.prop">
-      <slot v-if="$scopedSlots[item.prop] || $slots[item.prop]" :name="item.prop" v-bind="item"></slot>
-      <el-select
-        v-else-if="item.options"
-        v-model="msPageList.query[item.prop]"
-        :placeholder="item.props && item.props.placeholder ? item.props.placeholder : `请选择${item.label}`"
-        v-bind="item.props">
-        <el-option
-          v-for="item in item.options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
-      <el-input
-        v-else
-        v-model.trim="msPageList.query[item.prop]" :placeholder="item.props && item.props.placeholder ? item.props.placeholder : `请输入${item.label}`"
-        v-bind="item.props">
-      </el-input>
-    </el-form-item>
     <!--native-type="submit"是修改button type属性为submit-->
     <el-button native-type="submit" size="small">搜索</el-button>
     <el-button size="small">高级搜索</el-button>
     <slot></slot>
-  </el-form>
+  </ms-form>
 </template>
 
 <script>
@@ -34,10 +14,7 @@ export default {
   inject: ['msPageList'],
   props: {
     option: {
-      type: Array,
-      default () {
-        return []
-      }
+      type: Array
     }
   },
   mounted () {
@@ -54,9 +31,6 @@ export default {
         }
       })
       this.$set(this.msPageList.query, data)
-    },
-    handleSubmit () {
-      this.$emit('submit')
     }
   }
 }
