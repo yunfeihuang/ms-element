@@ -7,7 +7,7 @@
         <el-tab-pane label="白金" name="second"></el-tab-pane>
         <el-tab-pane label="白银" name="third"></el-tab-pane>
       </el-tabs>
-      <ms-query-form :option="formItems" @submit="handleSubmit">
+      <ms-query-form :option="option" @submit="handleSubmit">
         <el-date-picker
           slot="date"
           type="daterange"
@@ -74,7 +74,7 @@
         <template slot-scope="scope">
           <el-button type="text" @click="handleCreate(scope.row)">编辑</el-button>
           <el-button type="text" @click="handleDetail(scope.row)">详情</el-button>
-          <el-dropdown trigger="click" @command="handleCommand">
+          <el-dropdown trigger="click">
             <el-button type="text" style="margin-left: 10px;">更多</el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="handleLargeDetail">详情大弹窗</el-dropdown-item>
@@ -114,7 +114,7 @@ export default {
   },
   data () {
     return {
-      formItems: [
+      option: [
         {
           prop: 'keyword',
           label: '关键字',
@@ -183,7 +183,10 @@ export default {
       })
     },
     handleCreate (params) {
-      ms.navigator.push(this, Form, {params, title: params ? '编辑' : '创建'})
+      ms.navigator.push(this, Form, {
+        params,
+        title: params ? '编辑' : '创建'
+      })
     },
     handleDetail (params) {
       ms.navigator.push(this, Detail, {
@@ -199,7 +202,7 @@ export default {
       })
     },
     handleCustom (params) {
-      ms.navigator.push(this, {
+      const Component = {
         mixins: [
           ms.mixins.form
         ],
@@ -216,11 +219,6 @@ export default {
             return new Promise((resolve, reject) => {
               setTimeout(resolve(this.params), 2000)
             })
-          },
-          submit () { // 表单校验通过后调用的方法，一般是请求后台接口的方法
-            return new Promise((resolve, reject) => {
-              setTimeout(resolve, 1000)
-            })
           }
         },
         template: `
@@ -233,22 +231,23 @@ export default {
             </el-form-item>
           </el-form>
         `
-      }, {
+      }
+      let self = this
+      ms.navigator.push(this, Component, {
         params,
         title: '详情',
         titleSlot: {
           template: '<div>custom title</div>'
         },
-        footerSlot: {
-          inject: [
-            'msDrawer'
-          ],
-          template: `
-            <div>
-              <el-button size="small" type="primary" @click="msDrawer.handleSubmit">通过</el-button>
-              <el-button size="small" type="danger">拒绝</el-button>
-            </div>
-          `
+        done () {
+          ms.navigator.pop(self)
+          self.beforeFetch()
+        },
+        promiseSubmit (data) {
+          console.log('promiseSubmit', data)
+          return new Promise((resolve, reject) => {
+            setTimeout(resolve, 1000)
+          })
         }
       })
     },
