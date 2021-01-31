@@ -105,7 +105,7 @@ export default {
     },
     isCreateApp: {
       type: Boolean,
-      default: false
+      default: true
     },
     defaultRoute: {
       type: [Object],

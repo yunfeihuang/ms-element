@@ -70,16 +70,22 @@
         label="创建日期" show-overflow-tooltip>
       </el-table-column>
       <el-table-column
-        width="450"
         label="操作">
         <template slot-scope="scope">
           <el-button type="text" @click="handleCreate(scope.row)">编辑</el-button>
           <el-button type="text" @click="handleDetail(scope.row)">详情</el-button>
-          <el-button type="text" @click="handleList">列表弹框</el-button>
-          <el-button type="text" @click="handleCustom(scope.row)">自定义弹框</el-button>
-          <el-button type="text" @click="handleOpen">iframe弹框</el-button>
-          <el-button type="text" @click="$router.push({path: '/example/detail', query: scope.row})">页面式详情</el-button>
-          <el-button type="text" @click="handleDelete">删除</el-button>
+          <el-dropdown trigger="click" @command="handleCommand">
+            <el-button type="text" style="margin-left: 10px;">更多</el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="handleLargeDetail">详情大弹窗</el-dropdown-item>
+              <el-dropdown-item @click.native="handleList">列表弹框</el-dropdown-item>
+              <el-dropdown-item @click.native="handleCustom(scope.row)">自定义弹框</el-dropdown-item>
+              <el-dropdown-item @click.native="handleOpen">iframe弹框</el-dropdown-item>
+              <el-dropdown-item @click.native="handleOpenComponent">引入组件弹框</el-dropdown-item>
+              <el-dropdown-item @click.native="$router.push({path: '/example/detail', query: scope.row})">页面式详情</el-dropdown-item>
+              <el-dropdown-item @click.native="handleDelete">删除</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
     </el-table>
@@ -92,6 +98,8 @@
 
 <script>
 const Form = () => import('./components/Form')
+const Detail = () => import('./components/Detail')
+const List = () => import('./components/List')
 
 export default {
   mixins: [
@@ -178,9 +186,15 @@ export default {
       ms.navigator.push(this, Form, {params, title: params ? '编辑' : '创建'})
     },
     handleDetail (params) {
-      ms.navigator.push(this, () => import('./components/Detail'), {
+      ms.navigator.push(this, Detail, {
         params,
-        title: '详情',
+        title: '详情弹窗'
+      })
+    },
+    handleLargeDetail (params) {
+      ms.navigator.push(this, Detail, {
+        params,
+        title: '详情大弹窗',
         size: 'large'
       })
     },
@@ -239,29 +253,30 @@ export default {
       })
     },
     handleList () {
-      ms.navigator.push(this, () => import('./components/List'), {
-        title: '列表',
+      ms.navigator.push(this, List, {
+        title: '抽屉弹窗列表',
         direction: 'ttb',
         size: '100vh',
         params: {
-          keyword: '黄运飞'
+          keyword: '张三'
         }
       })
     },
     handleOpen (row) {
-      ms.navigator.open(this, () => import('./components/List'), {
-        title: '弹窗列表',
+      ms.navigator.open(this, this.$route.fullPath, {
+        title: 'iframe弹窗列表',
         params: {
-          keyword: '黄运飞'
+          keyword: '张三'
         }
       })
-      /*
-      ms.navigator.preview({
-        src: [
-          '/static/images/img_qr.jpg'
-        ]
+    },
+    handleOpenComponent () {
+      ms.navigator.open(this, List, {
+        title: '引入组件弹窗列表',
+        params: {
+          keyword: '张三'
+        }
       })
-      */
     },
     handleExport (type, event) {
       this.$confirm('确认执行此批量操作？', '提示', {
