@@ -1,38 +1,18 @@
-import {Marquee, MarqueeItem} from './marquee'
-import Icon from './icon'
-import Img from './img'
-import Password from './password'
-import ImgCode from './img-code'
-import SmsCode from './sms-code'
-import EmailCode from './email-code'
-import Placeholder from './placeholder'
-import Developing from './developing'
+import FrameLayout from './frame-layout'
+import Drawer from './drawer'
+import PageListLayout from './page-list-layout'
 import Preview from './preview'
-import Figure from './figure'
-import Title from './title'
-import DropdownGroup from './dropdown-group'
-import ScrollInView from './scroll-in-view'
-import Sticky from './sticky'
-import Banner from './banner'
+import {Form, FormItem} from './form'
+import QueryForm from './query-form'
 
 const components = [
-  Icon,
-  Img,
-  Password,
-  ImgCode,
-  SmsCode,
-  EmailCode,
-  Marquee,
-  MarqueeItem,
-  Placeholder,
-  Developing,
+  FrameLayout,
+  Drawer,
+  PageListLayout,
   Preview,
-  Figure,
-  Title,
-  DropdownGroup,
-  ScrollInView,
-  Sticky,
-  Banner
+  Form,
+  FormItem,
+  QueryForm
 ]
 const install = (Vue) => {
   components.map(component => {
@@ -42,19 +22,8 @@ const install = (Vue) => {
 
 export {
   install,
-  Icon,
-  Img,
-  Password,
-  ImgCode,
-  SmsCode,
-  EmailCode,
-  Marquee,
-  MarqueeItem,
-  Placeholder,
-  Developing,
-  Preview,
-  DropdownGroup,
-  ScrollInView,
-  Sticky,
-  Banner
+  FrameLayout,
+  Drawer,
+  PageListLayout,
+  QueryForm
 }

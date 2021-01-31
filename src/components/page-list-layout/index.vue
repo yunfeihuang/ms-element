@@ -1,46 +1,16 @@
 <template functional>
   <div :class="[
-    `e-page-list-layout`,
-    {'is-breadcrumb':$slots['breadcrumb'] && $slots['breadcrumb'][0] && $slots['breadcrumb'][0].componentOptions.tag == 'el-breadcrumb'},
+    `ms-page-list-layout`,
     data.staticClass,
     data.class]"
     :style="data.staticStyle && data.style ? [data.staticStyle,data.style] : data.staticStyle || data.style">
     <slot name="breadcrumb"></slot>
     <slot name="tabs"></slot>
-    <template v-if="parent.searchMode=='high'">
-      <slot v-if="$slots['search-high-after']"></slot>
-      <div v-else class="e-page-list-layout--search-high">
-        <el-button type="text" size="small" icon="el-icon-search" @click="parent.handleHighToggle">继续搜索</el-button>
-        <el-button type="text" size="small" icon="el-icon-delete" @click="parent.handleHighCancel">清除搜索</el-button>
-      </div>
-    </template>
-    <slot v-else name="search"></slot>
-    <el-drawer
-      v-if="$slots['search-high']"
-      class="e-page-list-layout--search-drawer"
-      title="高级搜索"
-      :visible="parent.highVisible"
-      :append-to-body="false"
-      :modal-append-to-body="false"
-      direction="ttb"
-      size="auto"
-      @close="parent.handleHighToggle(false)">
-      <el-form v-bind="parent.getHighFormProps()" @submit.native.prevent="parent.handleHighSubmit">
-        <el-row :gutter="10" class="ms-scroller">
-          <slot name="search-high"></slot>
-        </el-row>
-        <el-form-item label=" ">
-          <!--native-type="submit"是修改button type属性为submit-->
-          <el-button native-type="submit" type="primary" size="small">确定</el-button>
-          <el-button size="small" @click="parent.handleHighToggle">取消</el-button>
-          <el-button size="small" @click="parent.handleHighReset">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-drawer>
-    <div class="e-page-list-layout--table" :class="{'ms-scroller': props.isScroll}">
+    <slot name="search"></slot>
+    <div class="ms-page-list-layout--table ms-loading-element" :class="{'ms-scroller': props.isScroll}">
       <slot name="table"></slot>
     </div>
-    <el-row type="flex" align="middle" class="e-page-list-layout--footer">
+    <el-row type="flex" align="middle" class="ms-page-list-layout--footer">
       <div v-if="$slots['action']">
         <template v-if="parent.multipleSelectionAll && parent.multipleSelectionAll.length">
           已选
@@ -53,10 +23,10 @@
         </template>
         &nbsp;&nbsp;
       </div>
-      <el-col class="e-page-list-layout--action">
+      <el-col class="ms-page-list-layout--action">
         <slot name="action"></slot>
       </el-col>
-      <div class="e-page-list-layout--pagination">
+      <div class="ms-page-list-layout--pagination">
         <slot v-if="$slots.pagination" name="pagination"></slot>
         <el-pagination
           v-else
@@ -72,7 +42,7 @@
 
 <script>
 export default {
-  componentName: 'EPageListLayout',
+  componentName: 'MsPageListLayout',
   props: {
     isScroll: {
       type: Boolean,
@@ -81,3 +51,140 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.ms-frame-layout--body{
+  .ms-page-list-layout{
+    position:absolute;
+    width:100%;
+    height:100%;
+  }
+}
+.ms-drawer--body{
+  .ms-page-list-layout{
+    position: relative;;
+    width:100%;
+    height:100%;
+    &--table{
+      padding:0;
+    }
+    .form-search{
+      margin-left:0;
+      margin-top:0;
+    }
+  }
+}
+.is-iframe{
+  .ms-page-list-layout{
+    padding:0;
+  }
+}
+.el-dialog__body .ms-page-list-layout{
+  min-height: 85vh;
+}
+.ms-page-list-layout{
+  display:flex;
+  flex-direction: column;
+  box-sizing:border-box;
+  background-color: $--color-white;
+  &--table{
+    overflow: hidden;
+    box-sizing:border-box;
+    padding: 0 10px;
+    flex: 1;
+  }
+  &--footer{
+    padding:5px 10px;
+  }
+  .form-search{
+    margin:10px 10px 0;
+    .el-form-item,.el-button {
+      margin-bottom: 10px;
+    }
+    .el-button{
+      padding-right:8px;
+      padding-left:8px;
+      min-width:60px;
+    }
+  }
+  .el-tabs{
+    padding:0 10px;
+    margin-top: 10px;
+    &__header{
+      margin-bottom:0;
+    }
+  }
+  &.is-breadcrumb{
+    border-top:30px solid transparent;
+  }
+  .el-breadcrumb{
+    position:absolute;
+    top:-30px;
+    z-index:1;
+    left:0;
+    font-size:0.9rem;
+  }
+  .el-table{
+    &__empty-text{
+      line-height:1;
+      color: #999;
+      &:before{
+        font-family: e-iconfont!important;
+        font-style: normal;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 16px;
+        line-height: 100%;
+        content: "\e708";
+        display:block;
+        font-size: 40px;
+        font-size: 6rem;
+        margin-bottom:10px;
+      }
+    }
+    &-column--index{
+      white-space: nowrap;
+      .cell{
+        padding:0 4px;
+        white-space: nowrap;
+      }
+    }
+  }
+  &--action{
+    .el-button--default{
+      &.el-button--small{
+        padding-left:10px;
+        padding-right:10px;
+        height:28px;
+      }
+    }
+  }
+  &--search-drawer{
+    position:absolute;
+    .el-drawer{
+      box-shadow:0 0 15px rgba(0,0,0,0.1);
+      &__header{
+        padding:15px;
+        padding-bottom:0;
+        margin-bottom:15px;
+      }
+      .el-date-editor,.el-select{
+        width:100%;
+      }
+      &__body{
+        padding:0 15px;
+      }
+    }
+    .ms-scroller{
+      max-height:68vh;
+    }
+  }
+  &--search-high{
+    margin:10px;
+  }
+  >.v-modal{
+    position:absolute;
+    background: $--color-white;
+    outline:none;
+  }
+}
+</style>

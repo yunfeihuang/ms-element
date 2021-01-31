@@ -1,6 +1,7 @@
 import navConfig from './nav.config'
 
 let route = []
+/*
 const registerRoute = (navConfig) => {
   navConfig.forEach((item) => {
     if (item.path) {
@@ -15,5 +16,5 @@ const registerRoute = (navConfig) => {
   })
 }
 registerRoute(navConfig)
-
+*/
 export default route

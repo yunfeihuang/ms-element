@@ -6,14 +6,11 @@ import App from './App.vue'
 import '@/styles/import.scss'
 import ElementUI from '@element-ui'
 import * as EUI from './components'
-import * as EManagementUI from './components/management'
 import DomPortal from 'vue-dom-portal'
 import filters from '@/filters'
 import '@/directives'
 import axios from '@axios'
-import mixins from 'e-ui/lib/mixins'
 
-window.$mixins = mixins
 // register global utility filters.
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
@@ -23,7 +20,6 @@ Vue.use(Router)
 Vue.use(DomPortal)
 Vue.use(ElementUI)
 Vue.use(EUI)
-Vue.use(EManagementUI)
 Vue.prototype.$axios = axios
 
 let initRootFontSize = function () {

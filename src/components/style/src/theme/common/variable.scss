@@ -1,34 +1,6 @@
 @import '../../../../../../node_modules/element-ui/packages/theme-chalk/src/common/var.scss';
 
 $font-path              : 'iconfont'!default;
-/*
-// color
-$color-black            : #333!default;
-$color-assist           : rgba($color-black, 0.5)!default;
-$color-light            : rgba($color-assist,0.6)!default;
-$color-divider          : #ebeef5!default;
-$color-primary          : #409EFF!default;
-$color-primary-light    : rgba($color-primary, 0.1)!default;
-$color-error            : #f56c6c!default;
-$color-warning          : #ff9900!default;
-$color-danger           : $color-error!default;
-$color-background       : #f7f7f7!default;
-$color-background-primary: #f5f5f5!default;
-
-$font-size-default      : 1rem!default;
-$font-size-small        : 0.9rem!default;
-$--font-size-large        : 1.16rem!default;
-$font-size-xl           : 1.25rem!default;
-
-// Border color
-$border-color-base      : rgb(229, 229, 229)!default;  // outside
-$--border-radius-base     : 4px!default;
-
-// Animation
-$animation-time         : .3s!default;
-$transition-time        : .2s!default;
-$ease-in-out            : ease-in-out!default;
-*/
 // FrameLayout
 $frame-layout--header-height: 40px!default;
 $frame-layout--aside-width: 180px!default;

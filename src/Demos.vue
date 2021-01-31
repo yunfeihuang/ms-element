@@ -13,11 +13,7 @@
 </template>
 
 <script>
-import MsFrameLayout from '@/ms/components/frame-layout'
 export default {
-  components: {
-    MsFrameLayout
-  },
   data () {
     return {
       menus: [

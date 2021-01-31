@@ -2,16 +2,14 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import routes from './ms/router'
+import routes from './router'
 import store from './store'
 import App from './Demos.vue'
 import '@/styles/import.scss'
 import ElementUI from '@element-ui'
-import * as EUI from './components/management'
-import * as MS from './ms/components'
-import DomPortal from 'vue-dom-portal'
+import * as MS from './components'
 import filters from './filters'
-import '@/ms/directives'
+import '@/directives'
 import axios from '@axios'
 
 // register global utility filters.
@@ -20,9 +18,7 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.use(Router)
-Vue.use(DomPortal)
 Vue.use(ElementUI)
-Vue.use(EUI)
 Vue.use(MS)
 Vue.prototype.$axios = axios
 
