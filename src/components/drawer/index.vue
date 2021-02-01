@@ -109,6 +109,18 @@ export default {
       this.loading = value
     },
     loadComponent () {
+      let mixins = {
+        inject: ['msDrawer'],
+        props: {
+          params: {},
+          done: {
+            type: Function
+          },
+          promiseSubmit: {
+            type: Function
+          }
+        }
+      }
       if (this.importComponent && this.importComponent instanceof Function) {
         let promise = this.importComponent()
         if (promise) {
@@ -121,18 +133,7 @@ export default {
           if (!res.default.mixins) {
             res.default.mixins = []
           }
-          res.default.mixins.push({
-            inject: ['msDrawer'],
-            props: {
-              params: {},
-              done: {
-                type: Function
-              },
-              promiseSubmit: {
-                type: Function
-              }
-            }
-          })
+          res.default.mixins.push(mixins)
           this.component = res.default
         }).finally(res => {
           setTimeout(() => {
@@ -140,6 +141,10 @@ export default {
           }, 100)
         })
       } else {
+        if (!this.importComponent.mixins) {
+          this.importComponent.mixins = []
+        }
+        this.importComponent.mixins.push(mixins)
         this.component = this.importComponent
         this.loading = false
       }

@@ -210,7 +210,7 @@ export default {
         data () {
           return {
             form: {
-              pass: true,
+              pass: false,
               value: ''
             }
           }

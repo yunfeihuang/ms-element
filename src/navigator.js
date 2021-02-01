@@ -150,6 +150,7 @@ export default {
             }
             res.default.mixins.push({
               props: {
+                target: context,
                 params: {},
                 done: {
                   type: Function
