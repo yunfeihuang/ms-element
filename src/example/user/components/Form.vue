@@ -96,6 +96,12 @@ export default {
         setTimeout(resolve, 1000)
       })
     },
+    handleReplaceComponent () {
+      ms.navigator.replace(this.msDrawer.target, () => import('./Detail'), {
+        title: '详情',
+        params: this.params
+      })
+    },
     handleDetail () {
       console.log('this.params', this.params)
       ms.navigator.push(this.msDrawer.target, () => import('./Detail'), {

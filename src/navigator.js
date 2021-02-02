@@ -103,10 +103,21 @@ export default {
     array.push(vue)
     set[context] = array
   },
-  replace (context, importComponent, drawer, props) {
+  replace (context, importComponent, {
+    title,
+    promiseSubmit,
+    done,
+    params
+  }) {
     let array = set[context]
     if (array.length) {
       let vm = array[array.length - 1]
+      vm.$refs.drawer.drawerTitle = title
+      vm.$refs.drawer.componentProps = {
+        promiseSubmit,
+        done,
+        params
+      }
       vm.$refs.drawer.importComponent = importComponent
     }
   },
@@ -163,7 +174,7 @@ export default {
           })
         }
       },
-      render (createElement) {
+      render (h) {
         const Component = this.component
         return (
           <el-dialog

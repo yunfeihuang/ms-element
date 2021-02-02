@@ -1,6 +1,7 @@
 <template>
   <el-drawer
     v-bind="drawer"
+    :title="drawerTitle || drawer.title"
     :visible="visible"
     @close="handleClose"
     @opened="handleOpened"
@@ -11,7 +12,7 @@
         <component
           ref="component"
           :is="component"
-          v-bind="props"
+          v-bind="componentProps || props"
           @hook:mounted="handleMounted"
           @loading="handleLoading"
           @posting="handlePosting"
@@ -92,6 +93,8 @@ export default {
       loading: true,
       visible: false,
       isFormComponent: false,
+      drawerTitle: '',
+      componentProps: null,
       component: null
     }
   },
@@ -189,6 +192,8 @@ export default {
       }
       if (this.$refs.component && this.$refs.component.handleSubmit && this.$refs.component.form) {
         this.isFormComponent = true
+      } else {
+        this.isFormComponent = false
       }
     }
   }
