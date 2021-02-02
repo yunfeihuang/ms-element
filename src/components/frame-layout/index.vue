@@ -1,7 +1,6 @@
 <template>
-  <div :class="['ms-frame-layout',`ms-frame-layout--theme-${theme}`]"
-    :style="{backgroundColor: theme=='dark' ? backgroundColor : ''}">
-    <div class="ms-frame-layout--aside" :style="asideStyle" :class="{'is-collapse': isCollapse}">
+  <div :class="['ms-frame-layout']">
+    <div class="ms-frame-layout--aside" :class="{'is-collapse': isCollapse}">
       <div
         v-if="$slots['logo'] || $scopedSlots['logo']"
         class="ms-frame-layout--logo">
@@ -14,7 +13,7 @@
           :collapse="isCollapse"
           :router="true"
           :default-active="$route.path"
-          v-bind="_menuProps">
+          v-bind="menuProps">
           <template v-for="(item,index) in _menus">
             <el-submenu
               v-if="item.options"
@@ -57,7 +56,7 @@
       <div class="ms-frame-layout--header">
         <el-row
           type="flex"
-          align="middle" :style="headerStyle">
+          align="middle">
           <i title="收起/展开左侧菜单" class="ms-frame-layout--collapse" :class="!isCollapse ? 'el-icon-s-fold': 'el-icon-s-unfold'"  @click="isCollapse=!isCollapse"></i>
           <template v-if="!$slots['header']">
             <el-col>
@@ -84,9 +83,9 @@
       </div>
       <div class="ms-frame-layout--body">
         <router-view v-if="!isCreateApp" class="ms-frame-layout--slot ms-scroller"></router-view>
-        <slot></slot>
       </div>
     </div>
+    <slot></slot>
   </div>
 </template>
 
@@ -126,13 +125,6 @@ export default {
     },
     iconClass: {
       default: 'iconfont'
-    },
-    theme: {
-      type: String,
-      default: 'default'
-    },
-    backgroundColor: {
-      type: String
     }
   },
   watch: {
@@ -220,32 +212,6 @@ export default {
         }
         return item
       })
-    },
-    _menuProps () {
-      let result = this.menuProps || {}
-      if (this.theme === 'dark') {
-        result = {
-          textColor: '#f5f5f5',
-          activeTextColor: '#fff',
-          ...this.menuProps,
-          backgroundColor: this.backgroundColor
-        }
-      }
-      return result
-    },
-    asideStyle () {
-      return {
-        color: this._menuProps.textColor
-      }
-    },
-    headerStyle () {
-      if (this.theme.indexOf('dark') > -1) {
-        return {
-          color: '#fff',
-          backgroundColor: this.backgroundColor
-        }
-      }
-      return {}
     }
   },
   mounted () {
@@ -288,7 +254,7 @@ export default {
       this.pushApp({
         vm: $vm,
         route: value,
-        resolvePath: value.path.replaceAll('/', '__')
+        resolvePath: value.path.replace(/\//g, '__')
       })
     },
     createRouterApp (route) {
@@ -343,11 +309,16 @@ export default {
       return this.apps.find(item => item.route.path === path)
     },
     pushApp (value) {
-      let apps = [...this.apps]
+      let apps = []
       let currentApp = this.currentApp
       if (currentApp) {
-        apps[this.currentAppIndex] = [currentApp, value]
-        this.apps = apps.flat()
+        for(let i = 0; i < this.apps.length; i++) {
+          apps.push(this.apps[i])
+          if (i === this.currentAppIndex) {
+            apps.push(value)
+          }
+        }
+        this.apps = apps
       } else {
         this.apps = [value]
       }
@@ -368,14 +339,14 @@ export default {
       value.vm && value.vm.$destroy && value.vm.$destroy()
     },
     handleTab (tab, event) {
-      this.currentApp = this.getAppByPath(tab.name.replaceAll('__', '/'))
+      this.currentApp = this.getAppByPath(tab.name.replace(/__/g, '/'))
     },
     handleTabsEdit (targetName, action) {
       if (action === 'remove') {
         if (this.apps.length === 1) {
           this.handleCommand('all')
         } else {
-          let app = this.getAppByPath(targetName.replaceAll('__', '/'))
+          let app = this.getAppByPath(targetName.replace(/__/g, '/'))
           app && this.removeApp(app)
         }
       }

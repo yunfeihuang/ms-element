@@ -1,4 +1,4 @@
-import navConfig from './nav.config'
+// import navConfig from './nav.config'
 
 let route = []
 /*
