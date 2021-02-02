@@ -12,6 +12,12 @@ export default {
     },
     params: {
       type: Object
+    },
+    fixedTableHead: {
+      type: Boolean,
+      default () {
+        return true
+      }
     }
   },
   computed: {
@@ -50,6 +56,7 @@ export default {
     }
   },
   mounted () {
+    this.initial()
     this.handleResize()
     window.addEventListener('resize', this.handleResize, false)
     this.$root.$on('show', this.handleResize)
@@ -103,14 +110,9 @@ export default {
     },
     handleResize () {
       this.$nextTick(() => {
-        let node = this.$el.querySelector('.ms-page-list-layout--table')
-        node && (this.tableBodyHeight = node.offsetHeight + '')
-        if (process.browser && document.ontouchstart !== undefined) {
-          let el = this.$el.querySelector('.ms-page-list-layout')
-          if (el) {
-            el.style.minHeight = '100%'
-            el.style.height = 'auto'
-          }
+        if (this.fixedTableHead) {
+          let node = this.$el.querySelector('.ms-page-list-layout--table')
+          node && (this.tableBodyHeight = node.offsetHeight + '')
         }
       })
     },
@@ -169,7 +171,7 @@ export default {
       return Object.assign({
         ref: 'table',
         class: 'table-primary',
-        height: document.ontouchstart !== undefined ? undefined : this.tableBodyHeight,
+        height: !this.fixedTableHead ? undefined : this.tableBodyHeight,
         size: 'small',
         data: this.pageData.data
       }, props)
@@ -268,9 +270,6 @@ export default {
       this.triggerFetch(this.query)
     }
     next()
-  },
-  beforeMount () {
-    this.initial()
   },
   updated () {
     this.handleResize()

@@ -74,7 +74,8 @@
           <el-dropdown trigger="click" @command="handleCommand">
             <i class="el-icon-arrow-down ms-frame-layout--tabs-action"></i>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="all">关闭所有</el-dropdown-item>
+              <el-dropdown-item command="all">关闭所有页签</el-dropdown-item>
+              <el-dropdown-item command="other" :disabled="apps.length == 1">关闭其他页签</el-dropdown-item>
               <el-dropdown-item :disabled="currentAppIndex ==  0" command="left">关闭左边页签</el-dropdown-item>
               <el-dropdown-item :disabled="currentAppIndex == apps.length - 1" command="right">关闭右边页签</el-dropdown-item>
             </el-dropdown-menu>
@@ -312,7 +313,7 @@ export default {
       let apps = []
       let currentApp = this.currentApp
       if (currentApp) {
-        for(let i = 0; i < this.apps.length; i++) {
+        for (let i = 0; i < this.apps.length; i++) {
           apps.push(this.apps[i])
           if (i === this.currentAppIndex) {
             apps.push(value)
@@ -366,6 +367,13 @@ export default {
         } else {
           this.defaultRoute && this.$router.push(this.defaultRoute)
         }
+      } else if (value === 'other') {
+        this.apps = this.apps.filter(item => {
+          if (item !== this.currentApp) {
+            item.vm && item.vm.$destroy && item.vm.$destroy()
+          }
+          return item === this.currentApp
+        })
       } else if (value === 'left') {
         this.apps = this.apps.filter((item, index) => {
           if (index < this.currentAppIndex) {
@@ -547,7 +555,7 @@ export default {
           height: 3.2rem;
           line-height: 3.2rem;
           i{
-            font-size:1.4rem;
+            font-size:1.4px;
             margin-right: 5px;
             width: 20px;
             display: inline-block;

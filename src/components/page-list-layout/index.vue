@@ -78,8 +78,10 @@ export default {
     padding:0;
   }
 }
-.el-dialog__body .ms-page-list-layout{
+.ms-dialog .el-dialog__body .ms-page-list-layout{
   min-height: 85vh;
+  height:100%;
+  position: relative;;
 }
 .ms-page-list-layout{
   display:flex;
@@ -90,7 +92,7 @@ export default {
     overflow: hidden;
     box-sizing:border-box;
     padding: 0 10px;
-    flex: 1;
+    flex: auto;
   }
   &--footer{
     padding:5px 10px;
