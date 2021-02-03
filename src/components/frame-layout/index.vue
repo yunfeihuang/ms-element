@@ -140,7 +140,14 @@ export default {
             if (this.isCreateApp && app && app.vm && Object.keys(app.vm).length < 2) {
               app.vm = this.createRouterApp(value)
             }
-            this.currentApp = this.getAppByPath(value.path)
+            this.currentApp = app
+            if (app.vm.$route.fullPath !== value.fullPath) {
+              app.vm.$router.replace({
+                path: value.path,
+                query: value.query,
+                params: value.params
+              })
+            }
           }
         }
       }
@@ -230,7 +237,6 @@ export default {
         })
       } else {
         this.$router.beforeEach((to, from, next) => {
-          console.log('this.$router.beforeEach', to, from)
           if (to.path === from.path) {
             let app = this.currentApp
             app.vm.$router.push({
@@ -264,31 +270,34 @@ export default {
       let router = new window.Router({
         routes: this.$router.options.routes.filter(item => item.path === route.path)
       })
-      router.beforeEach((to, from, next) => {
-        console.log('beforeEach', to, from)
-        if (to.path === from.path) {
-          this.apps.forEach(item => {
-            if (item.route.path === to.path) {
-              item.route = to
-            }
-          })
-        }
-        if (!to.matched || to.matched.length === 0) {
-          this.$router.push({
-            path: to.path,
-            params: to.params,
-            query: to.query
-          })
-        } else {
-          next()
-        }
-      })
+      let self = this
       return new window.Vue({ // eslint-disable-line
         el,
         router: router,
         store: this.$store,
         template: `<router-view class="app-router-view ms-scroller" :class="{'is-active': show}"></router-view>`,
         mounted () {
+          this.$router.beforeEach((to, from, next) => {
+            console.log('beforeEach', to, from)
+            if (!to.matched || to.matched.length === 0) {
+              self.$router.push({
+                path: to.path,
+                params: to.params,
+                query: to.query
+              })
+            } else {
+              next()
+            }
+          })
+          this.$router.afterEach((to, from) => {
+            if (to.path === from.path) {
+              self.apps.forEach(item => {
+                if (item.route.path === to.path) {
+                  item.route = to
+                }
+              })
+            }
+          })
           this.$emit('ready')
         },
         watch: {
