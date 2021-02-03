@@ -31,6 +31,9 @@
     <el-form-item label="个人介绍：" style="margin-bottom:0">
       {{res.desc}}
     </el-form-item>
+    <el-form-item label="" style="margin-bottom:0">
+      <el-button @click="handleClose">关闭当前弹框</el-button>
+    </el-form-item>
   </el-form>
 </template>
 
@@ -42,6 +45,9 @@ export default {
       return new Promise((resolve, reject) => {
         setTimeout(resolve(this.params || this.$attrs.params), 2000)
       })
+    },
+    handleClose () {
+      this.msDrawer && ms.navigator.pop(this.msDrawer.target)
     }
   },
   mounted () {
