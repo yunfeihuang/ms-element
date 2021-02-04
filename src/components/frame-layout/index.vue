@@ -69,7 +69,7 @@
         </el-row>
         <div class="ms-frame-layout--tabs" v-if="apps.length">
           <el-tabs :value="active" @tab-click="handleTab" editable @edit="handleTabsEdit">
-            <el-tab-pane v-for="(item,index) in apps" :label="item.route.meta.title" :name="item.resolvePath" :key="index"></el-tab-pane>
+            <el-tab-pane v-for="(item,index) in apps" :label="item.title" :name="item.resolvePath" :key="index"></el-tab-pane>
           </el-tabs>
           <el-dropdown trigger="click" @command="handleCommand">
             <i class="el-icon-arrow-down ms-frame-layout--tabs-action"></i>
@@ -154,9 +154,10 @@ export default {
     },
     apps (value) {
       let apps = value.map(item => {
-        let {route, resolvePath, vm} = item
+        let {route, resolvePath, vm, title} = item
         let {matched, ...others} = route
         return {
+          title,
           resolvePath,
           vm: {
             show: vm.show
@@ -260,6 +261,7 @@ export default {
       }
       this.pushApp({
         vm: $vm,
+        title: value.meta && value.meta.title ? value.meta.title : value.fullPath,
         route: value,
         resolvePath: value.path.replace(/\//g, '__')
       })
@@ -310,10 +312,14 @@ export default {
         watch: {
           show (value) {
             this.$emit(value ? 'show' : 'hidden')
+          },
+          title (value) {
+            self.updateAppTitle(this, value)
           }
         },
         data () {
           return {
+            title: this.$route.meta && this.$route.meta.title ? this.$route.meta.title : this.$route.fullPath,
             show: false
           }
         },
@@ -407,6 +413,10 @@ export default {
           return true
         })
       }
+    },
+    updateAppTitle (vm, title) {
+      let app = this.apps.find(item => item.vm === vm)
+      app && (app.title = title)
     }
   }
 }
