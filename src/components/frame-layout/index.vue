@@ -141,7 +141,7 @@ export default {
               app.vm = this.createRouterApp(value)
             }
             this.currentApp = app
-            if (app.vm.$route.fullPath !== value.fullPath) {
+            if (app.vm.$route && app.vm.$route.fullPath !== value.fullPath) {
               app.vm.$router.replace({
                 path: value.path,
                 query: value.query,
@@ -296,6 +296,13 @@ export default {
                   item.route = to
                 }
               })
+              /*
+              self.$router.replace({
+                path: to.path,
+                params: to.params,
+                query: to.query
+              })
+              */
             }
           })
           this.$emit('ready')
