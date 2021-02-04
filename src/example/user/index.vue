@@ -12,7 +12,7 @@
           slot="date"
           type="daterange"
           value-format="timestamp">
-        </el-date-picker>-->
+        </el-date-picker>
         <el-button size="small" @click="handleCreate()">创建</el-button>
       </ms-query-form>
     </template>
@@ -153,18 +153,7 @@ export default {
         end_time: '',
         ...this.$route.query
       }),
-      multipleSelectionProp: 'id', // 设置返回的数据列表唯一标识属性名
-      options: [{
-        value: '启用',
-        label: '启用'
-      }, {
-        value: '禁用',
-        label: '禁用'
-      }],
-      pageData: {
-        count: 0,
-        data: []
-      }
+      multipleSelectionProp: 'id' // 设置返回的数据列表唯一标识属性名
     }
   },
   methods: {
