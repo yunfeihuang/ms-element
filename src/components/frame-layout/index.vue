@@ -666,6 +666,7 @@ export default {
     padding: 10px;
     background-color:$--color-white;
     background-clip: content-box;
+    box-shadow: inset 0 0 0 10px $--background-color-base;
     &.is-active{
       visibility: visible;
       z-index: 1;
