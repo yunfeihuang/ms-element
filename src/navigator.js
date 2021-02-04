@@ -1,4 +1,4 @@
-import Drawer from '@/components/drawer'
+import Drawer from '../packages/drawer'
 
 let set = new Set()
 export default {

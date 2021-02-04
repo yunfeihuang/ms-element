@@ -5,7 +5,7 @@ import store from './store'
 import App from './App.vue'
 import '@/styles/import.scss'
 import ElementUI from '@element-ui'
-import * as EUI from './components'
+import * as MS from '../packages'
 import DomPortal from 'vue-dom-portal'
 import filters from '@/filters'
 import '@/directives'
@@ -19,7 +19,7 @@ Object.keys(filters).forEach(key => {
 Vue.use(Router)
 Vue.use(DomPortal)
 Vue.use(ElementUI)
-Vue.use(EUI)
+Vue.use(MS)
 Vue.prototype.$axios = axios
 
 let initRootFontSize = function () {
