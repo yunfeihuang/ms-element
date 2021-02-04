@@ -237,6 +237,14 @@ export default {
           next()
         })
       } else {
+        if (window.Router) {
+          const Router = window.Router
+          const originalPush = Router.prototype.push
+          Router.prototype.push = function push (location, onResolve, onReject) {
+            if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+            return originalPush.call(this, location).catch(err => err)
+          }
+        }
         this.$router.beforeEach((to, from, next) => {
           if (to.path === from.path) {
             let app = this.currentApp
@@ -298,13 +306,13 @@ export default {
                   item.route = to
                 }
               })
-              /*
-              self.$router.replace({
-                path: to.path,
-                params: to.params,
-                query: to.query
-              })
-              */
+              if (self.$route.fullPath !== to.fullPath) {
+                self.$router.replace({
+                  path: to.path,
+                  params: to.params,
+                  query: to.query
+                })
+              }
             }
           })
           this.$emit('ready')

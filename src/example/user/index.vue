@@ -12,7 +12,7 @@
           slot="date"
           type="daterange"
           value-format="timestamp">
-        </el-date-picker>
+        </el-date-picker>-->
         <el-button size="small" @click="handleCreate()">创建</el-button>
       </ms-query-form>
     </template>
@@ -145,7 +145,7 @@ export default {
       query: this.getQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象
         active: 'first',
         keyword: '',
-        status: [],
+        status: '',
         start: null,
         end: null,
         datetime: null,
