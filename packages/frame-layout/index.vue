@@ -269,7 +269,7 @@ export default {
       }
       this.pushApp({
         vm: $vm,
-        title: value.meta && value.meta.title ? value.meta.title : value.fullPath,
+        title: value.meta && value.meta.title ? typeof value.meta.title === 'function' ? value.meta.title(value) : value.meta.title : value.fullPath,
         route: value,
         resolvePath: value.path.replace(/\//g, '__')
       })
@@ -320,14 +320,10 @@ export default {
         watch: {
           show (value) {
             this.$emit(value ? 'show' : 'hidden')
-          },
-          title (value) {
-            self.updateAppTitle(this, value)
           }
         },
         data () {
           return {
-            title: this.$route.meta && this.$route.meta.title ? this.$route.meta.title : this.$route.fullPath,
             show: false
           }
         },
