@@ -32,7 +32,7 @@
       {{res.desc}}
     </el-form-item>
     <el-form-item v-if="this.msDrawer" label="" style="margin-bottom:0">
-      <el-button @click="handleClose">关闭当前弹框</el-button>
+      <el-button type="text" @click="handleClose">关闭当前弹框</el-button>
     </el-form-item>
   </el-form>
 </template>

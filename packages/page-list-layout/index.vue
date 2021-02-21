@@ -75,7 +75,7 @@ export default {
 }
 .is-iframe{
   .ms-page-list-layout{
-    padding:0;
+    box-shadow: none;
   }
 }
 .ms-dialog .el-dialog__body .ms-page-list-layout{

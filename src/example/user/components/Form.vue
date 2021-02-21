@@ -52,7 +52,7 @@
     <el-form-item label="个人介绍">
       <el-input v-model.trim="form.desc" type="textarea" :autosize="{minRows: 2}"></el-input>
     </el-form-item>
-    <el-form-item label="即时配送">
+    <el-form-item label="即时配送" v-if="params">
       <el-button @click="handleDetail" type="text">打开详情弹框（同时打开多个侧边弹框）</el-button>
     </el-form-item>
   </el-form>

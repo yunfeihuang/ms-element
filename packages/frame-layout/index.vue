@@ -130,7 +130,7 @@ export default {
   },
   watch: {
     $route (value) {
-      console.log('$route', value)
+      console.log('$route', value, this.$router)
       if (this.isTabs) {
         if (value.matched && value.matched.length) {
           if (this.apps.every(item => {
@@ -287,7 +287,14 @@ export default {
       let el = document.createElement('div')
       this.$el.querySelector('.ms-frame-layout--body').appendChild(el)
       let router = new window.Router({
-        routes: this.$router.options.routes.filter(item => item.path === route.path)
+        routes: this.$router.options.routes.filter(item => {
+          if (item.path === route.path) {
+            return true
+          } else if (item.children && item.children.length) {
+            return JSON.stringify(item.children).indexOf(`"${route.path}"`) > -1
+          }
+          return false
+        })
       })
       let self = this
       return new window.Vue({ // eslint-disable-line
@@ -313,15 +320,7 @@ export default {
             let app2 = self.getAppByPath(from.path)
             if (app1 && app1 === app2) {
               app1.route = to
-              /*
-              if (self.$route.fullPath !== to.fullPath) {
-                self.$router.replace({
-                  path: to.path,
-                  params: to.params,
-                  query: to.query
-                })
-              }
-              */
+              self.apps = [...self.apps]
             }
           })
           this.$emit('ready')
