@@ -77,12 +77,12 @@
           <el-dropdown trigger="click">
             <el-button type="text" style="margin-left: 10px;">更多</el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="handleLargeDetail">详情大弹窗</el-dropdown-item>
+              <el-dropdown-item @click.native="handleLargeDetail(scope.row)">详情大弹窗</el-dropdown-item>
               <el-dropdown-item @click.native="handleList">列表弹框</el-dropdown-item>
               <el-dropdown-item @click.native="handleCustom(scope.row)">自定义弹框</el-dropdown-item>
               <el-dropdown-item @click.native="handleOpen">iframe弹框</el-dropdown-item>
               <el-dropdown-item @click.native="handleOpenComponent">引入组件弹框</el-dropdown-item>
-              <el-dropdown-item @click.native="$router.push({path: '/user/detail', query: scope.row})">页面式详情</el-dropdown-item>
+              <el-dropdown-item @click.native="$router.push({path: $route.path + '/detail', query: scope.row})">页面式详情</el-dropdown-item>
               <el-dropdown-item @click.native="handleDelete">删除</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>

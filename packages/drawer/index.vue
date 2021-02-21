@@ -112,7 +112,7 @@ export default {
       this.loading = value
     },
     loadComponent () {
-      let mixins = {
+      let mixin = {
         inject: ['msDrawer'],
         props: {
           params: {},
@@ -124,6 +124,15 @@ export default {
           }
         }
       }
+      let addMixins = component => {
+        if (!component.mixins) {
+          component.mixins = []
+        }
+        if (!component.mixins.find(item => item.inject && (item.inject.msDrawer || (item.inject.indexOf && item.inject.indexOf('msDrawer') > -1)))) {
+          component.mixins.push(mixin)
+        }
+        return component
+      }
       if (this.importComponent && this.importComponent instanceof Function) {
         let promise = this.importComponent()
         if (promise) {
@@ -133,22 +142,14 @@ export default {
           }
         }
         promise.then(res => {
-          if (!res.default.mixins) {
-            res.default.mixins = []
-          }
-          res.default.mixins.push(mixins)
-          this.component = res.default
+          this.component = addMixins(res.default)
         }).finally(res => {
           setTimeout(() => {
             this.loadingDone && this.loadingDone()
           }, 100)
         })
       } else {
-        if (!this.importComponent.mixins) {
-          this.importComponent.mixins = []
-        }
-        this.importComponent.mixins.push(mixins)
-        this.component = this.importComponent
+        this.component = addMixins(this.importComponent)
         this.loading = false
       }
     },
@@ -217,19 +218,19 @@ export default {
       }
     }
     &--mini{
-      min-width:14rem;
-      width:14rem;
+      min-width:$width * 0.5;
+      width:$width * 0.5;
     }
     &--small{
-      min-width:26rem;
-      width:26rem;
+      min-width:$width * 0.65;
+      width:$width * 0.65;
     }
     &--default{
       min-width:$width;
       width:$width;
     }
     &--large{
-      min-width:$width * 1.8;
+      min-width:$width;
       width:$width * 1.8;
     }
     &--layout{

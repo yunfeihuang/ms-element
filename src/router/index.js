@@ -1,8 +1,6 @@
-/*
 const Layout = {
   template: `<router-view/>`
 }
-*/
 
 export default [
   {
@@ -39,5 +37,25 @@ export default [
     meta: {
       title: '示例详情'
     }
+  },
+  {
+    path: '/user2',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        component: () => import('@/example/user'),
+        meta: {
+          title: '示例列表2'
+        }
+      },
+      {
+        path: '/user2/detail',
+        component: () => import('@/example/user/detail'),
+        meta: {
+          title: '示例详情2'
+        }
+      }
+    ]
   }
 ]

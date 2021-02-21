@@ -68,8 +68,8 @@
           <slot v-else name="header"></slot>
         </el-row>
         <div class="ms-frame-layout--tabs" v-if="apps.length">
-          <el-tabs :value="active" @tab-click="handleTab" editable @edit="handleTabsEdit">
-            <el-tab-pane v-for="(item,index) in apps" :label="item.title" :name="item.resolvePath" :key="index"></el-tab-pane>
+          <el-tabs :value="currentAppIndex + ''" @tab-click="handleTab" editable @edit="handleTabsEdit">
+            <el-tab-pane v-for="(item,index) in apps" :label="item.title" :name="index + ''" :key="index"></el-tab-pane>
           </el-tabs>
           <el-dropdown trigger="click" @command="handleCommand">
             <i class="el-icon-arrow-down ms-frame-layout--tabs-action"></i>
@@ -133,20 +133,34 @@ export default {
       console.log('$route', value)
       if (this.isTabs) {
         if (value.matched && value.matched.length) {
-          if (this.apps.every(item => item.route.path !== value.path)) {
+          if (this.apps.every(item => {
+            if (this.isCreateApp) {
+              if (item.vm) {
+                if (item.vm.$router) {
+                  return item.vm.$router.getMatchedComponents(value.path).length === 0
+                } else {
+                  return item.route.path !== value.path
+                }
+              }
+              return true
+            }
+            return item.route.path === value.path
+          })) {
             this.createRouter(value)
           } else {
             let app = this.getAppByPath(value.path)
-            if (this.isCreateApp && app && app.vm && Object.keys(app.vm).length < 2) {
-              app.vm = this.createRouterApp(value)
-            }
-            this.currentApp = app
-            if (app.vm.$route && app.vm.$route.fullPath !== value.fullPath) {
-              app.vm.$router.replace({
-                path: value.path,
-                query: value.query,
-                params: value.params
-              })
+            if (app) {
+              if (this.isCreateApp && app && app.vm && Object.keys(app.vm).length < 2) {
+                app.vm = this.createRouterApp(value)
+              }
+              this.currentApp = app
+              if (app.vm && app.vm.$route && app.vm.$route.fullPath !== value.fullPath && value.matched.length === 1) {
+                app.vm.$router.replace({
+                  path: value.path,
+                  query: value.query,
+                  params: value.params
+                })
+              }
             }
           }
         }
@@ -154,11 +168,10 @@ export default {
     },
     apps (value) {
       let apps = value.map(item => {
-        let {route, resolvePath, vm, title} = item
+        let {route, vm, title} = item
         let {matched, ...others} = route
         return {
           title,
-          resolvePath,
           vm: {
             show: vm.show
           },
@@ -176,12 +189,6 @@ export default {
     }
   },
   computed: {
-    active () {
-      if (this.currentApp) {
-        return this.currentApp.resolvePath
-      }
-      return null
-    },
     currentApp: {
       get () {
         let self = this
@@ -196,11 +203,14 @@ export default {
         })
       },
       set (value) {
-        this.apps.forEach(item => {
+        this.apps.forEach((item, index) => {
           if (item.vm) {
             item.vm.show = value === item
           }
-          if (value === item && item.route.path !== this.$route.path) {
+          if (value === item) {
+            this.currentAppIndex = index
+          }
+          if (value === item && item.route.path !== this.$route.path && this.$route.matched.length === 1) {
             this.$router.push(item.route)
           }
         })
@@ -270,8 +280,7 @@ export default {
       this.pushApp({
         vm: $vm,
         title: value.meta && value.meta.title ? typeof value.meta.title === 'function' ? value.meta.title(value) : value.meta.title : value.fullPath,
-        route: value,
-        resolvePath: value.path.replace(/\//g, '__')
+        route: value
       })
     },
     createRouterApp (route) {
@@ -300,12 +309,11 @@ export default {
             }
           })
           this.$router.afterEach((to, from) => {
-            if (to.path === from.path) {
-              self.apps.forEach(item => {
-                if (item.route.path === to.path) {
-                  item.route = to
-                }
-              })
+            let app1 = self.getAppByPath(to.path)
+            let app2 = self.getAppByPath(from.path)
+            if (app1 && app1 === app2) {
+              app1.route = to
+              /*
               if (self.$route.fullPath !== to.fullPath) {
                 self.$router.replace({
                   path: to.path,
@@ -313,6 +321,7 @@ export default {
                   query: to.query
                 })
               }
+              */
             }
           })
           this.$emit('ready')
@@ -333,7 +342,13 @@ export default {
       })
     },
     getAppByPath (path) {
-      return this.apps.find(item => item.route.path === path)
+      return this.apps.find(item => {
+        if (item.vm && item.vm.$router) {
+          return item.vm.$router.getMatchedComponents(path).length > 0
+        } else {
+          return item.route.path === path
+        }
+      })
     },
     pushApp (value) {
       let apps = []
@@ -355,25 +370,26 @@ export default {
       let apps = [...this.apps]
       let index = apps.findIndex(item => item === value)
       apps = apps.filter(item => item !== value)
+      let currentApp = null
       if (apps[index]) {
-        this.currentApp = apps[index]
+        currentApp = apps[index]
       } else if (apps[index - 1]) {
-        this.currentApp = apps[index - 1]
-      } else {
-        this.currentApp = null
+        currentApp = apps[index - 1]
       }
       this.apps = apps
       value.vm && value.vm.$destroy && value.vm.$destroy()
+      currentApp && this.$router.push(currentApp.route)
     },
     handleTab (tab, event) {
-      this.currentApp = this.getAppByPath(tab.name.replace(/__/g, '/'))
+      let app = this.apps[parseInt(tab.name)]
+      this.$router.push(app.route)
     },
     handleTabsEdit (targetName, action) {
       if (action === 'remove') {
         if (this.apps.length === 1) {
           this.handleCommand('all')
         } else {
-          let app = this.getAppByPath(targetName.replace(/__/g, '/'))
+          let app = this.apps[parseInt(targetName)]
           app && this.removeApp(app)
         }
       }

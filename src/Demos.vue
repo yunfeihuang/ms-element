@@ -27,6 +27,10 @@ export default {
             {
               route: '/user',
               title: '用户列表'
+            },
+            {
+              route: '/user2',
+              title: '用户列表2'
             }
           ]
         }
