@@ -15,6 +15,7 @@ const components = [
   QueryForm
 ]
 const install = (Vue) => {
+  window.Vue = Vue
   components.map(component => {
     component.componentName && Vue.component(component.componentName, component)
   })

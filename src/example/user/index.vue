@@ -229,8 +229,9 @@ export default {
         titleSlot: {
           template: '<div>custom title</div>'
         },
-        done () {
-          ms.navigator.pop(self)
+        done (cb) {
+          // ms.navigator.pop(self)
+          cb()
           self.beforeFetch()
         },
         promiseSubmit (data) {

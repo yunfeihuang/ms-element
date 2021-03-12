@@ -64,9 +64,7 @@ router.beforeEach((to, from, next) => {
 router.afterEach(() => {
   NProgress.done()
 })
-window.Vue = Vue
-window.Router = Router
-window.store = store
+
 new Vue({ // eslint-disable-line
   router,
   store,

@@ -105,7 +105,7 @@ export default {
     },
     isCreateApp: {
       type: Boolean,
-      default: true
+      default: false
     },
     defaultRoute: {
       type: [Object],
@@ -143,10 +143,21 @@ export default {
                 }
               }
               return true
+            } else {
+              return item.route.path !== value.path
             }
-            return item.route.path === value.path
           })) {
-            this.createRouter(value)
+            if (this.isCreateApp) {
+              this.createRouter(value)
+            } else {
+              if (value && value.meta && value.meta.title) {
+                this.createRouter(value)
+              } else {
+                let currentApp = this.currentApp
+                currentApp.route = value
+                this.apps = [...this.apps]
+              }
+            }
           } else {
             let app = this.getAppByPath(value.path)
             if (app) {

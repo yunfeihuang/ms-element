@@ -81,7 +81,10 @@ export default {
     },
     afterSubmit () { // 提交成功后处理
       if (this.done) {
-        this.done()
+        const cb = () => {
+          this.msDrawer.handleClose()
+        }
+        this.done(cb.bind(this))
       } else {
         history.back()
       }
