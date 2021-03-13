@@ -104,8 +104,7 @@ export default {
       default: true
     },
     isCreateApp: {
-      type: Boolean,
-      default: false
+      type: Boolean
     },
     defaultRoute: {
       type: [Object],
@@ -144,7 +143,9 @@ export default {
               }
               return true
             } else {
-              return item.route.path !== value.path
+              return value.matched.every(item2 => {
+                return item.route.path !== item2.path
+              })
             }
           })) {
             if (this.isCreateApp) {
@@ -258,8 +259,8 @@ export default {
           next()
         })
       } else {
-        if (window.Router) {
-          const Router = window.Router
+        const Router = this.findVueRouter()
+        if (Router) {
           const originalPush = Router.prototype.push
           Router.prototype.push = function push (location, onResolve, onReject) {
             if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
@@ -281,6 +282,9 @@ export default {
     }
   },
   methods: {
+    findVueRouter () {
+      return window.Vue._installedPlugins.find(item => item.name === 'VueRouter')
+    },
     createRouter (value) {
       let $vm = null
       if (this.isCreateApp) {
@@ -297,7 +301,8 @@ export default {
     createRouterApp (route) {
       let el = document.createElement('div')
       this.$el.querySelector('.ms-frame-layout--body').appendChild(el)
-      let router = new window.Router({
+      const Router = this.findVueRouter()
+      let router = new Router({
         routes: this.$router.options.routes.filter(item => {
           if (item.path === route.path) {
             return true
