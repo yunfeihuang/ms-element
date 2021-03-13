@@ -17,20 +17,20 @@ export default {
       type: Array
     }
   },
-  mounted () {
-    this.initReactiveData()
-  },
-  methods: {
-    initReactiveData () {
-      let data = {}
-      this.option.forEach(item => {
-        if (!(this.$scopedSlots[item.prop] || this.$slots[item.prop])) {
-          if (this.msPageList.query[item.prop] === undefined) {
-            data[item.prop] = item.value || null
-          }
+  watch: {
+    option: {
+      immediate: true,
+      handler (value) {
+        if (value && value.forEach) {
+          value.forEach(item => {
+            if (!(this.$scopedSlots[item.prop] || this.$slots[item.prop])) {
+              if (this.msPageList.query && this.msPageList.query[item.prop] === undefined) {
+                this.$set(this.msPageList.query, item.prop, item.value)
+              }
+            }
+          })
         }
-      })
-      this.$set(this.msPageList.query, data)
+      }
     }
   }
 }

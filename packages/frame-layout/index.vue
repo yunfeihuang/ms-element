@@ -129,7 +129,7 @@ export default {
   },
   watch: {
     $route (value) {
-      console.log('$route', value, this.$router)
+      console.log('$route', value)
       if (this.isTabs) {
         if (value.matched && value.matched.length) {
           if (this.apps.every(item => {
@@ -246,6 +246,7 @@ export default {
     }
   },
   mounted () {
+    // console.log('fdasfdas', this.$router.resolve('/user2'))
     if (window.top !== window) {
       document.body.classList.add('is-iframe')
     }
