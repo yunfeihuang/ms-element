@@ -79,7 +79,7 @@ export default {
         query
       })
     },
-    handleDateRangeInput (value, keys = ['start_time', 'end_time']) {
+    handleRangeInput (value, keys = ['start_time', 'end_time']) {
       if (value && value[0]) {
         this.query[keys[0]] = value[0]
         this.query[keys[1]] = value[1]

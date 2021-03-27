@@ -2,16 +2,18 @@
   <!--PageListLayout有四个插槽:breadcrumb,search,table,pagination(这个是默认存在的)-->
   <ms-page-list-layout>
     <template slot="search">
-      <el-tabs v-model="query.active" type="card" @tab-click="handleTab">
-        <el-tab-pane label="黄金" name="first"></el-tab-pane>
-        <el-tab-pane label="白金" name="second"></el-tab-pane>
-        <el-tab-pane label="白银" name="third"></el-tab-pane>
-      </el-tabs>
       <ms-query-form :option="option" @submit="handleSubmit">
+        <el-tabs slot="prepend" v-model="query.active" type="card" @tab-click="handleTab">
+          <el-tab-pane label="黄金" name="first"></el-tab-pane>
+          <el-tab-pane label="白金" name="second"></el-tab-pane>
+          <el-tab-pane label="白银" name="third"></el-tab-pane>
+        </el-tabs>
         <el-date-picker
           slot="date"
           type="daterange"
-          value-format="timestamp">
+          value-format="YYYY-MM-dd"
+          :value="[query.start_time,query.end_time]"
+          @input="handleRangeInput($event)">
         </el-date-picker>
         <el-button size="small" @click="handleCreate()">创建</el-button>
       </ms-query-form>
@@ -126,6 +128,7 @@ export default {
         {
           prop: 'status',
           label: '用户状态',
+          component: 'el-select',
           option: [
             {
               label: '启用',
@@ -148,7 +151,6 @@ export default {
         status: '',
         start: null,
         end: null,
-        datetime: null,
         start_time: '',
         end_time: '',
         ...this.$route.query

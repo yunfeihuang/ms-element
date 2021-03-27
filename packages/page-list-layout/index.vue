@@ -179,14 +179,14 @@ export default {
     .ms-scroller{
       max-height:68vh;
     }
+    >.v-modal{
+      position:absolute;
+      background: $--color-white;
+      outline:none;
+    }
   }
   &--search-high{
     margin:10px;
-  }
-  >.v-modal{
-    position:absolute;
-    background: $--color-white;
-    outline:none;
   }
 }
 </style>

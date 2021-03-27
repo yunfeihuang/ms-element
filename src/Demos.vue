@@ -2,7 +2,7 @@
   <ms-frame-layout
     title="后台管理系统"
     :menus="menus"
-    :isCreateApp="true">
+    :isCreateApp="false">
     <template slot="logo" slot-scope="scope">
       <i :style="`font-size:${scope.isCollapse?14:26}px;font-style:normal;`">LOGO</i>
     </template>
