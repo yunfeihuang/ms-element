@@ -144,7 +144,7 @@ export default {
               return true
             } else {
               return value.matched.every(item2 => {
-                return item.route.path !== item2.path
+                return item.route.path !== (item2.path == '' ? value.path : item2.path)
               })
             }
           })) {

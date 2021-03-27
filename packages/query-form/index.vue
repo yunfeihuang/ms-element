@@ -5,7 +5,8 @@
         <slot name="prepend"></slot>
       </div>
       <el-form-item v-for="(item, index) in __option" :key="index" v-bind="getFormItemProps(item)">
-        <template v-if="item.option">
+        <slot v-if="$scopedSlots[item.prop] || $slots[item.prop]" :name="item.prop" v-bind="item.props"></slot>
+        <template v-else-if="item.option">
           <el-checkbox-group
             v-if="item.component == 'el-checkbox-group'"
             v-bind="item.props"
@@ -40,7 +41,6 @@
             </el-option>
           </el-select>
         </template>
-        <slot v-else-if="$scopedSlots[item.prop] || $slots[item.prop]" :name="item.prop" v-bind="item.props"></slot>
         <component v-else :is="item.component || 'el-input'" v-bind="item.props" v-model="msPageList.query[item.prop]"/>
       </el-form-item>
       <template>
@@ -63,7 +63,7 @@
         :modal-append-to-body="false"
         direction="ttb"
         size="auto">
-        <el-form v-bind="msPageList.getFormProps({class: '', labelWidth: '80px',inline:false})" ref="highQueryForm" @submit.native.prevent="msPageList.handleSubmit">
+        <el-form v-bind="msPageList.getFormProps({class: '', labelWidth: '80px',inline:false})" ref="highQueryForm" @submit.native.prevent="handleHighSubmit">
           <el-row :gutter="10" class="scroller">
             <el-col v-bind="getColProps()" v-for="(item, index) in __option" :key="index">
               <el-form-item v-bind="getFormItemProps(item)">
@@ -156,6 +156,11 @@ export default {
       return this.option
     }
   },
+  watch: {
+    searchMode (value) {
+      this.$emit('update:searchMode', value)
+    }
+  },
   data () {
     return {
       searchMode: 'default',
@@ -186,6 +191,10 @@ export default {
     },
     handleHighReset () {
       this.$refs.highQueryForm && this.$refs.highQueryForm.resetFields && this.$refs.highQueryForm.resetFields()
+    },
+    handleHighSubmit () {
+      this.highVisible = false
+      this.msPageList.handleSubmit()
     }
   }
 }
@@ -221,6 +230,9 @@ export default {
       position:absolute;
       background: $--color-white;
       outline:none;
+      background-clip: content-box;
+      border: 10px solid transparent;
+      box-sizing: border-box;
     }
     &--search-high{
       margin:10px;
