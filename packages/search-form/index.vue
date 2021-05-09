@@ -35,7 +35,8 @@
           <el-select
             v-else
             v-bind="item.props"
-            v-model="msPageList.query[item.prop]">
+            v-model="msPageList.query[item.prop]"
+            clearable>
             <el-option
               v-for="item in item.option"
               :key="item.value"
@@ -195,7 +196,7 @@ export default {
                     delete this.msPageList.query[item.prop]
                   }
                 } else {
-                  this.$set(this.msPageList.query, item.prop, item.value)
+                  item.component && this.$set(this.msPageList.query, item.prop, item.value)
                 }
               } else {
                 if (item.hight === false) {
@@ -203,7 +204,7 @@ export default {
                     delete this.msPageList.query[item.prop]
                   }
                 } else {
-                  this.$set(this.msPageList.query, item.prop, item.value)
+                  item.component && this.$set(this.msPageList.query, item.prop, item.value)
                 }
               }
             }
