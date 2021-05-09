@@ -1,10 +1,13 @@
 <template>
-  <div class="ms-query-form">
-    <el-form v-if="searchMode == 'default'" v-bind="msPageList.getFormProps()" @submit.native.prevent="msPageList.handleSubmit">
-      <div class="ms-query-form--prepend" v-if="$slots['prepend']">
+  <div class="ms-search-form">
+    <el-form 
+      v-if="searchMode == 'default'"
+      v-bind="msPageList.getFormProps()"
+      @submit.native.prevent="msPageList.handleSubmit">
+      <div class="ms-search-form--prepend" v-if="$slots['prepend']">
         <slot name="prepend"></slot>
       </div>
-      <el-form-item v-for="(item, index) in __option" :key="index" v-bind="getFormItemProps(item)">
+      <el-form-item v-for="(item, index) in __defaultOption" :key="index" v-bind="getFormItemProps(item)">
         <slot v-if="$scopedSlots[item.prop] || $slots[item.prop]" :name="item.prop" v-bind="item.props"></slot>
         <template v-else-if="item.option">
           <el-checkbox-group
@@ -43,29 +46,32 @@
         </template>
         <component v-else :is="item.component || 'el-input'" v-bind="item.props" v-model="msPageList.query[item.prop]"/>
       </el-form-item>
+      <div class="ms-search-form--append" v-if="$slots['append']">
+        <slot name="append"></slot>
+      </div>
       <template>
         <!--native-type="submit"是修改button type属性为submit-->
         <el-button native-type="submit" size="small">搜索</el-button>
-        <el-button size="small" @click="handleHighToggle">高级搜索</el-button>
+        <el-button size="small" v-if="isHightSearch" @click="handleHighToggle">高级搜索</el-button>
         <slot></slot>
       </template>
     </el-form>
     <template v-else>
-      <div class="ms-query-form--search-high">
+      <div class="ms-search-form--search-high">
         <el-button type="text" size="small" icon="el-icon-search" @click="handleHighToggle">继续搜索</el-button>
         <el-button type="text" size="small" icon="el-icon-delete" @click="handleHighCancel">清除搜索</el-button>
       </div>
       <el-drawer
-        class="ms-query-form--search-drawer"
+        class="ms-search-form--search-drawer"
         title="高级搜索"
         :visible.sync="highVisible"
         :append-to-body="false"
         :modal-append-to-body="false"
         direction="ttb"
         size="auto">
-        <el-form v-bind="msPageList.getFormProps({class: '', labelWidth: '80px',inline:false})" ref="highQueryForm" @submit.native.prevent="handleHighSubmit">
+        <el-form v-bind="msPageList.getFormProps({class:'', labelWidth:'80px',inline:false})" ref="highQueryForm" @submit.native.prevent="handleHighSubmit">
           <el-row :gutter="10" class="scroller">
-            <el-col v-bind="getColProps()" v-for="(item, index) in __option" :key="index">
+            <el-col v-bind="getColProps()" v-for="(item, index) in __hightOption" :key="index">
               <el-form-item v-bind="getFormItemProps(item)">
                 <template v-if="item.option">
                   <el-checkbox-group
@@ -122,7 +128,7 @@
 <script>
 import {Form} from 'element-ui'
 export default {
-  componentName: 'MsQueryForm',
+  componentName: 'MsSearchForm',
   inject: ['msPageList'],
   props: {
     ...Form.props,
@@ -134,31 +140,41 @@ export default {
     option: {
       immediate: true,
       handler (value) {
-        if (value && value.forEach) {
-          value.forEach(item => {
-            if (!(this.$scopedSlots[item.prop] || this.$slots[item.prop])) {
-              if (this.msPageList.query && this.msPageList.query[item.prop] === undefined) {
-                this.$set(this.msPageList.query, item.prop, item.value)
-              }
-            }
-          })
-        }
+        this.initPageListQuery(value)
       }
     }
   },
   computed: {
+    isHightSearch () {
+      return this.option.some(item => item.hight === true)
+    },
     __option () {
-      this.option.forEach(item => {
-        if (item && item.label && item.props && !item.props.placeholder) {
-          item.props.placeholder = '请输入' + item.label
+      return this.option.map(item => {
+        let _item = {...item}
+        _item.props = {...item.props}
+        if (_item && _item.label && _item.props && !_item.props.placeholder) {
+          _item.props.placeholder = '请输入' + _item.label
         }
+        return _item
       })
-      return this.option
+    },
+    __defaultOption () {
+      let result = this.__option
+      if (this.isHightSearch) {
+        result = this.__option.filter(item => !item.hight)
+      }
+      return result
+    },
+    __hightOption () {
+      let result = this.__option
+      return result
     }
   },
   watch: {
     searchMode (value) {
+      this.msPageList && this.msPageList.handleResize()
       this.$emit('update:searchMode', value)
+      this.initPageListQuery(this.option)
     }
   },
   data () {
@@ -168,6 +184,33 @@ export default {
     }
   },
   methods: {
+    initPageListQuery (option) {
+      if (option && option.forEach) {
+        option.forEach(item => {
+          if (!(this.$scopedSlots[item.prop] || this.$slots[item.prop])) {
+            if (this.msPageList.query) {
+              if (this.searchMode === 'default') {
+                if (item.hight) {
+                  if (this.msPageList.query[item.prop] !== undefined) {
+                    delete this.msPageList.query[item.prop]
+                  }
+                } else {
+                  this.$set(this.msPageList.query, item.prop, item.value)
+                }
+              } else {
+                if (item.hight === false) {
+                  if (this.msPageList.query[item.prop] !== undefined) {
+                    delete this.msPageList.query[item.prop]
+                  }
+                } else {
+                  this.$set(this.msPageList.query, item.prop, item.value)
+                }
+              }
+            }
+          }
+        })
+      }
+    },
     getFormItemProps (item) {
       let {props, value, ...others} = item
       return others
@@ -200,7 +243,7 @@ export default {
 }
 </script>
 <style lang="scss">
-  .ms-query-form{
+  .ms-search-form{
     &--prepend{
       margin-bottom:10px;
     }

@@ -2,7 +2,7 @@
   <!--PageListLayout有四个插槽:breadcrumb,search,table,pagination(这个是默认存在的)-->
   <ms-page-list-layout>
     <template slot="search">
-      <ms-query-form :option="option" @submit="handleSubmit">
+      <ms-search-form :option="option" @submit="handleSubmit">
         <el-tabs slot="prepend" v-model="query.active" type="card" @tab-click="handleTab">
           <el-tab-pane label="黄金" name="first"></el-tab-pane>
           <el-tab-pane label="白金" name="second"></el-tab-pane>
@@ -16,7 +16,7 @@
           @input="handleRangeInput($event)">
         </el-date-picker>
         <el-button size="small" @click="handleCreate()">创建</el-button>
-      </ms-query-form>
+      </ms-search-form>
     </template>
     <!--v-bind="getTableProps()"是必须的-->
     <el-table slot="table"
@@ -142,7 +142,8 @@ export default {
         },
         {
           prop: 'date',
-          label: '日期范围'
+          label: '日期范围',
+          hight: true
         }
       ],
       query: this.getQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象

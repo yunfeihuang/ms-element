@@ -143,7 +143,7 @@ export default {
         let rows = query.rows ? Number(query.rows) : 20
         let page = query.page ? Number(query.page) : 1
         let layout = 'total, prev, pager, next, sizes, jumper'
-        let pagerCount = 7
+        let pagerCount = 6
         if (process.browser && document.ontouchstart !== undefined) {
           layout = 'total, prev, pager, next, sizes'
           pagerCount = 3
