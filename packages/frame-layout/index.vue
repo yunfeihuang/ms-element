@@ -57,7 +57,7 @@
         <el-row
           type="flex"
           align="middle">
-          <i title="收起/展开左侧菜单" class="ms-frame-layout--collapse" :class="!isCollapse ? 'el-icon-s-fold': 'el-icon-s-unfold'"  @click="isCollapse=!isCollapse"></i>
+          <i v-if="asideCollapse" title="收起/展开左侧菜单" class="ms-frame-layout--collapse" :class="!isCollapse ? 'el-icon-s-fold': 'el-icon-s-unfold'"  @click="isCollapse=!isCollapse"></i>
           <template v-if="!$slots['header']">
             <el-col>
               <slot name="title" v-if="$slots['title']"></slot>
@@ -125,6 +125,10 @@ export default {
     },
     iconClass: {
       default: 'iconfont'
+    },
+    asideCollapse: {
+      type:Boolean,
+      default: true
     }
   },
   watch: {
