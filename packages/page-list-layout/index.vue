@@ -97,24 +97,6 @@ export default {
   &--footer{
     padding:5px 10px;
   }
-  .form-search{
-    margin:10px 10px 0;
-    .el-form-item,.el-button {
-      margin-bottom: 10px;
-    }
-    .el-button{
-      padding-right:8px;
-      padding-left:8px;
-      min-width:60px;
-    }
-  }
-  .el-tabs{
-    padding:0 10px;
-    margin-top: 10px;
-    &__header{
-      margin-bottom:0;
-    }
-  }
   &.is-breadcrumb{
     border-top:30px solid transparent;
   }

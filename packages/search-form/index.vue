@@ -45,6 +45,15 @@
             </el-option>
           </el-select>
         </template>
+        <template v-else-if="item.component=='el-date-picker'">
+          <el-date-picker
+            v-if="item.prop instanceof Array"
+            v-bind="item.props"
+            :value="msPageList.query[item.prop[0]] ? [msPageList.query[item.prop[0]],msPageList.query[item.prop[1]]] : []"
+            @input="handleRangeInput($event, item.prop)"
+          ></el-date-picker>
+          <el-date-picker v-else v-bind="item.props" v-model="msPageList.query[item.prop]"></el-date-picker>
+        </template>
         <component v-else :is="item.component || 'el-input'" v-bind="item.props" v-model="msPageList.query[item.prop]"/>
       </el-form-item>
       <div class="ms-search-form--append" v-if="$slots['append']">
@@ -71,7 +80,7 @@
         direction="ttb"
         size="auto">
         <el-form v-bind="msPageList.getFormProps({class:'', labelWidth:'80px',inline:false})" ref="highQueryForm" @submit.native.prevent="handleHighSubmit">
-          <el-row :gutter="10" class="scroller">
+          <el-row :gutter="10" class="ms-scroller">
             <el-col v-bind="getColProps()" v-for="(item, index) in __hightOption" :key="index">
               <el-form-item v-bind="getFormItemProps(item)">
                 <template v-if="item.option">
@@ -184,27 +193,48 @@ export default {
       highVisible: false
     }
   },
+  mounted () {
+    this.option && this.initPageListQuery(this.option)
+  },
   methods: {
     initPageListQuery (option) {
       if (option && option.forEach) {
+        let deleteFn = item => {
+          if (item.prop instanceof Array) {
+            item.prop.forEach(p => {
+              if (this.msPageList.query[p] !== undefined) {
+                delete this.msPageList.query[p]
+              }
+            })
+          } else {
+            delete this.msPageList.query[item.prop]
+          }
+        }
+        let addFn = item => {
+          if (item.component) {
+            if (item.prop instanceof Array) {
+              item.prop.forEach((p,i) => {
+                this.$set(this.msPageList.query, p, item.value[i])
+              })
+            } else {
+              this.$set(this.msPageList.query, item.prop, item.value)
+            }
+          }
+        }
         option.forEach(item => {
           if (!(this.$scopedSlots[item.prop] || this.$slots[item.prop])) {
             if (this.msPageList.query) {
               if (this.searchMode === 'default') {
                 if (item.hight) {
-                  if (this.msPageList.query[item.prop] !== undefined) {
-                    delete this.msPageList.query[item.prop]
-                  }
+                  deleteFn(item)
                 } else {
-                  item.component && this.$set(this.msPageList.query, item.prop, item.value)
+                  addFn(item)
                 }
               } else {
                 if (item.hight === false) {
-                  if (this.msPageList.query[item.prop] !== undefined) {
-                    delete this.msPageList.query[item.prop]
-                  }
+                  deleteFn(item)
                 } else {
-                  item.component && this.$set(this.msPageList.query, item.prop, item.value)
+                  addFn(item)
                 }
               }
             }
@@ -213,7 +243,10 @@ export default {
       }
     },
     getFormItemProps (item) {
-      let {props, value, ...others} = item
+      let {props, value, prop, ...others} = item
+      if (typeof prop === 'string') {
+        others.prop = prop
+      }
       return others
     },
     getColProps (props) {
@@ -239,6 +272,16 @@ export default {
     handleHighSubmit () {
       this.highVisible = false
       this.msPageList.handleSubmit()
+    },
+    handleRangeInput (value, keys = ['start_time', 'end_time']) {
+      if (value && value[0]) {
+        this.msPageList.query[keys[0]] = value[0]
+        this.msPageList.query[keys[1]] = value[1]
+      } else {
+        keys.forEach(item => {
+          this.msPageList.query[item] = null
+        })
+      }
     }
   }
 }
@@ -268,7 +311,7 @@ export default {
       }
     }
     .ms-scroller{
-      max-height:68vh;
+      max-height:60vh;
     }
     .v-modal{
       position:absolute;
@@ -280,6 +323,23 @@ export default {
     }
     &--search-high{
       margin:10px;
+    }
+    .el-tabs{
+      margin-top: 10px;
+      &__header{
+        margin-bottom:0;
+      }
+    }
+    .form-search{
+      margin:10px 10px 0;
+      .el-form-item,.el-button {
+        margin-bottom: 10px;
+      }
+      .el-button{
+        padding-right:8px;
+        padding-left:8px;
+        min-width:60px;
+      }
     }
   }
 </style>

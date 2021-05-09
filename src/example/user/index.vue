@@ -8,13 +8,9 @@
           <el-tab-pane label="白金" name="second"></el-tab-pane>
           <el-tab-pane label="白银" name="third"></el-tab-pane>
         </el-tabs>
-        <el-date-picker
-          slot="date"
-          type="daterange"
-          value-format="YYYY-MM-dd"
-          :value="[query.start_time,query.end_time]"
-          @input="handleRangeInput($event)">
-        </el-date-picker>
+        <input
+          slot="custom"
+          v-model="query.custom"/>
         <el-button size="small" @click="handleCreate()">创建</el-button>
       </ms-search-form>
     </template>
@@ -142,16 +138,31 @@ export default {
         },
         {
           prop: 'date',
+          label: '日期',
+          component: 'el-date-picker',
+          props: {
+            valueFormat: 'YYYY-MM-dd'
+          }
+        },
+        {
+          prop: ['startDate', 'endDate'],
+          component: 'el-date-picker',
           label: '日期范围',
+          props: {
+            type: 'daterange',
+            valueFormat: 'YYYY-MM-dd'
+          },
+          value: ['', ''],
+          hight: true
+        },
+        {
+          prop: 'custom',
+          label: '自定义',
           hight: true
         }
       ],
       query: this.getQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象
         active: 'first',
-        keyword: '',
-        status: '',
-        start: null,
-        end: null,
         start_time: '',
         end_time: '',
         ...this.$route.query
