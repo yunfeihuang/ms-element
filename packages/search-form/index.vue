@@ -83,7 +83,8 @@
           <el-row :gutter="10" class="ms-scroller">
             <el-col v-bind="getColProps()" v-for="(item, index) in __hightOption" :key="index">
               <el-form-item v-bind="getFormItemProps(item)">
-                <template v-if="item.option">
+                <slot v-if="$scopedSlots[item.prop] || $slots[item.prop]" :name="item.prop" v-bind="item.props"></slot>
+                <template v-else-if="item.option">
                   <el-checkbox-group
                     v-if="item.component == 'el-checkbox-group'"
                     v-bind="item.props"
@@ -118,7 +119,6 @@
                     </el-option>
                   </el-select>
                 </template>
-                <slot v-else-if="$scopedSlots[item.prop] || $slots[item.prop]" :name="item.prop" v-bind="item.props"></slot>
                 <template v-else-if="item.component=='el-date-picker'">
                   <el-date-picker
                     v-if="item.prop instanceof Array"
