@@ -119,6 +119,15 @@
                   </el-select>
                 </template>
                 <slot v-else-if="$scopedSlots[item.prop] || $slots[item.prop]" :name="item.prop" v-bind="item.props"></slot>
+                <template v-else-if="item.component=='el-date-picker'">
+                  <el-date-picker
+                    v-if="item.prop instanceof Array"
+                    v-bind="item.props"
+                    :value="msPageList.query[item.prop[0]] ? [msPageList.query[item.prop[0]],msPageList.query[item.prop[1]]] : []"
+                    @input="handleRangeInput($event, item.prop)"
+                  ></el-date-picker>
+                  <el-date-picker v-else v-bind="item.props" v-model="msPageList.query[item.prop]"></el-date-picker>
+                </template>
                 <component v-else :is="item.component || 'el-input'" v-bind="item.props" v-model="msPageList.query[item.prop]"/>
               </el-form-item>
             </el-col>
