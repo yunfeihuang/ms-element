@@ -251,7 +251,7 @@ export default {
     },
     getColProps (props) {
       return {
-        xl: 4,
+        xl: 5,
         lg: 6,
         md: 8,
         sm: 12,
