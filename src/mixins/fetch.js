@@ -14,6 +14,9 @@ export default {
     this.beforeFetch()
   },
   methods: {
+    refresh () {
+      return this.beforeFetch()
+    },
     beforeFetch () {
       if (this.fetch) {
         let promise = this.fetch()
