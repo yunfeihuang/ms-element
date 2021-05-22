@@ -14,26 +14,33 @@ export default {
     this.beforeFetch()
   },
   methods: {
+    refresh () {
+      return this.beforeFetch()
+    },
     beforeFetch () {
-      let promise = this.fetch()
-      if (promise && promise.then) {
-        this.loading = true
-        return promise.then(res => {
-          this.res = this.parseResponse(res)
-          return res
-        }).finally(res => {
-          this.loading = false
-        })
+      if (this.fetch) {
+        let promise = this.fetch()
+        if (promise && promise.then) {
+          this.loading = true
+          return promise.then(res => {
+            this.res = this.parseResponse(res)
+            return res
+          }).finally(res => {
+            this.loading = false
+          })
+        }
       }
     },
     parseResponse (res) {
       return res
     },
+    /*
     fetch () {
       return new Promise((resolve, reject) => {
         setTimeout(resolve({}), 1000)
       })
     },
+    */
     watchLoading (value) {
       if (this['msDrawer']) {
         this.$emit('loading', value)
