@@ -538,11 +538,17 @@ export default {
       }
       .el-tabs{
         flex:auto;
+        min-width: 0;
         &__header{
           margin-bottom:0;
         }
         &__new-tab{
           display:none;
+          visibility: hidden;
+          margin:9px 0 9px 10px;
+        }
+        &__nav-next,&__nav-prev{
+          padding-top:4px;
         }
         &__nav-wrap::after{
           display: none;
