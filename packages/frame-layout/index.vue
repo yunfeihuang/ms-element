@@ -83,7 +83,10 @@
         </div>
       </div>
       <div class="ms-frame-layout--body">
-        <router-view v-if="!isCreateApp" class="ms-frame-layout--slot ms-scroller"></router-view>
+        <template v-if="!isCreateApp">
+          <slot v-if="$slots['default']"></slot>
+          <router-view v-else class="ms-frame-layout--slot ms-scroller"></router-view>
+        </template>
       </div>
     </div>
     <slot></slot>
