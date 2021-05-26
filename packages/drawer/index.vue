@@ -273,6 +273,7 @@ export default {
         line-height:1;
         >span{
           font-size:1.2rem;
+          outline: none;
         }
         button{
           outline:none;
