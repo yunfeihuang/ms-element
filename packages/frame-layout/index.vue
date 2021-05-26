@@ -139,6 +139,32 @@ export default {
       console.log('$route', value)
       if (this.isTabs) {
         if (value.matched && value.matched.length) {
+          let app = this.apps.find(item => {
+            return item.route.matched[0] === value.matched[0]
+          })
+          if (app) {
+            app.route = value
+            app.title = this.getAppTitle(value)
+            this.currentApp = app
+          } else {
+            if (this.isCreateApp) {
+              this.createRouter(value)
+            } else {
+              if (value && value.meta && value.meta.title) {
+                this.createRouter(value)
+              } else {
+                let currentApp = this.currentApp
+                currentApp.route = value
+                this.apps = [...this.apps]
+              }
+            }
+          }
+          console.log(app)
+        }
+      }
+      /*
+      if (this.isTabs) {
+        if (value.matched && value.matched.length) {
           if (this.apps.every(item => {
             if (this.isCreateApp) {
               if (item.vm) {
@@ -184,6 +210,7 @@ export default {
           }
         }
       }
+      */
     },
     apps (value) {
       let apps = value.map(item => {
@@ -201,8 +228,12 @@ export default {
     }
   },
   data () {
+    let apps = sessionStorage.getItem('--ms-apps') ? JSON.parse(sessionStorage.getItem('--ms-apps')) : []
+    apps.forEach(item => {
+      item.route = this.$router.resolve(item.route.fullPath).resolved
+    })
     return {
-      apps: sessionStorage.getItem('--ms-apps') ? JSON.parse(sessionStorage.getItem('--ms-apps')) : [],
+      apps: apps,
       currentAppIndex: 0,
       isCollapse: document.ontouchstart !== undefined
     }
@@ -302,9 +333,12 @@ export default {
       }
       this.pushApp({
         vm: $vm,
-        title: value.meta && value.meta.title ? typeof value.meta.title === 'function' ? value.meta.title(value) : value.meta.title : value.fullPath,
+        title: this.getAppTitle(value),
         route: value
       })
+    },
+    getAppTitle (value) {
+      return value.meta && value.meta.title ? typeof value.meta.title === 'function' ? value.meta.title(value) : value.meta.title : value.fullPath
     },
     createRouterApp (route) {
       let el = document.createElement('div')
