@@ -9,6 +9,7 @@
       <router-link to="/profile">个人中心</router-link>
       <router-link to="/message">消息</router-link>
     </div>
+    <router-view class="ms-frame-layout--slot ms-scroller"></router-view>
   </ms-frame-layout>
 </template>
 

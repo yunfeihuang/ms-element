@@ -87,7 +87,7 @@
         <router-view v-else class="ms-frame-layout--slot ms-scroller"></router-view>
       </div>
     </div>
-    <slot></slot>
+    <slot name="other"></slot>
   </div>
 </template>
 
