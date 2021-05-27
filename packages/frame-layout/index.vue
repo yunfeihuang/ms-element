@@ -23,9 +23,9 @@
               <template slot="title">
                 <template v-if="item.icon">
                   <div style="display:inline" v-if="item.icon.indexOf('</i>')>-1" v-html="item.icon"></div>
-                  <i v-else :class="iconClass" v-html="item.icon"></i>
+                  <i v-else :class="item.iconClass || iconClass" v-html="item.icon"></i>
                 </template>
-                <i v-else></i>
+                <i v-else :class="item.iconClass || iconClass"></i>
                 <span slot="title">{{item.title}}</span>
               </template>
               <el-menu-item v-for="child in item.options"
@@ -43,9 +43,9 @@
               :key="item.index">
                 <template v-if="item.icon">
                   <div style="display:inline" v-if="item.icon.indexOf('</i>')>-1" v-html="item.icon"></div>
-                  <i v-else :class="iconClass" v-html="item.icon"></i>
+                  <i v-else :class="item.iconClass || iconClass" v-html="item.icon"></i>
                 </template>
-                <i v-else></i>
+                <i v-else :class="item.iconClass || iconClass"></i>
                 <span>{{item.title}}</span>
             </el-menu-item>
           </template>
@@ -67,7 +67,7 @@
           </template>
           <slot v-else name="header"></slot>
         </el-row>
-        <div class="ms-frame-layout--tabs" v-if="apps.length">
+        <div class="ms-frame-layout--tabs" v-if="isTabs && apps.length">
           <el-tabs :value="currentAppIndex + ''" @tab-click="handleTab" editable @edit="handleTabsEdit">
             <el-tab-pane v-for="(item,index) in apps" :label="item.title" :name="index + ''" :key="index"></el-tab-pane>
           </el-tabs>
@@ -83,10 +83,8 @@
         </div>
       </div>
       <div class="ms-frame-layout--body">
-        <template v-if="!isCreateApp">
-          <slot v-if="$slots['default']"></slot>
-          <router-view v-else class="ms-frame-layout--slot ms-scroller"></router-view>
-        </template>
+        <slot v-if="$slots['default']"></slot>
+        <router-view v-else class="ms-frame-layout--slot ms-scroller"></router-view>
       </div>
     </div>
     <slot></slot>
@@ -106,9 +104,6 @@ export default {
       type: Boolean,
       default: true
     },
-    isCreateApp: {
-      type: Boolean
-    },
     defaultRoute: {
       type: [Object],
       default () {
@@ -127,7 +122,7 @@ export default {
       type: Object
     },
     iconClass: {
-      default: 'iconfont'
+      default: 'el-icon-folder'
     },
     asideCollapse: {
       type:Boolean,
@@ -140,77 +135,18 @@ export default {
       if (this.isTabs) {
         if (value.matched && value.matched.length) {
           let app = this.apps.find(item => {
-            return item.route.matched[0] === value.matched[0]
+            return item.route.path === value.path || item.route.matched[0] === value.matched[0]
           })
           if (app) {
             app.route = value
-            app.title = this.getAppTitle(value)
+            let title = this.getAppTitle(value)
+            title && (app.title = title)
             this.currentApp = app
           } else {
-            if (this.isCreateApp) {
-              this.createRouter(value)
-            } else {
-              if (value && value.meta && value.meta.title) {
-                this.createRouter(value)
-              } else {
-                let currentApp = this.currentApp
-                currentApp.route = value
-                this.apps = [...this.apps]
-              }
-            }
-          }
-          console.log(app)
-        }
-      }
-      /*
-      if (this.isTabs) {
-        if (value.matched && value.matched.length) {
-          if (this.apps.every(item => {
-            if (this.isCreateApp) {
-              if (item.vm) {
-                if (item.vm.$router) {
-                  return item.vm.$router.getMatchedComponents(value.path).length === 0
-                } else {
-                  return item.route.path !== value.path
-                }
-              }
-              return true
-            } else {
-              return value.matched.every(item2 => {
-                return item.route.path !== (item2.path == '' ? value.path : item2.path)
-              })
-            }
-          })) {
-            if (this.isCreateApp) {
-              this.createRouter(value)
-            } else {
-              if (value && value.meta && value.meta.title) {
-                this.createRouter(value)
-              } else {
-                let currentApp = this.currentApp
-                currentApp.route = value
-                this.apps = [...this.apps]
-              }
-            }
-          } else {
-            let app = this.getAppByPath(value.path)
-            if (app) {
-              if (this.isCreateApp && app && app.vm && Object.keys(app.vm).length < 2) {
-                app.vm = this.createRouterApp(value)
-              }
-              this.currentApp = app
-              if (app.vm && app.vm.$route && app.vm.$route.fullPath !== value.fullPath && value.matched.length === 1) {
-                app.vm.$router.replace({
-                  path: value.path,
-                  query: value.query,
-                  params: value.params
-                })
-              }
-            }
+            this.createRouter(value)
           }
         }
       }
-      */
     },
     apps (value) {
       let apps = value.map(item => {
@@ -233,19 +169,20 @@ export default {
       item.route = this.$router.resolve(item.route.fullPath).resolved
     })
     return {
-      apps: apps,
-      currentAppIndex: 0,
+      apps,
       isCollapse: document.ontouchstart !== undefined
     }
   },
   computed: {
+    currentAppIndex () {
+      let index = this.apps.findIndex(item => item.vm.show)
+      return index > -1 ? index : 0
+    },
     currentApp: {
       get () {
-        let self = this
-        return this.apps.find((item, index) => {
+        return this.apps.find((item) => {
           if (item.vm) {
             if (item.vm.show) {
-              self.currentAppIndex = index
               return true
             }
           }
@@ -253,12 +190,9 @@ export default {
         })
       },
       set (value) {
-        this.apps.forEach((item, index) => {
+        this.apps.forEach((item) => {
           if (item.vm) {
             item.vm.show = value === item
-          }
-          if (value === item) {
-            this.currentAppIndex = index
           }
           if (value === item && item.route.path !== this.$route.path && this.$route.matched.length === 1) {
             this.$router.push(item.route)
@@ -284,53 +218,22 @@ export default {
     }
   },
   mounted () {
-    // console.log('fdasfdas', this.$router.resolve('/user2'))
     if (window.top !== window) {
       document.body.classList.add('is-iframe')
     }
     if (this.isTabs) {
-      if (!this.isCreateApp) {
-        this.$router.beforeEach((to, from, next) => {
-          let app = this.getAppByPath(from.path)
-          if (app) {
-            app.route = from
-          }
-          next()
-        })
-      } else {
-        const Router = this.findVueRouter()
-        if (Router) {
-          const originalPush = Router.prototype.push
-          Router.prototype.push = function push (location, onResolve, onReject) {
-            if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
-            return originalPush.call(this, location).catch(err => err)
-          }
+      this.$router.beforeEach((to, from, next) => {
+        let app = this.getAppByPath(from.path)
+        if (app) {
+          app.route = from
         }
-        this.$router.beforeEach((to, from, next) => {
-          if (to.path === from.path) {
-            let app = this.currentApp
-            app.vm.$router.push({
-              path: to.path,
-              params: to.params,
-              query: to.query
-            })
-          }
-          next()
-        })
-      }
+        next()
+      })
     }
   },
   methods: {
-    findVueRouter () {
-      return window.Vue._installedPlugins.find(item => item.name === 'VueRouter')
-    },
     createRouter (value) {
-      let $vm = null
-      if (this.isCreateApp) {
-        $vm = this.createRouterApp(value)
-      } else {
-        $vm = {show: false}
-      }
+      let $vm = {show: false}
       this.pushApp({
         vm: $vm,
         title: this.getAppTitle(value),
@@ -340,71 +243,9 @@ export default {
     getAppTitle (value) {
       return value.meta && value.meta.title ? typeof value.meta.title === 'function' ? value.meta.title(value) : value.meta.title : value.fullPath
     },
-    createRouterApp (route) {
-      let el = document.createElement('div')
-      this.$el.querySelector('.ms-frame-layout--body').appendChild(el)
-      const Router = this.findVueRouter()
-      let router = new Router({
-        routes: this.$router.options.routes.filter(item => {
-          if (item.path === route.path) {
-            return true
-          } else if (item.children && item.children.length) {
-            return JSON.stringify(item.children).indexOf(`"${route.path}"`) > -1
-          }
-          return false
-        })
-      })
-      let self = this
-      return new window.Vue({ // eslint-disable-line
-        el,
-        router: router,
-        store: this.$store,
-        template: `<router-view class="app-router-view ms-scroller" :class="{'is-active': show}"></router-view>`,
-        mounted () {
-          this.$router.beforeEach((to, from, next) => {
-            console.log('beforeEach', to, from)
-            if (!to.matched || to.matched.length === 0) {
-              self.$router.push({
-                path: to.path,
-                params: to.params,
-                query: to.query
-              })
-            } else {
-              next()
-            }
-          })
-          this.$router.afterEach((to, from) => {
-            let app1 = self.getAppByPath(to.path)
-            let app2 = self.getAppByPath(from.path)
-            if (app1 && app1 === app2) {
-              app1.route = to
-              self.apps = [...self.apps]
-            }
-          })
-          this.$emit('ready')
-        },
-        watch: {
-          show (value) {
-            this.$emit(value ? 'show' : 'hidden')
-          }
-        },
-        data () {
-          return {
-            show: false
-          }
-        },
-        destroyed () {
-          this.$el.parentNode.removeChild(this.$el)
-        }
-      })
-    },
     getAppByPath (path) {
       return this.apps.find(item => {
-        if (item.vm && item.vm.$router) {
-          return item.vm.$router.getMatchedComponents(path).length > 0
-        } else {
-          return item.route.path === path
-        }
+        return item.route.path === path
       })
     },
     pushApp (value) {
@@ -434,10 +275,9 @@ export default {
         currentApp = apps[index - 1]
       }
       this.apps = apps
-      value.vm && value.vm.$destroy && value.vm.$destroy()
       currentApp && this.$router.push(currentApp.route)
     },
-    handleTab (tab, event) {
+    handleTab (tab) {
       let app = this.apps[parseInt(tab.name)]
       this.$router.push(app.route)
     },
@@ -457,7 +297,6 @@ export default {
           if (this.defaultRoute && this.defaultRoute.path === item.route.path) {
             return true
           } else {
-            item.vm && item.vm.$destroy && item.vm.$destroy()
             return false
           }
         })
@@ -468,32 +307,25 @@ export default {
         }
       } else if (value === 'other') {
         this.apps = this.apps.filter(item => {
-          if (item !== this.currentApp) {
-            item.vm && item.vm.$destroy && item.vm.$destroy()
-          }
           return item === this.currentApp
         })
+        this.currentApp = this.apps[0]
       } else if (value === 'left') {
         this.apps = this.apps.filter((item, index) => {
           if (index < this.currentAppIndex) {
-            item.vm && item.vm.$destroy && item.vm.$destroy()
             return false
           }
           return true
         })
+        this.currentApp = this.apps[0]
       } else {
         this.apps = this.apps.filter((item, index) => {
           if (index > this.currentAppIndex) {
-            item.vm && item.vm.$destroy && item.vm.$destroy()
             return false
           }
           return true
         })
       }
-    },
-    updateAppTitle (vm, title) {
-      let app = this.apps.find(item => item.vm === vm)
-      app && (app.title = title)
     }
   }
 }
@@ -663,22 +495,6 @@ export default {
         &__title{
           height: 3.2rem;
           line-height: 3.2rem;
-          i{
-            font-size:1.4px;
-            margin-right: 5px;
-            width: 20px;
-            display: inline-block;
-            font-style:normal;
-            &:first-child{
-              &:empty{
-                text-align:center;
-                &:before{
-                  content: '⚪';
-                  font-size:1.1em;
-                }
-              }
-            }
-          }
         }
       }
     }

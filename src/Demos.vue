@@ -1,8 +1,7 @@
 <template>
   <ms-frame-layout
     title="后台管理系统"
-    :menus="menus"
-    :isCreateApp="false">
+    :menus="menus">
     <template slot="logo" slot-scope="scope">
       <i :style="`font-size:${scope.isCollapse?14:26}px;font-style:normal;`">LOGO</i>
     </template>
@@ -19,6 +18,7 @@ export default {
     return {
       menus: [
         {
+          iconClass: 'el-icon-monitor',
           title: '控制台',
           route: '/'
         },
