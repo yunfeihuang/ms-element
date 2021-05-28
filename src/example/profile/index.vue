@@ -1,10 +1,10 @@
 <template>
-  <div style="padding:10px;">
-    <div style="background:#fff">
-      <el-tabs v-model="query.active" type="card" @tab-click="handleTab">
-        <el-tab-pane label="资料" name="first"></el-tab-pane>
-        <el-tab-pane label="关注" name="second"></el-tab-pane>
-        <el-tab-pane label="其他" name="third"></el-tab-pane>
+  <div>
+    <div style="background:#fff;padding:10px;">
+      <el-tabs v-model="active" type="card" @tab-click="handleTab">
+        <el-tab-pane label="资料" name="0"></el-tab-pane>
+        <el-tab-pane label="关注" name="1"></el-tab-pane>
+        <el-tab-pane label="其他" name="2"></el-tab-pane>
       </el-tabs>
       <router-view></router-view>
     </div>
@@ -16,14 +16,14 @@ export default {
   mixins: [ms.mixins.fetch],
   data () {
     return {
-      active: 0
+      active: '0'
     }
   },
   methods: {
     handleTab () {
       const routers = ['/profile', '/profile/follow', '/profile/others']
       this.$router.push({
-        path: routers[this.active]
+        path: routers[Number(this.active)]
       })
     }
   }

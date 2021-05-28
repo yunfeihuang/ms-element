@@ -12,10 +12,33 @@ export default [
   },
   {
     path: '/profile',
-    component: () => import('@/example/profile'),
+    component: () => import('@/example/profile/index.vue'),
     meta: {
       title: '个人中心'
-    }
+    },
+    children: [
+      {
+        path: '',
+        component: () => import('@/example/profile/info.vue'),
+        meta: {
+          title: '个人中心-资料'
+        }
+      },
+      {
+        path: '/profile/follow',
+        component: () => import('@/example/profile/follow.vue'),
+        meta: {
+          title: '个人中心-关注'
+        }
+      },
+      {
+        path: '/profile/others',
+        component: () => import('@/example/profile/others.vue'),
+        meta: {
+          title: '个人中心-其他'
+        }
+      }
+    ]
   },
   {
     path: '/message',
