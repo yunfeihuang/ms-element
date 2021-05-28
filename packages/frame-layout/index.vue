@@ -540,13 +540,14 @@ export default {
       background-color:$--color-white;
       height: 100%;
       box-sizing: border-box;
-      position:relative;
-      background-clip: content-box;
       position: absolute;
       width: 100%;
-      padding: 10px;
+      padding-right: 10px;
+      border: 10px solid transparent;
+      border-right:0;
       left:0;
       top:0;
+      background-clip: content-box;
     }
   }
   .is-iframe{
@@ -555,23 +556,6 @@ export default {
     }
     .v-modal{
       background:#fff;
-    }
-  }
-  .app-router-view{
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    visibility: hidden;
-    box-sizing: border-box;
-    padding: 10px;
-    background-color:$--color-white;
-    background-clip: content-box;
-    box-shadow: inset 0 0 0 10px $--background-color-base;
-    &.is-active{
-      visibility: visible;
-      z-index: 1;
     }
   }
   div.ms-dialog{
