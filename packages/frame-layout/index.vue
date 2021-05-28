@@ -135,7 +135,17 @@ export default {
       if (this.isTabs) {
         if (value.matched && value.matched.length) {
           let app = this.apps.find(item => {
-            return item.route.path === value.path || item.route.matched[0] === value.matched[0]
+            if (item.route.path === value.path) {
+              return true
+            }
+            let length = Math.min(item.route.matched.length, value.matched.length)
+            return value.matched.every((item2,i) => {
+              if (i < length) {
+                return item2 == item.route.matched[i]
+              } else {
+                return true
+              }
+            })
           })
           if (app) {
             app.route = value
