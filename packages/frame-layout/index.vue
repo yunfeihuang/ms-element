@@ -138,14 +138,15 @@ export default {
             if (item.route.path === value.path) {
               return true
             }
-            let length = Math.min(item.route.matched.length, value.matched.length)
-            return value.matched.every((item2,i) => {
-              if (i < length) {
-                return item2 == item.route.matched[i]
-              } else {
+            if (item.route.matched.length == value.matched.length && item.route.matched.length > 1) {
+              return item.route.matched.every((item2,i) => {
+                if (i < value.matched.length - 1) {
+                  return item2 == value.matched[i]
+                }
                 return true
-              }
-            })
+              })
+            }
+            return false
           })
           if (app) {
             app.route = value
