@@ -1,6 +1,7 @@
 <template functional>
   <div :class="[
     `ms-page-list-layout`,
+    {'is-flexbox': injections.msPageList && injections.msPageList.fixedTableHead ? injections.msPageList.fixedTableHead : false},
     data.staticClass,
     data.class]"
     :style="data.staticStyle && data.style ? [data.staticStyle,data.style] : data.staticStyle || data.style">
@@ -43,6 +44,7 @@
 <script>
 export default {
   componentName: 'MsPageListLayout',
+  inject: ['msPageList'],
   props: {
     isScroll: {
       type: Boolean,
@@ -84,10 +86,12 @@ export default {
   position: relative;;
 }
 .ms-page-list-layout{
-  display:flex;
-  flex-direction: column;
-  box-sizing:border-box;
   background-color: $--color-white;
+  &.is-flexbox{
+    display:flex;
+    flex-direction: column;
+    box-sizing:border-box;
+  }
   &--table{
     overflow: hidden;
     box-sizing:border-box;

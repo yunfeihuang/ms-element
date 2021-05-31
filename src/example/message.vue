@@ -1,6 +1,6 @@
 <template>
-  <div style="padding:10px;">
-    <div style="background:#fff">message</div>
+  <div>
+    <div style="padding:10px;">message</div>
   </div>
 </template>
 
