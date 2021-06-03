@@ -1,6 +1,9 @@
 <template>
   <div :class="['ms-frame-layout']">
-    <div class="ms-frame-layout--aside" :class="{'is-collapse': isCollapse}">
+    <div
+      class="ms-frame-layout--aside"
+      :class="{'is-collapse': isCollapse}"
+      :style="{backgroundColor: menuProps ? menuProps.backgroundColor : ''}">
       <div
         v-if="$slots['logo'] || $scopedSlots['logo']"
         class="ms-frame-layout--logo">

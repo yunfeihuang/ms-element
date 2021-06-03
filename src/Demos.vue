@@ -1,7 +1,12 @@
 <template>
   <ms-frame-layout
     title="后台管理系统"
-    :menus="menus">
+    :menus="menus"
+    :menuProps1="{
+      backgroundColor: '#545c64',
+      textColor:'#fff',
+      activeTextColor: '#ffd04b'
+    }">
     <template slot="logo" slot-scope="scope">
       <i :style="`font-size:${scope.isCollapse?14:26}px;font-style:normal;`">LOGO</i>
     </template>
