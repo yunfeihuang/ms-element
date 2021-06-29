@@ -3,6 +3,7 @@ import Drawer from '../packages/drawer'
 let set = new Set()
 export default {
   push (context, importComponent, {
+    mode,
     title,
     direction = 'rtl',
     size = 'default',
@@ -48,7 +49,12 @@ export default {
         }
       }
     }
-
+    let to = null
+    if (typeof importComponent === 'string' || (typeof importComponent === 'object' && importComponent.path)) {
+      // console.log('dsafdsa', context.$router.getMatchedComponents(importComponent))
+      to = `${context.$router.mode === 'history' ? '' : window.location.pathname}${context.$router.resolve(importComponent).href}`
+      classnames.push('is-frame')
+    }
     const vue = new window.Vue({ // eslint-disable-line
       el,
       parent: context,
@@ -58,6 +64,8 @@ export default {
         props: {
           target: context,
           importComponent,
+          to,
+          mode,
           drawer: {
             title,
             direction,
@@ -126,79 +134,6 @@ export default {
     if (array.length) {
       array[array.length - 1].$refs.drawer.handleClose()
     }
-  },
-  open: function (context, to, props) {
-    let src = null
-    if (typeof to === 'string' || (typeof to === 'object' && to.path)) {
-      src = `${context.$router.mode === 'history' ? '' : window.location.pathname}${context.$router.resolve(to).href}`
-    }
-    let node = document.createElement('div')
-    document.body.appendChild(node)
-    let _props = {
-      top: '5vh',
-      width: '90%',
-      destroyOnClose: true,
-      closeOnClickModal: false,
-      ...props
-    }
-    new Vue({ // eslint-disable-line
-      el: node,
-      parent: context,
-      router: context.$router,
-      store: context.$store,
-      data () {
-        return {
-          visible: false,
-          component: null
-        }
-      },
-      mounted () {
-        this.visible = true
-        if (typeof to === 'function') {
-          to().then(res => {
-            if (!res.default.mixins) {
-              res.default.mixins = []
-            }
-            res.default.mixins.push({
-              props: {
-                params: {},
-                done: {
-                  type: Function
-                },
-                promiseSubmit: {
-                  type: Function
-                }
-              }
-            })
-            this.component = res.default
-          })
-        }
-      },
-      render (h) {
-        const Component = this.component
-        return (
-          <el-dialog
-            custom-class="ms-dialog"
-            visible={this.visible}
-            {...{ attrs: _props }}
-            onOpened={this.handleOpened}
-            onClose={this.handleClose}>
-            {typeof to === 'function' ? this.component ? <Component params={props.params}/> : '<el-loading/>' : <iframe src={src} frameborder="0" onLoad={this.handleLoad}></iframe>}
-          </el-dialog>
-        )
-      },
-      methods: {
-        handleClose () {
-          this.visible = false
-        },
-        handleOpened () {
-          this.loading = true
-        },
-        handleLoad () {
-          this.loading = false
-        }
-      }
-    })
   },
   preview (props = {}) {
     let node = document.createElement('div')

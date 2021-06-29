@@ -64,9 +64,12 @@ export default [
   {
     path: '/user2',
     component: Layout,
+    meta: {
+      title: '用户管理'
+    },
     children: [
       {
-        path: '',
+        path: '/user2',
         component: () => import('@/example/user'),
         meta: {
           title: '示例列表2'

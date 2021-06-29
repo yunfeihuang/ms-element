@@ -267,16 +267,20 @@ export default {
       })
     },
     handleOpen (row) {
-      ms.navigator.open(this, this.$route.fullPath, {
+      ms.navigator.push(this, this.$route.fullPath, {
+        mode: 'dialog',
         title: 'iframe弹窗列表',
+        size: 'large',
         params: {
           keyword: '张三'
         }
       })
     },
     handleOpenComponent () {
-      ms.navigator.open(this, List, {
+      ms.navigator.push(this, List, {
+        mode: 'dialog',
         title: '引入组件弹窗列表',
+        size: 'large',
         params: {
           keyword: '张三'
         }

@@ -98,7 +98,7 @@ export default {
       })
     },
     handleCreate (params) {
-      ms.navigator.push(this, Form, {
+      ms.navigator.push(this.$parent, Form, {
         params,
         title: params ? '编辑' : '创建'
       })

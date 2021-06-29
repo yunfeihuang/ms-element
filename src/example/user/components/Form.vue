@@ -1,10 +1,11 @@
 <template>
   <!--v-bind="getFormProps()" @submit.native.prevent="handleSubmit"是必须的-->
   <el-form v-bind="getFormProps()" @submit.native.prevent="handleSubmit">
-    <br />
+    <!--
     <el-form-item label="头像">
       <e-img-upload clearable v-model="form.url"/>
     </el-form-item>
+    -->
     <el-form-item label="姓名" prop="name" :rules="[{ required: true, message: '请输入用户名' }]">
       <el-input v-model.trim="form.name"></el-input>
     </el-form-item>
