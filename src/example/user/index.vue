@@ -258,7 +258,8 @@ export default {
     },
     handleList () {
       ms.navigator.push(this, List, {
-        title: '抽屉弹窗列表',
+        mode: 'dialog',
+        title: '列表弹窗',
         direction: 'ttb',
         size: '100vh',
         params: {
