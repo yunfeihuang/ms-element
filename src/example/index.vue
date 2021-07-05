@@ -2,15 +2,12 @@
   <ms-frame-layout
     title="后台管理系统"
     :menus="menus"
-    :menuProps1="{
-      backgroundColor: '#545c64',
-      textColor:'#fff',
-      activeTextColor: '#ffd04b'
-    }">
+    :menuProps="menuProps">
     <template slot="logo" slot-scope="scope">
       <i :style="`font-size:${scope.isCollapse?14:26}px;font-style:normal;`">LOGO</i>
     </template>
     <div slot="nav" class="actions">
+      <span @click="handleThemeChange">切换主题色</span>
       <router-link to="/profile">个人中心</router-link>
       <router-link to="/message">消息</router-link>
     </div>
@@ -22,6 +19,7 @@
 export default {
   data () {
     return {
+      menuProps: {},
       menus: [
         {
           iconClass: 'el-icon-monitor',
@@ -42,6 +40,20 @@ export default {
           ]
         }
       ]
+    }
+  },
+  methods: {
+    handleThemeChange () {
+      debugger
+      if (this.menuProps && !this.menuProps.backgroundColor) {
+        this.menuProps = {
+          backgroundColor: '#545c64',
+          textColor:'#fff',
+          activeTextColor: '#ffd04b'
+        }
+      } else {
+        this.menuProps = {}
+      }
     }
   }
 }
