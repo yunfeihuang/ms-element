@@ -87,7 +87,12 @@
       </div>
       <div class="ms-frame-layout--body">
         <slot v-if="$slots['default'] || $scopedSlots['default']" v-bind="{include: keepAliveInclude}"></slot>
-        <router-view v-else class="ms-frame-layout--slot ms-scroller"></router-view>
+        <template v-else>
+          <keep-alive :include="keepAliveInclude">
+            <router-view class="ms-frame-layout--slot ms-scroller" v-if="$route.meta.keepAlive"></router-view>
+          </keep-alive>
+          <router-view class="ms-frame-layout--slot ms-scroller" v-if="!$route.meta.keepAlive"></router-view>
+        </template>
       </div>
     </div>
     <slot name="other"></slot>
