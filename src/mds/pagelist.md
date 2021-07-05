@@ -15,7 +15,7 @@
     :data="pageData.data">
     <el-table-column
       label="序号">
-      <template slot-scope="scope">
+      <template v-slot="scope">
         {{scope.$index+1}}
       </template>
     </el-table-column>
@@ -27,7 +27,7 @@
     <el-table-column
       label="操作"
       :width="150">
-      <template slot-scope="scope">
+      <template v-slot="scope">
         <el-button type="text" @click="$router.push({path: '/compensation/detail'})">查看</el-button>
       </template>
     </el-table-column>
@@ -57,7 +57,7 @@
       :data="pageData.data">
       <el-table-column
         label="序号">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{scope.$index+1}}
         </template>
       </el-table-column>
@@ -69,7 +69,7 @@
       <el-table-column
         label="操作"
         :width="150">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-button type="text" @click="$router.push({path: '/compensation/detail'})">查看</el-button>
         </template>
       </el-table-column>
@@ -128,7 +128,7 @@ export default {
       :data="pageData.data">
       <el-table-column
         label="序号">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{scope.$index+1}}
         </template>
       </el-table-column>
@@ -140,7 +140,7 @@ export default {
       <el-table-column
         label="操作"
         :width="150">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-button type="text" @click="$router.push({path: '/compensation/detail'})">查看</el-button>
         </template>
       </el-table-column>

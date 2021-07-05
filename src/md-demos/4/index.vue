@@ -2,7 +2,7 @@
   <div>
     <list :data="list">
       <!-- 通过template模板配置slot-scope属性来获取循环当前项值 -->
-      <template slot-scope="scope">
+      <template v-slot="scope">
         {{scope}}
       </template>
     </list>

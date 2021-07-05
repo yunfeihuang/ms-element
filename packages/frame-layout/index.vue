@@ -86,7 +86,7 @@
         </div>
       </div>
       <div class="ms-frame-layout--body">
-        <slot v-if="$slots['default']"></slot>
+        <slot v-if="$slots['default'] || $scopedSlots['default']" v-bind="{include: keepAliveInclude}"></slot>
         <router-view v-else class="ms-frame-layout--slot ms-scroller"></router-view>
       </div>
     </div>
@@ -134,7 +134,19 @@ export default {
   },
   watch: {
     $route (value) {
-      console.log('$route', value)
+      // console.log('route', value)
+      if (value.meta && value.meta.keepAlive && value.matched.length) {
+        let include = [...this.keepAliveInclude]
+        value.matched.forEach(item => {
+          Object.values(item.components).forEach(component => {
+            component.name &&  include.indexOf(component.name) === -1 && include.push(component.name)
+          })
+        })
+        if (JSON.stringify(include) !== JSON.stringify(this.keepAliveInclude)) {
+          this.keepAliveInclude = include
+        }
+        // console.log('include', include)
+      }
       if (this.isTabs) {
         if (value.matched && value.matched.length) {
           let app = this.apps.find(item => {
@@ -184,7 +196,8 @@ export default {
     })
     return {
       apps,
-      isCollapse: document.ontouchstart !== undefined
+      isCollapse: document.ontouchstart !== undefined,
+      keepAliveInclude: []
     }
   },
   computed: {
@@ -279,6 +292,17 @@ export default {
       this.currentApp = value
     },
     removeApp (value) {
+      if (value.route && value.route.matched.length) {
+        let include = [...this.keepAliveInclude]
+        value.route.matched.forEach(item => {
+          Object.values(item.components).forEach(component => {
+            component.name && (include = include.filter(item => item !== component.name))
+          })
+        })
+        if (JSON.stringify(include) !== JSON.stringify(this.keepAliveInclude)) {
+          this.keepAliveInclude = include
+        }
+      }
       let apps = [...this.apps]
       let index = apps.findIndex(item => item === value)
       apps = apps.filter(item => item !== value)

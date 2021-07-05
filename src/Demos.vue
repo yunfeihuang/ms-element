@@ -3,7 +3,7 @@
     title="后台管理系统"
     :menus="menus"
     :menuProps="menuProps">
-    <template slot="logo" slot-scope="scope">
+    <template v-slot:logo="scope">
       <i :style="`font-size:${scope.isCollapse?14:26}px;font-style:normal;`">LOGO</i>
     </template>
     <div slot="nav" class="actions">
@@ -11,7 +11,12 @@
       <router-link to="/profile">个人中心</router-link>
       <router-link to="/message">消息</router-link>
     </div>
-    <router-view class="ms-frame-layout--slot ms-scroller"></router-view>
+    <template v-slot="scope">
+      <keep-alive :include="scope.include">
+        <router-view class="ms-frame-layout--slot ms-scroller" v-if="$route.meta.keepAlive"></router-view>
+      </keep-alive>
+      <router-view class="ms-frame-layout--slot ms-scroller" v-if="!$route.meta.keepAlive"></router-view>
+    </template>
   </ms-frame-layout>
 </template>
 
@@ -47,7 +52,7 @@ export default {
       if (this.menuProps && !this.menuProps.backgroundColor) {
         this.menuProps = {
           backgroundColor: '#333',
-          textColor:'#fff',
+          textColor: '#fff',
           activeTextColor: '#ffd04b'
         }
       } else {

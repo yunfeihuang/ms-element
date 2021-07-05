@@ -7,7 +7,7 @@
       {value: 'reg_no', label: '注册号'},
       {value: 'name', label: '商标名称'}
     ]">
-    <template slot-scope="scope">
+    <template v-slot="scope">
       <el-input :placeholder="`请输入${scope.label}`" v-model.trim="query[scope.value]"></el-input>
     </template>
   </e-dropdown-group>
@@ -23,7 +23,7 @@
         {value: 'reg_no', label: '注册号'},
         {value: 'name', label: '商标名称'}
       ]">
-      <template slot-scope="scope">
+      <template v-slot="scope">
         <el-input :placeholder="`请输入${scope.label}`" v-model.trim="query[scope.value]"></el-input>
       </template>
     </e-dropdown-group>

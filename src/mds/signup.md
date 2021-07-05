@@ -1,6 +1,6 @@
 # Signup 注册表单
 <e-signup :custom-form="{type: '1'}">
-  <template slot="prepend" slot-scope="scope">
+  <template slot="prepend" v-slot="scope">
     <el-form-item label="" prop="type" style="margin-bottom:10px;">
       <el-radio-group v-model="scope.form.type">
         <el-radio label="1">备案代理机构和律所</el-radio>

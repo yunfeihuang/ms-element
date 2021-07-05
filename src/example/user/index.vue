@@ -28,33 +28,33 @@
       </el-table-column>
       <el-table-column
         label="头像">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <img src="/static/images/img_qr.jpg" v-preview style="width:30px;height:30px">
         </template>
       </el-table-column>
       <el-table-column
         label="姓名">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{scope.row.name}}
         </template>
       </el-table-column>
       <el-table-column
         width="60"
         label="年龄">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{scope.row.age}}
         </template>
       </el-table-column>
       <el-table-column
         label="邮箱">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{scope.row.email}}
         </template>
       </el-table-column>
       <el-table-column
         width="60"
         label="状态">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{scope.row.state}}
         </template>
       </el-table-column>
@@ -69,7 +69,7 @@
       </el-table-column>
       <el-table-column
         label="操作">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-button type="text" @click="handleCreate(scope.row)">编辑</el-button>
           <el-button type="text" @click="handleDetail(scope.row)">详情</el-button>
           <el-dropdown trigger="click">
@@ -100,6 +100,7 @@ const Detail = () => import('./components/Detail')
 const List = () => import('./components/List')
 
 export default {
+  name: 'user',
   mixins: [
     ms.mixins.pageList
   ],

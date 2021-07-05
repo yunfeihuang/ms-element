@@ -7,14 +7,16 @@ export default [
     path: '/',
     component: () => import('@/example/console'),
     meta: {
-      title: '控制台'
+      title: '控制台',
+      keepAlive: true
     }
   },
   {
     path: '/profile',
     component: () => import('@/example/profile/index.vue'),
     meta: {
-      title: '个人中心'
+      title: '个人中心',
+      keepAlive: true
     },
     children: [
       {
@@ -51,7 +53,8 @@ export default [
     path: '/user',
     component: () => import('@/example/user'),
     meta: {
-      title: '示例列表'
+      title: '示例列表',
+      keepAlive: true
     }
   },
   {

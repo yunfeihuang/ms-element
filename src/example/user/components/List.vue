@@ -24,27 +24,27 @@
         </el-table-column>
         <el-table-column
           label="姓名">
-          <template slot-scope="scope">
+          <template v-slot="scope">
             {{scope.row.name}}
           </template>
         </el-table-column>
         <el-table-column
           width="60"
           label="年龄">
-          <template slot-scope="scope">
+          <template v-slot="scope">
             {{scope.row.age}}
           </template>
         </el-table-column>
         <el-table-column
           label="邮箱">
-          <template slot-scope="scope">
+          <template v-slot="scope">
             {{scope.row.email}}
           </template>
         </el-table-column>
         <el-table-column
           width="60"
           label="状态">
-          <template slot-scope="scope">
+          <template v-slot="scope">
             {{scope.row.state}}
           </template>
         </el-table-column>
