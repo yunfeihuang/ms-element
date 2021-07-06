@@ -312,10 +312,12 @@ export default {
       let index = apps.findIndex(item => item === value)
       apps = apps.filter(item => item !== value)
       let currentApp = null
-      if (apps[index]) {
-        currentApp = apps[index]
-      } else if (apps[index - 1]) {
-        currentApp = apps[index - 1]
+      if (index === this.currentAppIndex) {
+        if (apps[index]) {
+          currentApp = apps[index]
+        } else if (apps[index - 1]) {
+          currentApp = apps[index - 1]
+        }
       }
       this.apps = apps
       currentApp && this.$router.push(currentApp.route)
