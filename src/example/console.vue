@@ -30,6 +30,9 @@ export default {
   components: {
     PolylineChart
   },
+  activated () {
+    this.$forceUpdate()
+  },
   data () {
     return {
       option1: option
