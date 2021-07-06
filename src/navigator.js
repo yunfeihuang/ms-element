@@ -80,7 +80,8 @@ export default {
             wrapperClosable,
             withHeader,
             showClose,
-            top: '10vh'
+            top: '10vh',
+            closeOnClickModal: false
           },
           props: {
             params,
