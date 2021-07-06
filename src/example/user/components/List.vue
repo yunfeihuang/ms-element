@@ -100,7 +100,11 @@ export default {
     handleCreate (params) {
       ms.navigator.push(this.$parent, Form, {
         params,
-        title: params ? '编辑' : '创建'
+        title: params ? '编辑' : '创建',
+        done: cb => {
+          cb()
+          this.refresh()
+        }
       })
     }
   }

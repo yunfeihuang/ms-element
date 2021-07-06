@@ -300,7 +300,7 @@ export default {
     &--dialog-body{
       min-height:100px;
       >.ms-page-list-layout{
-        min-height:60vh;
+        min-height:72vh;
       }
     }
     &.is-frame{
@@ -309,7 +309,7 @@ export default {
           padding:0;
           iframe{
             width:100%;
-            height:60vh;
+            height:72vh;
             display: block;
           }
         }
@@ -347,6 +347,11 @@ export default {
       }
       &__title{
         font-size:1.2rem;
+      }
+    }
+    &.el-dialog{
+      &.ms-drawer--large{
+        min-width: 90%;
       }
     }
   }

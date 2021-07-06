@@ -79,7 +79,8 @@ export default {
             modalAppendToBody,
             wrapperClosable,
             withHeader,
-            showClose
+            showClose,
+            top: '10vh'
           },
           props: {
             params,

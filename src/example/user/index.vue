@@ -76,7 +76,6 @@
             <el-button type="text" style="margin-left: 10px;">更多</el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="handleLargeDetail(scope.row)">详情大弹窗</el-dropdown-item>
-              <el-dropdown-item @click.native="handleList">列表弹框</el-dropdown-item>
               <el-dropdown-item @click.native="handleCustom(scope.row)">自定义弹框</el-dropdown-item>
               <el-dropdown-item @click.native="handleOpen">iframe弹框</el-dropdown-item>
               <el-dropdown-item @click.native="handleOpenComponent">引入组件弹框</el-dropdown-item>
@@ -190,7 +189,11 @@ export default {
     handleCreate (params) {
       ms.navigator.push(this, Form, {
         params,
-        title: params ? '编辑' : '创建'
+        title: params ? '编辑' : '创建',
+        done: cb => {
+          cb()
+          this.refresh()
+        }
       })
     },
     handleDetail (params) {
@@ -254,17 +257,6 @@ export default {
           return new Promise((resolve, reject) => {
             setTimeout(resolve, 1000)
           })
-        }
-      })
-    },
-    handleList () {
-      ms.navigator.push(this, List, {
-        mode: 'dialog',
-        title: '列表弹窗',
-        direction: 'ttb',
-        size: '100vh',
-        params: {
-          keyword: '张三'
         }
       })
     },
