@@ -10,9 +10,6 @@ export default {
   mixins: [ms.mixins.fetch],
   components: {
     Detail
-  },
-  mounted () {
-    this.$root.title = '用户详情2'
   }
 }
 </script>
