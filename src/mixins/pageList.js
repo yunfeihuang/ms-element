@@ -22,8 +22,13 @@ export default {
   },
   computed: {
     isHistory () {
-      return this.$parent._routerViewCache !== undefined ? true : this.history
+      return this.isRouterView || this.history
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.isRouterView = true
+    })
   },
   data () {
     return {
