@@ -313,9 +313,6 @@ export default {
             display: block;
           }
         }
-        &__header{
-          padding-top: 16px;
-        }
       }
     }
     .el-drawer{
@@ -341,6 +338,10 @@ export default {
       }
     }
     .el-dialog{
+      &__header{
+        padding:15px;
+        padding-bottom:10px;
+      }
       &__body{
         padding-top:10px;
         padding-bottom:10px;
