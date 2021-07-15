@@ -77,6 +77,9 @@
           <el-dropdown trigger="click" @command="handleCommand">
             <i class="el-icon-arrow-down ms-frame-layout--tabs-action"></i>
             <el-dropdown-menu slot="dropdown">
+              <!--
+              <el-dropdown-item command="refresh">刷新当前页签</el-dropdown-item>
+              -->
               <el-dropdown-item command="all">关闭所有页签</el-dropdown-item>
               <el-dropdown-item command="other" :disabled="apps.length == 1">关闭其他页签</el-dropdown-item>
               <el-dropdown-item :disabled="currentAppIndex ==  0" command="left">关闭左边页签</el-dropdown-item>
@@ -100,6 +103,7 @@
 </template>
 
 <script>
+let routerFromTab = false
 export default {
   componentName: 'MsFrameLayout',
   provide () {
@@ -140,17 +144,22 @@ export default {
   watch: {
     $route (value) {
       // console.log('route', value)
+      let includeNames = []
       if (value.meta && value.meta.keepAlive && value.matched.length) {
-        let include = [...this.keepAliveInclude]
         value.matched.forEach(item => {
           Object.values(item.components).forEach(component => {
-            component.name &&  include.indexOf(component.name) === -1 && include.push(component.name)
+            component.name && includeNames.indexOf(component.name) == -1 && includeNames.push(component.name)
           })
         })
-        if (JSON.stringify(include) !== JSON.stringify(this.keepAliveInclude)) {
-          this.keepAliveInclude = include
+        if (includeNames.length) {
+          let include = [
+            ...this.keepAliveInclude,
+            ...includeNames.filter(item => this.keepAliveInclude.indexOf(item) == -1)
+          ]
+          if (JSON.stringify(include) !== JSON.stringify(this.keepAliveInclude)) {
+            this.keepAliveInclude = include
+          }
         }
-        // console.log('include', include)
       }
       if (this.isTabs) {
         if (value.matched && value.matched.length) {
@@ -173,6 +182,15 @@ export default {
             let title = this.getAppTitle(value)
             title && (app.title = title)
             this.currentApp = app
+            if (includeNames.length && !routerFromTab) {
+              this.keepAliveInclude = this.keepAliveInclude.filter(item => includeNames.indexOf(item) == -1)
+              this.$nextTick(() => {
+                this.keepAliveInclude = [
+                  ...this.keepAliveInclude,
+                  ...includeNames
+                ]
+              })
+            }
           } else {
             this.createRouter(value)
           }
@@ -296,6 +314,12 @@ export default {
       }
       this.currentApp = value
     },
+    routerPush (...arg) {
+      routerFromTab = true
+      return this.$router.push(...arg).finally(() => {
+        routerFromTab = false
+      })
+    },
     removeApp (value) {
       if (value.route && value.route.matched.length) {
         let include = [...this.keepAliveInclude]
@@ -320,11 +344,11 @@ export default {
         }
       }
       this.apps = apps
-      currentApp && this.$router.push(currentApp.route)
+      currentApp && this.routerPush(currentApp.route)
     },
     handleTab (tab) {
       let app = this.apps[parseInt(tab.name)]
-      this.$router.push(app.route)
+      this.routerPush(app.route)
     },
     handleTabsEdit (targetName, action) {
       if (action === 'remove') {
@@ -337,7 +361,9 @@ export default {
       }
     },
     handleCommand (value) {
-      if (value === 'all') {
+      if (value === 'refresh') {
+        this.$router.go(0)
+      } else if (value === 'all') {
         this.apps = this.apps.filter(item => {
           if (this.defaultRoute && this.defaultRoute.path === item.route.path) {
             return true
