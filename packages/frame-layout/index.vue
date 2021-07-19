@@ -254,19 +254,19 @@ export default {
         }
         next()
       })
-      /*
       this.$router.addRoutes([{
         path: '/refresh',
         component: {
           beforeRouteEnter (to, from, next) {
             next(vm => {
-              vm.$router.replace(from)
+              vm.$nextTick(() => {
+                vm.$router.replace(from)
+              })
             })
           },
           template: `<div></div>`
         }
       }])
-      */
     }
   },
   methods: {
@@ -306,11 +306,13 @@ export default {
     },
     createRouter (value) {
       let $vm = {show: false}
-      this.pushApp({
-        vm: $vm,
-        title: this.getAppTitle(value),
-        route: value
-      })
+      if (this.$route.meta && this.$route.meta.title) {
+        this.pushApp({
+          vm: $vm,
+          title: this.getAppTitle(value),
+          route: value
+        })
+      }
     },
     getAppTitle (value) {
       return value.meta && value.meta.title ? typeof value.meta.title === 'function' ? value.meta.title(value) : value.meta.title : value.fullPath
@@ -338,13 +340,9 @@ export default {
     },
     refresh () {
       if (this.$route && this.$route.meta && this.$route.meta.keepAlive) {
-        // this.$refs.routerView && this.$refs.routerView.refresh && this.$refs.routerView.refresh()
-        // this.refreshRouterViewInclude(this.$route)
-        /*
         this.$router.replace({
           path: '/refresh'
         })
-        */
       } else {
         this.routerViewKey = Math.random().toString(36)
       }
