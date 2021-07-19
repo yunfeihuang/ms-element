@@ -77,9 +77,7 @@
           <el-dropdown trigger="click" @command="handleCommand">
             <i class="el-icon-arrow-down ms-frame-layout--tabs-action"></i>
             <el-dropdown-menu slot="dropdown">
-              <!--
               <el-dropdown-item command="refresh">刷新当前页签</el-dropdown-item>
-              -->
               <el-dropdown-item command="all">关闭所有页签</el-dropdown-item>
               <el-dropdown-item command="other" :disabled="apps.length == 1">关闭其他页签</el-dropdown-item>
               <el-dropdown-item :disabled="currentAppIndex ==  0" command="left">关闭左边页签</el-dropdown-item>
@@ -89,12 +87,12 @@
         </div>
       </div>
       <div class="ms-frame-layout--body">
-        <slot v-if="$slots['default'] || $scopedSlots['default']" v-bind="{include: keepAliveInclude}"></slot>
+        <slot v-if="$slots['default'] || $scopedSlots['default']" v-bind="{include: keepAliveInclude, routerViewKey: routerViewKey}"></slot>
         <template v-else>
           <keep-alive :include="keepAliveInclude">
-            <router-view class="ms-frame-layout--slot ms-scroller" v-if="$route.meta.keepAlive"></router-view>
+            <router-view class="ms-frame-layout--slot ms-scroller" ref="routerView" v-if="$route.meta.keepAlive"></router-view>
           </keep-alive>
-          <router-view class="ms-frame-layout--slot ms-scroller" v-if="!$route.meta.keepAlive"></router-view>
+          <router-view class="ms-frame-layout--slot ms-scroller" :key="routerViewKey" v-if="!$route.meta.keepAlive"></router-view>
         </template>
       </div>
     </div>
@@ -144,23 +142,7 @@ export default {
   watch: {
     $route (value) {
       // console.log('route', value)
-      let includeNames = []
-      if (value.meta && value.meta.keepAlive && value.matched.length) {
-        value.matched.forEach(item => {
-          Object.values(item.components).forEach(component => {
-            component.name && includeNames.indexOf(component.name) == -1 && includeNames.push(component.name)
-          })
-        })
-        if (includeNames.length) {
-          let include = [
-            ...this.keepAliveInclude,
-            ...includeNames.filter(item => this.keepAliveInclude.indexOf(item) == -1)
-          ]
-          if (JSON.stringify(include) !== JSON.stringify(this.keepAliveInclude)) {
-            this.keepAliveInclude = include
-          }
-        }
-      }
+      this.pushRouterViewInclude(this.getRouteInclude(value))
       if (this.isTabs) {
         if (value.matched && value.matched.length) {
           let app = this.apps.find(item => {
@@ -182,15 +164,7 @@ export default {
             let title = this.getAppTitle(value)
             title && (app.title = title)
             this.currentApp = app
-            if (includeNames.length && !routerFromTab) {
-              this.keepAliveInclude = this.keepAliveInclude.filter(item => includeNames.indexOf(item) == -1)
-              this.$nextTick(() => {
-                this.keepAliveInclude = [
-                  ...this.keepAliveInclude,
-                  ...includeNames
-                ]
-              })
-            }
+            this.refreshRouterViewInclude(value)
           } else {
             this.createRouter(value)
           }
@@ -220,7 +194,8 @@ export default {
     return {
       apps,
       isCollapse: document.ontouchstart !== undefined,
-      keepAliveInclude: []
+      keepAliveInclude: [],
+      routerViewKey: Math.random().toString(36)
     }
   },
   computed: {
@@ -279,9 +254,56 @@ export default {
         }
         next()
       })
+      /*
+      this.$router.addRoutes([{
+        path: '/refresh',
+        component: {
+          beforeRouteEnter (to, from, next) {
+            next(vm => {
+              vm.$router.replace(from)
+            })
+          },
+          template: `<div></div>`
+        }
+      }])
+      */
     }
   },
   methods: {
+    getRouteInclude (route) {
+      let result = []
+      if (route.meta && route.meta.keepAlive && route.matched.length) {
+        route.matched.forEach(item => {
+          Object.values(item.components).forEach(component => {
+            component.name && result.indexOf(component.name) == -1 && result.push(component.name)
+          })
+        })
+      }
+      return result
+    },
+    pushRouterViewInclude (value) {
+      if (value.length) {
+        let include = [
+          ...this.keepAliveInclude,
+          ...value.filter(item => this.keepAliveInclude.indexOf(item) == -1)
+        ]
+        if (JSON.stringify(include) !== JSON.stringify(this.keepAliveInclude)) {
+          this.keepAliveInclude = include
+        }
+      }
+    },
+    refreshRouterViewInclude (route) {
+      let include = this.getRouteInclude(route)
+      if (include.length && !routerFromTab) {
+        this.keepAliveInclude = this.keepAliveInclude.filter(item => include.indexOf(item) == -1)
+        this.$nextTick(() => {
+          this.keepAliveInclude = [
+            ...this.keepAliveInclude,
+            ...include
+          ]
+        })
+      }
+    },
     createRouter (value) {
       let $vm = {show: false}
       this.pushApp({
@@ -313,6 +335,19 @@ export default {
         this.apps = [value]
       }
       this.currentApp = value
+    },
+    refresh () {
+      if (this.$route && this.$route.meta && this.$route.meta.keepAlive) {
+        // this.$refs.routerView && this.$refs.routerView.refresh && this.$refs.routerView.refresh()
+        // this.refreshRouterViewInclude(this.$route)
+        /*
+        this.$router.replace({
+          path: '/refresh'
+        })
+        */
+      } else {
+        this.routerViewKey = Math.random().toString(36)
+      }
     },
     routerPush (...arg) {
       routerFromTab = true
@@ -362,7 +397,7 @@ export default {
     },
     handleCommand (value) {
       if (value === 'refresh') {
-        this.$router.go(0)
+        this.refresh()
       } else if (value === 'all') {
         this.apps = this.apps.filter(item => {
           if (this.defaultRoute && this.defaultRoute.path === item.route.path) {
@@ -373,6 +408,7 @@ export default {
         })
         if (this.apps && this.apps[0]) {
           this.currentApp = this.apps[0]
+          this.routerPush(this.currentApp.route)
         } else {
           this.defaultRoute && this.$router.push(this.defaultRoute)
         }

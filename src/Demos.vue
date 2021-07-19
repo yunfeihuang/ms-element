@@ -12,12 +12,14 @@
         <router-link to="/profile">个人中心</router-link>
         <router-link to="/message">消息</router-link>
       </div>
+      <!--
       <template v-slot="scope">
         <keep-alive :include="scope.include">
           <router-view class="ms-frame-layout--slot ms-scroller" v-if="$route.meta.keepAlive"></router-view>
         </keep-alive>
-        <router-view class="ms-frame-layout--slot ms-scroller" v-if="!$route.meta.keepAlive"></router-view>
+        <router-view class="ms-frame-layout--slot ms-scroller" :key="routerViewKey" v-if="!$route.meta.keepAlive"></router-view>
       </template>
+      -->
     </ms-frame-layout>
   </div>
 </template>
