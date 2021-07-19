@@ -89,7 +89,7 @@
       <div class="ms-frame-layout--body">
         <slot v-if="$slots['default'] || $scopedSlots['default']" v-bind="{include: keepAliveInclude, routerViewKey: routerViewKey}"></slot>
         <template v-else>
-          <keep-alive :include="keepAliveInclude">
+          <keep-alive :include="keepAliveInclude" :exclude="keepAliveExclude">
             <router-view class="ms-frame-layout--slot ms-scroller" ref="routerView" v-if="$route.meta.keepAlive"></router-view>
           </keep-alive>
           <router-view class="ms-frame-layout--slot ms-scroller" :key="routerViewKey" v-if="!$route.meta.keepAlive"></router-view>
@@ -137,6 +137,26 @@ export default {
     asideCollapse: {
       type:Boolean,
       default: true
+    },
+    refreshRoute: {
+      default () {
+        return {
+          path: '/refresh',
+          component: {
+            beforeRouteEnter (to, from, next) {
+              next(vm => {
+                vm.$nextTick(() => {
+                  vm.$router.replace(from)
+                })
+              })
+            },
+            template: `<div></div>`
+          }
+        }
+      }
+    },
+    keepAliveExclude: {
+      type: Array
     }
   },
   watch: {
@@ -254,19 +274,7 @@ export default {
         }
         next()
       })
-      this.$router.addRoutes([{
-        path: '/refresh',
-        component: {
-          beforeRouteEnter (to, from, next) {
-            next(vm => {
-              vm.$nextTick(() => {
-                vm.$router.replace(from)
-              })
-            })
-          },
-          template: `<div></div>`
-        }
-      }])
+      this.refreshRoute && this.$router.addRoutes([this.refreshRoute])
     }
   },
   methods: {
