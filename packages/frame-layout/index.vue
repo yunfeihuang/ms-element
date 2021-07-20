@@ -72,12 +72,15 @@
         </el-row>
         <div class="ms-frame-layout--tabs" v-if="isTabs && apps.length">
           <el-tabs :value="currentAppIndex + ''" @tab-click="handleTab" editable @edit="handleTabsEdit">
-            <el-tab-pane v-for="(item,index) in apps" :label="item.title" :name="index + ''" :key="index"></el-tab-pane>
+            <el-tab-pane v-for="(item,index) in apps" :label="item.title" :name="index + ''" :key="index + item.route.path"></el-tab-pane>
           </el-tabs>
+          <i class="el-icon-refresh ms-frame-layout--tabs-action" title="刷新" @click="refresh"></i>
           <el-dropdown trigger="click" @command="handleCommand">
-            <i class="el-icon-arrow-down ms-frame-layout--tabs-action"></i>
+            <i class="el-icon-arrow-down ms-frame-layout--tabs-action" title="更多"></i>
             <el-dropdown-menu slot="dropdown">
+              <!--
               <el-dropdown-item command="refresh">刷新当前页签</el-dropdown-item>
+              -->
               <el-dropdown-item command="all">关闭所有页签</el-dropdown-item>
               <el-dropdown-item command="other" :disabled="apps.length == 1">关闭其他页签</el-dropdown-item>
               <el-dropdown-item :disabled="currentAppIndex ==  0" command="left">关闭左边页签</el-dropdown-item>
@@ -536,6 +539,7 @@ export default {
       &-action{
         padding: 10px;
         cursor: pointer;
+        font-size:1.3em;
       }
       .el-tabs{
         flex:auto;
