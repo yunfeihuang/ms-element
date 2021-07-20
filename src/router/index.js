@@ -44,9 +44,16 @@ export default [
   },
   {
     path: '/message',
-    component: () => import('@/example/message'),
+    component: () => import('@/example/message/index.vue'),
     meta: {
       title: '消息'
+    }
+  },
+  {
+    path: '/message/detail',
+    component: () => import('@/example/message/detail.vue'),
+    meta: {
+      title: '消息详情'
     }
   },
   {

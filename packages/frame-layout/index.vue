@@ -102,6 +102,7 @@
 
 <script>
 let routerFromTab = false
+let replaceRoute = false
 export default {
   componentName: 'MsFrameLayout',
   provide () {
@@ -164,29 +165,39 @@ export default {
       // console.log('route', value)
       this.pushRouterViewInclude(this.getRouteInclude(value))
       if (this.isTabs) {
-        if (value.matched && value.matched.length) {
-          let app = this.apps.find(item => {
-            if (item.route.path === value.path) {
-              return true
-            }
-            if (item.route.matched.length == value.matched.length && item.route.matched.length > 1) {
-              return item.route.matched.every((item2,i) => {
-                if (i < value.matched.length - 1) {
-                  return item2 == value.matched[i]
-                }
+        let _replaceRoute = replaceRoute
+        if (replaceRoute) {
+          replaceRoute = false
+        }
+        if (_replaceRoute && this.currentApp) {
+          this.currentApp.title = this.getAppTitle(value)
+          this.currentApp.route = value
+          this.apps = [...this.apps]
+        } else {
+          if (value.matched && value.matched.length) {
+            let app = this.apps.find(item => {
+              if (item.route.path === value.path) {
                 return true
-              })
+              }
+              if (item.route.matched.length == value.matched.length && item.route.matched.length > 1) {
+                return item.route.matched.every((item2,i) => {
+                  if (i < value.matched.length - 1) {
+                    return item2 == value.matched[i]
+                  }
+                  return true
+                })
+              }
+              return false
+            })
+            if (app) {
+              app.route = value
+              let title = this.getAppTitle(value)
+              title && (app.title = title)
+              this.currentApp = app
+              this.refreshRouterViewInclude(value)
+            } else {
+              this.createRouter(value)
             }
-            return false
-          })
-          if (app) {
-            app.route = value
-            let title = this.getAppTitle(value)
-            title && (app.title = title)
-            this.currentApp = app
-            this.refreshRouterViewInclude(value)
-          } else {
-            this.createRouter(value)
           }
         }
       }
@@ -263,16 +274,20 @@ export default {
     }
   },
   mounted () {
-    if (window.top !== window) {
-      document.body.classList.add('is-iframe')
-    }
+    window.top !== window && document.body.classList.add('is-iframe')
     if (this.isTabs) {
-      this.$router.beforeEach((to, from, next) => {
+      const originalReplace = this.$router.replace
+      this.$router.replace = function replace (location, onResolve, onReject) {
+        return originalReplace.call(this, location, () => {
+          replaceRoute = true
+          onResolve && onResolve()
+        }, onReject)
+      }
+      this.$router.afterEach((to, from) => {
         let app = this.getAppByPath(from.path)
         if (app) {
           app.route = from
         }
-        next()
       })
       this.refreshRoute && this.$router.addRoutes([this.refreshRoute])
     }
@@ -300,10 +315,16 @@ export default {
         }
       }
     },
-    refreshRouterViewInclude (route) {
+    removeRouterViewInclude (route) {
       let include = this.getRouteInclude(route)
       if (include.length && !routerFromTab) {
         this.keepAliveInclude = this.keepAliveInclude.filter(item => include.indexOf(item) == -1)
+      }
+      return include
+    },
+    refreshRouterViewInclude (route) {
+      let include = this.removeRouterViewInclude(route)
+      if (include.length && !routerFromTab) {
         this.$nextTick(() => {
           this.keepAliveInclude = [
             ...this.keepAliveInclude,
@@ -313,14 +334,11 @@ export default {
       }
     },
     createRouter (value) {
-      let $vm = {show: false}
-      if (this.$route.meta && this.$route.meta.title) {
-        this.pushApp({
-          vm: $vm,
-          title: this.getAppTitle(value),
-          route: value
-        })
-      }
+      this.pushApp({
+        vm: {show: false},
+        title: this.getAppTitle(value),
+        route: value
+      })
     },
     getAppTitle (value) {
       return value.meta && value.meta.title ? typeof value.meta.title === 'function' ? value.meta.title(value) : value.meta.title : value.fullPath
@@ -348,6 +366,7 @@ export default {
     },
     refresh () {
       if (this.$route && this.$route.meta && this.$route.meta.keepAlive) {
+        this.removeRouterViewInclude(this.$route)
         this.$router.replace({
           path: '/refresh'
         })
