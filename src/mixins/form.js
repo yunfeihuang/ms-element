@@ -96,7 +96,7 @@ export default {
           if (node.scrollIntoView) {
             let rect = node.getBoundingClientRect()
             if (rect.top < 0) {
-              node.scrollIntoView(true)
+              node.scrollIntoView({behavior: "smooth"})
             }
           }
           let inputs = node.querySelectorAll('input,textarea')

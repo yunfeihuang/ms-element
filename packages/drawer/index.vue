@@ -121,6 +121,11 @@ export default {
   watch: {
     importComponent () {
       this.loadComponent()
+    },
+    $route (val, oldVal) {
+      if (val.path !== oldVal.path) {
+        this.visible = false
+      }
     }
   },
   data () {
