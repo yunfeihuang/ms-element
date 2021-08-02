@@ -1,165 +1,88 @@
 <template>
-  <div class="ms-search-form">
-    <el-form 
-      v-if="searchMode == 'default'"
-      v-bind="msPageList.getFormProps()"
-      @submit.native.prevent="msPageList.handleSubmit">
-      <div class="ms-search-form--prepend" v-if="$slots['prepend']">
-        <slot name="prepend"></slot>
-      </div>
-      <div class="ms-search-form--body">
-        <div class="ms-search-form--items">
-          <div class="ms-search-form--items-inner">
-            <el-form-item v-for="(item, index) in __defaultOption" :key="index" v-bind="getFormItemProps(item)">
-              <slot v-if="$scopedSlots[item.prop] || $slots[item.prop]" :name="item.prop" v-bind="item.props"></slot>
-              <template v-else-if="item.option">
-                <el-checkbox-group
-                  v-if="item.component == 'el-checkbox-group'"
-                  v-bind="item.props"
-                  v-model="msPageList.query[item.prop]">
-                  <el-checkbox
-                    v-for="item in item.option"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-checkbox>
-                </el-checkbox-group>
-                <el-radio-group
-                  v-else-if="item.component == 'el-radio-group'"
-                  v-bind="item.props"
-                  v-model="msPageList.query[item.prop]">
-                  <el-radio
-                    v-for="item in item.option"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-radio>
-                </el-radio-group>
-                <el-select
-                  v-else
-                  v-bind="item.props"
-                  v-model="msPageList.query[item.prop]"
-                  clearable>
-                  <el-option
-                    v-for="item in item.option"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </template>
-              <template v-else-if="item.component=='el-date-picker'">
-                <el-date-picker
-                  v-if="item.prop instanceof Array"
-                  v-bind="item.props"
-                  :value="msPageList.query[item.prop[0]] ? [msPageList.query[item.prop[0]],msPageList.query[item.prop[1]]] : []"
-                  @input="handleRangeInput($event, item.prop)"
-                ></el-date-picker>
-                <el-date-picker v-else v-bind="item.props" v-model="msPageList.query[item.prop]"></el-date-picker>
-              </template>
-              <component v-else :is="item.component || 'el-input'" v-bind="item.props" v-model="msPageList.query[item.prop]"/>
-            </el-form-item>
+  <el-form 
+    v-bind="msPageList.getFormProps(searchMode == 'default' ?  { class: ['form-search', 'ms-search-form']} : { class: 'ms-search-form--layout', labelWidth:'80px',inline:false})"
+    @submit.native.prevent="msPageList.handleSubmit">
+    <div class="ms-search-form--prepend" v-if="$slots['prepend']">
+      <slot name="prepend"></slot>
+    </div>
+    <div :class="{'ms-search-form--body': searchMode == 'default'}">
+      <component :is="searchMode == 'default' ? 'div': 'el-row'" :class="{'ms-search-form--items': searchMode == 'default'}" :gutter="10">
+        <div :class="{'ms-search-form--items-inner': searchMode == 'default'}">
+          <component :is="searchMode == 'default' ? 'span': 'el-col'" v-for="(item, index) in __defaultOption" :key="index"  v-bind="getColProps()">
+          <el-form-item  v-bind="getFormItemProps(item)">
+            <slot v-if="$scopedSlots[item.prop] || $slots[item.prop]" :name="item.prop" v-bind="item.props"></slot>
+            <template v-else-if="item.option">
+              <el-checkbox-group
+                v-if="item.component == 'el-checkbox-group'"
+                v-bind="item.props"
+                v-model="msPageList.query[item.prop]">
+                <el-checkbox
+                  v-for="item in item.option"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-checkbox>
+              </el-checkbox-group>
+              <el-radio-group
+                v-else-if="item.component == 'el-radio-group'"
+                v-bind="item.props"
+                v-model="msPageList.query[item.prop]">
+                <el-radio
+                  v-for="item in item.option"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-radio>
+              </el-radio-group>
+              <el-select
+                v-else
+                v-bind="item.props"
+                v-model="msPageList.query[item.prop]"
+                clearable>
+                <el-option
+                  v-for="item in item.option"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </template>
+            <template v-else-if="item.component=='el-date-picker'">
+              <el-date-picker
+                v-if="item.prop instanceof Array"
+                v-bind="item.props"
+                :value="msPageList.query[item.prop[0]] ? [msPageList.query[item.prop[0]],msPageList.query[item.prop[1]]] : []"
+                @input="handleRangeInput($event, item.prop)"
+              ></el-date-picker>
+              <el-date-picker v-else v-bind="item.props" v-model="msPageList.query[item.prop]"></el-date-picker>
+            </template>
+            <component v-else :is="item.component || 'el-input'" v-bind="item.props" v-model="msPageList.query[item.prop]"/>
+          </el-form-item>
+          </component>
+        </div>
+      </component>
+      <template v-if="searchMode == 'default'">
+        <el-tooltip v-if="option && isSearchMore" effect="dark" content="更多搜索" placement="bottom">
+          <div class="ms-search-form--items-more" @click="handleHighToggle">
+            <i class="el-icon-d-arrow-right"></i>
           </div>
-        </div>
-        <div v-if="isSearchMore" class="ms-search-form--items-more" title="更多搜索" @click="handleHighToggle">
-          <i class="el-icon-d-arrow-right"></i>
-        </div>
+        </el-tooltip>
         <!--native-type="submit"是修改button type属性为submit-->
         <el-button native-type="submit" size="small">搜索</el-button>
-        <!--
-        <el-button size="small" v-if="isHightSearch" @click="handleHighToggle">高级搜索</el-button>
-        -->
         <slot></slot>
-      </div>
-      <div class="ms-search-form--append" v-if="$slots['append']">
-        <slot name="append"></slot>
-      </div>
-    </el-form>
-    <template v-else>
-      <!--
-      <div class="ms-search-form--search-high">
-        <el-button type="text" size="small" icon="el-icon-search" @click="handleHighToggle">继续搜索</el-button>
-        <el-button type="text" size="small" icon="el-icon-delete" @click="handleHighCancel">清除搜索</el-button>
-      </div>
-      -->
-      <!--
-      <el-drawer
-        class="ms-search-form--search-drawer"
-        title="高级搜索"
-        :visible.sync="highVisible"
-        :append-to-body="false"
-        :modal-append-to-body="false"
-        direction="ttb"
-        size="auto">
-        -->
-        <el-form v-bind="msPageList.getFormProps({ class: 'ms-search-form--layout', labelWidth:'80px',inline:false})" ref="highQueryForm" @submit.native.prevent="handleHighSubmit">
-          <div class="ms-search-form--prepend" v-if="$slots['prepend']">
-            <slot name="prepend"></slot>
-          </div>
-          <el-row :gutter="10">
-            <el-col v-bind="getColProps()" v-for="(item, index) in __defaultOption" :key="index">
-              <el-form-item v-bind="getFormItemProps(item)">
-                <slot v-if="$scopedSlots[item.prop] || $slots[item.prop]" :name="item.prop" v-bind="item.props"></slot>
-                <template v-else-if="item.option">
-                  <el-checkbox-group
-                    v-if="item.component == 'el-checkbox-group'"
-                    v-bind="item.props"
-                    v-model="msPageList.query[item.prop]">
-                    <el-checkbox
-                      v-for="item in item.option"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-checkbox>
-                  </el-checkbox-group>
-                  <el-radio-group
-                    v-else-if="item.component == 'el-radio-group'"
-                    v-bind="item.props"
-                    v-model="msPageList.query[item.prop]">
-                    <el-radio
-                      v-for="item in item.option"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-radio>
-                  </el-radio-group>
-                  <el-select
-                    v-else
-                    v-bind="item.props"
-                    v-model="msPageList.query[item.prop]">
-                    <el-option
-                      v-for="item in item.option"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </template>
-                <template v-else-if="item.component=='el-date-picker'">
-                  <el-date-picker
-                    v-if="item.prop instanceof Array"
-                    v-bind="item.props"
-                    :value="msPageList.query[item.prop[0]] ? [msPageList.query[item.prop[0]],msPageList.query[item.prop[1]]] : []"
-                    @input="handleRangeInput($event, item.prop)"
-                  ></el-date-picker>
-                  <el-date-picker v-else v-bind="item.props" v-model="msPageList.query[item.prop]"></el-date-picker>
-                </template>
-                <component v-else :is="item.component || 'el-input'" v-bind="item.props" v-model="msPageList.query[item.prop]"/>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-form-item label=" ">
-            <!--native-type="submit"是修改button type属性为submit-->
-            <el-button native-type="submit" type="primary" size="small">确定</el-button>
-            <el-button size="small" @click="handleHighCancel">收起</el-button>
-            <el-button size="small" @click="handleHighReset">重置</el-button>
-          </el-form-item>
-        </el-form>
-        <!--
-      </el-drawer>
-      -->
-    </template>
-  </div>
+      </template>
+      <el-row v-else>
+        <el-form-item label=" ">
+          <el-button native-type="submit" type="primary" size="small">确定</el-button>
+          <el-button size="small" @click="handleHighCancel">收起</el-button>
+          <el-button size="small" @click="handleHighReset">重置</el-button>
+        </el-form-item>
+      </el-row>
+    </div>
+    <div class="ms-search-form--append" v-if="$slots['append']">
+      <slot name="append"></slot>
+    </div>
+  </el-form>
 </template>
 
 <script>
@@ -341,27 +264,9 @@ export default {
       margin-bottom:10px;
     }
     &--layout{
+      margin:10px 10px 0;
       .el-date-editor,.el-select{
         width:100%;
-      }
-    }
-    &--search-drawer{
-      position:absolute;
-      border:10px solid transparent;
-      box-sizing: border-box;
-      .el-drawer{
-        box-shadow:0 0 15px rgba(0,0,0,0.1);
-        &__header{
-          padding:15px;
-          padding-bottom:0;
-          margin-bottom:15px;
-        }
-        .el-date-editor,.el-select{
-          width:100%;
-        }
-        &__body{
-          padding:0 15px;
-        }
       }
     }
     &--body{
@@ -395,24 +300,12 @@ export default {
         }
       }
     }
-    .v-modal{
-      position:absolute;
-      background: $--color-white;
-      outline:none;
-      background-clip: content-box;
-      border: 10px solid transparent;
-      box-sizing: border-box;
-    }
-    &--search-high{
-      margin:10px;
-    }
     .el-tabs{
-      margin-top: 10px;
       &__header{
         margin-bottom:0;
       }
     }
-    .form-search{
+    &.form-search{
       margin:10px 10px 0;
       .el-form-item,.el-button {
         margin-bottom: 10px;
