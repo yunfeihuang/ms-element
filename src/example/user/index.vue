@@ -146,13 +146,11 @@ export default {
             type: 'daterange',
             valueFormat: 'YYYY-MM-dd'
           },
-          value: ['', ''],
-          hight: true
+          value: ['', '']
         },
         {
           prop: 'custom',
-          label: '自定义',
-          hight: true
+          label: '自定义'
         }
       ],
       query: this.getQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象
