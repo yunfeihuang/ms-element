@@ -1,4 +1,4 @@
-# 基于element-ui后台管理系统组件库
+# 基于element-ui后台管理系统模板及组件库
 
 > A Vue.js project
 
