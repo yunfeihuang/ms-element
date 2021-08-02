@@ -203,7 +203,9 @@ export default {
     }
   },
   mounted () {
-    this.option && this.initPageListQuery(this.option)
+    setTimeout(() => {
+      this.option && this.initPageListQuery(this.option)
+    }, 1000)
   },
   methods: {
     initPageListQuery (option) {
@@ -211,22 +213,25 @@ export default {
         let deleteFn = item => {
           if (item.prop instanceof Array) {
             item.prop.forEach(p => {
-              if (this.msPageList.query[p] !== undefined) {
-                delete this.msPageList.query[p]
-              }
+              this.$delete(this.msPageList.query, p)
             })
           } else {
-            delete this.msPageList.query[item.prop]
+            this.$delete(this.msPageList.query, item.prop)
           }
         }
         let addFn = item => {
+          let keys = Object.keys(this.msPageList.query)
           if (item.component) {
             if (item.prop instanceof Array) {
               item.prop.forEach((p,i) => {
-                this.$set(this.msPageList.query, p, item.value[i])
+                if (!keys.includes(p)) {
+                  this.$set(this.msPageList.query, p, item.value[i])
+                }
               })
             } else {
-              this.$set(this.msPageList.query, item.prop, item.value)
+              if (!keys.includes(item.prop)) {
+                this.$set(this.msPageList.query, item.prop, item.value)
+              }
             }
           }
         }
