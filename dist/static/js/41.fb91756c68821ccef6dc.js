@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[41],{xFdz:function(n,t,e){"use strict";e.r(t);var i={data:function(){return{detail:{}}},methods:{fetch:function(){}}},u=e("ToIM"),c=Object(u.a)(i,function(){var n=this.$createElement;return(this._self._c||n)("div",[this._v("\n  详情内容...\n")])},[],!1,null,null,null);t.default=c.exports}}]);

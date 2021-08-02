@@ -54,6 +54,10 @@ export default {
 }
 </script>
 <style lang="scss">
+.el-table__body-wrapper{
+  overflow:auto;
+  @include scroller(#ddd,6px);
+}
 .ms-frame-layout--body{
   .ms-page-list-layout{
     position:absolute;

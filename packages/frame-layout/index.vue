@@ -466,6 +466,10 @@ export default {
 }
 </script>
 <style lang="scss">
+  .ms-scroller{
+    overflow:auto;
+    @include scroller(#ddd,6px);
+  }
   .ms-frame-layout{
     display:flex;
     height:100%;

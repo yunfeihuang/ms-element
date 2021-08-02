@@ -10,11 +10,6 @@ body{
 img{
   vertical-align: middle;
 }
-h1,h2,h3,h4,h5,h6{
-  font-weight:normal;
-  margin:0;
-  line-height:1;
-}
 a{
   text-decoration: none;
   color: inherit;
@@ -86,27 +81,7 @@ em,strong{
 .is-round{
   border-radius:50%;
 }
-.table-detail{
-  border:1px solid $--border-color-base;
-  border-collapse: collapse;
-  width:100%;
-  td{
-    border: 1px solid $--border-color-base;
-    padding:6px;
-  }
-  &-title{
-    background:$--background-color-base;
-    color:rgba($--color-text-primary, 0.8);
-  }
-}
-.figure-group{
-  figure{
-    position:relative;
-    display:inline-block;
-    margin:0;
-    text-align:center;
-  }
-}
+
 div#nprogress{
   .spinner-icon{
     border-top-color: $--color-primary;
@@ -123,42 +98,5 @@ div#nprogress{
   .e-placeholder,.el-table__empty-text{
     opacity:0;
     transition:opacity 0.3s ease 0s;
-  }
-}
-.ms-scroller,.el-table__body-wrapper{
-  overflow:auto;
-  @include scroller(#ddd,6px);
-}
-
-.order-list{
-  &-header{
-    position: sticky;
-    top: 0;
-    font-weight: bold;
-    background:$--background-color-base;
-    z-index:100;
-  }
-  &-item{
-    border: 1px solid $--border-color-base;
-    margin: 15px 0;
-    &-hd{
-      background: $--background-color-base;
-      padding: 10px;
-      box-sizing: border-box;
-      border-bottom: 1px solid $--border-color-base;
-      line-height: 1;
-      >span{
-        margin-right:20px;
-        font{
-          color:rgba($--color-text-primary, 0.7);
-        }
-      }
-      i{
-        margin-left:2px;
-      }
-      .el-button{
-        padding:0;
-      }
-    }
   }
 }
