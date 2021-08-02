@@ -3,7 +3,7 @@
 > A Vue.js project
 
 ## 示例demo
-https://mselement.bittyos.com/demos.html
+http://mselement.bittyos.com/demos.html
 
 ## Build Setup
 
