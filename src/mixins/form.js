@@ -79,12 +79,12 @@ export default {
         }
       }
     },
-    afterSubmit () { // 提交成功后处理
+    afterSubmit (res) { // 提交成功后处理
       if (this.done) {
         const cb = () => {
           this.msDrawer.handleClose()
         }
-        this.done(cb.bind(this))
+        this.done(cb.bind(this), res)
       } else {
         history.back()
       }
