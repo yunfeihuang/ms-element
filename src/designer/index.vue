@@ -1,49 +1,53 @@
 <template>
   <div class="ms-designer">
     <ms-page-list-layout>
-      <div class="ms-search-form" slot="search">
-        <el-form v-bind="getFormProps()">
-          <div class="ms-designer--pagelist-tabs ms-search-form--prepend">
-            <el-tabs
-              type="card"
-              editable
-              :value="config.tabs.option[0] ? config.tabs.option[0].name : ''"
-              @tab-add="handleTabsForm()"
-              @tab-click="handleTabsForm"
-              @tab-remove="handleTabRemove">
-              <el-tab-pane v-for="(item,index) in config.tabs.option" :key="index" v-bind="item">
-              </el-tab-pane>
-            </el-tabs>
-          </div>
-          <div class="ms-designer--pagelist-search">
-            <el-tooltip placement="top" v-for="(item,index) in config.search.option" :key="index">
-              <el-button type="text" slot="content">删除</el-button>
-              <el-form-item :label="item.label" @click.native="handleSearchForm(item)">
-                <component :is="item.component || 'el-input'" v-bind="item.props" readonly/>
-              </el-form-item>
-            </el-tooltip>
-            <el-form-item>
-              <el-button style="min-width:0" icon="el-icon-plus" circle @click="handleSearchForm()"></el-button>
+      <el-form v-bind="getFormProps({class: ['form-search','ms-search-form']})" slot="search">
+        <div class="ms-designer--pagelist-tabs ms-search-form--prepend">
+          <el-tabs
+            type="card"
+            editable
+            :value="config.tabs.option[0] ? config.tabs.option[0].name : ''"
+            @tab-add="handleTabsForm()"
+            @tab-click="handleTabsForm"
+            @tab-remove="handleTabRemove">
+            <el-tab-pane v-for="(item,index) in config.tabs.option" :key="index" v-bind="item">
+            </el-tab-pane>
+          </el-tabs>
+        </div>
+        <div class="ms-designer--pagelist-search">
+          <el-tooltip placement="top" v-for="(item,index) in config.search.option" :key="index">
+            <el-button type="text" slot="content"  @click="handleSearchFormRemove(item)">删除</el-button>
+            <el-form-item :label="item.label" @click.native="handleSearchForm(item)">
+              <component :is="item.component || 'el-input'" v-bind="item.props" readonly/>
             </el-form-item>
-          </div>
-        </el-form>
-      </div>
+          </el-tooltip>
+          <el-form-item>
+            <el-button style="min-width:0" icon="el-icon-plus" circle @click="handleSearchForm()"></el-button>
+          </el-form-item>
+        </div>
+      </el-form>
       <div class="ms-designer--pagelist-table" slot="table">
         <el-table
           v-bind="getTableProps()"
           v-on="getTableListeners()"
           :data="[{}]"
-          @header-click="handleTableForm">
+          @header-click="handleTableColumnForm">
           <el-table-column v-for="(item,index) in config.table.column" :key="index" v-bind="item">
+            <template v-slot:header="scope">
+              <el-tooltip placement="top">
+                <el-button type="text" slot="content" @click="handleTableColumnFormRemove(scope.column)">删除</el-button>
+                <span>{{scope.column.label}}</span>
+              </el-tooltip>
+            </template>
             <template v-if="item.actions">
               <el-button v-for="(item, index) in item.action" :key="index" type="text">
                 {{item.label}}
               </el-button>
             </template>
           </el-table-column>
-          <el-table-column>
+          <el-table-column align="right">
             <template slot="header">
-              <el-button size="mini" @click.stop="handleTableForm()">创建</el-button>
+              <el-button size="mini" @click.stop="handleTableColumnForm()">创建</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -178,14 +182,14 @@ export default {
         this.config.tabs.option = this.config.tabs.option.filter(item => item.name !== name)
       })
     },
-    handleTableForm (column, event) {
+    handleTableColumnForm (column, event) {
       let config = this.config
       ms.navigator.push(this, TableForm, {
         title: column ? '编辑' : '创建',
         params: column ? {
           label: column.label,
           prop: column.property,
-          isSearch: config.search.option.some(item =>  item.prop === column.property)
+          isSearch: config.search.option.some(item => item.prop === column.property)
         } : undefined,
         promiseSubmit (form) {
           let result = config.table.column.find(item => item.prop === form.prop)
@@ -213,12 +217,27 @@ export default {
           return Promise.resolve(form)
         }
       })
+    },
+    handleTableColumnFormRemove ({property}) {
+      this.$confirm('确认删除该列?', '提示', {
+        type: 'warning'
+      }).then(() => {
+        this.config.table.column = this.config.table.column.filter(item => item.prop !== property)
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  /deep/ {
+    .el-tabs__header{
+      min-height:34px;
+    }
+    .el-tabs__new-tab{
+      margin-top:5px;
+    }
+  }
   .ms-designer-snippet{
     outline: 1px dashed #ccc;
     outline-offset: 4px;
