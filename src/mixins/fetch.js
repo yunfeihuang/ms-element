@@ -28,7 +28,11 @@ export default {
           }).finally(res => {
             this.loading = false
           })
+        } else {
+          return Promise.resolve()
         }
+      } else {
+        return Promise.resolve()
       }
     },
     parseResponse (res) {

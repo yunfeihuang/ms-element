@@ -21,6 +21,11 @@ export default {
       this.$emit('posting', value)
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.isRouterView = true
+    })
+  },
   methods: {
     getFormProps (props) { // 获取el-form表单props
       return Object.assign({
@@ -55,12 +60,10 @@ export default {
           if (promise && promise.then) {
             this.posting = true
             promise.then(res => {
-              this.posting = false
               this.afterSubmit && this.afterSubmit(res)
               return res
-            }).catch(err => {
+            }).finally(() => {
               this.posting = false
-              return err
             })
           }
         } else if (this.submit) {
@@ -68,12 +71,10 @@ export default {
           if (promise && promise.then) {
             this.posting = true
             promise.then(res => {
-              this.posting = false
               this.afterSubmit && this.afterSubmit(res)
               return res
-            }).catch(err => {
+            }).finally(() => {
               this.posting = false
-              return err
             })
           }
         }
@@ -85,8 +86,10 @@ export default {
           this.msDrawer.handleClose()
         }
         this.done(cb.bind(this), res)
+      } else if (this.isRouterView) {
+        this.isRouterView && history.back()
       } else {
-        history.back()
+        this.msDrawer.handleClose()
       }
     },
     validateFail () { // 出现错误滚动到首个错误输入框并聚焦
@@ -110,7 +113,9 @@ export default {
     },
     assignFormData (data) { // 合并请示返回的数据到表单form
       Object.keys(this.form).forEach(item => {
-        this.form[item] = data[item]
+        if (data[item]) {
+          this.form[item] = data[item]
+        }
       })
     },
     submit () { // 提交数据
