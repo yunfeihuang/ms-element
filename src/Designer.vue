@@ -5,12 +5,9 @@
       :menus="menus"
       :menuProps="menuProps">
       <template v-slot:logo="scope">
-        <i :style="`font-size:${scope.isCollapse?14:26}px;font-style:normal;`">LOGO</i>
+        <i :style="`font-size:${scope.isCollapse?14:26}px;font-style:normal;`">designer</i>
       </template>
       <div slot="nav" class="actions">
-        <span @click="handleThemeChange">切换菜单栏颜色</span>
-        <router-link to="/profile">个人中心</router-link>
-        <router-link to="/message">消息</router-link>
       </div>
       <template v-slot="scope">
         <keep-alive :include="scope.include">
@@ -30,21 +27,8 @@ export default {
       menus: [
         {
           iconClass: 'el-icon-monitor',
-          title: '控制台',
+          title: '设计首页',
           route: '/'
-        },
-        {
-          title: '用户管理',
-          options: [
-            {
-              route: '/user',
-              title: '用户列表'
-            },
-            {
-              route: '/user2',
-              title: '用户列表2'
-            }
-          ]
         }
       ]
     }

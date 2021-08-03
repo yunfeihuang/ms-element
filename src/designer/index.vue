@@ -22,7 +22,9 @@
             </el-form-item>
           </el-tooltip>
           <el-form-item>
-            <el-button style="min-width:0" icon="el-icon-plus" circle @click="handleSearchForm()"></el-button>
+            <el-tooltip content="创建搜索项" placement="top">
+              <el-button style="min-width:0" icon="el-icon-plus" @click="handleSearchForm()"></el-button>
+            </el-tooltip>
           </el-form-item>
         </div>
       </el-form>
@@ -47,7 +49,9 @@
           </el-table-column>
           <el-table-column align="right">
             <template slot="header">
-              <el-button size="mini" @click.stop="handleTableColumnForm()">创建</el-button>
+              <el-tooltip content="创建表格列" placement="top">
+                <el-button size="mini" icon="el-icon-plus" @click.stop="handleTableColumnForm()"></el-button>
+              </el-tooltip>
             </template>
           </el-table-column>
         </el-table>
