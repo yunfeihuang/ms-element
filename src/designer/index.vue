@@ -26,13 +26,16 @@
               <el-button style="min-width:0" icon="el-icon-plus" @click="handleSearchForm()"></el-button>
             </el-tooltip>
           </el-form-item>
+          <el-form-item v-if="config.table.create">
+            <el-button @click="handleSearchForm()">创建</el-button>
+          </el-form-item>
         </div>
       </el-form>
       <div class="ms-designer--pagelist-table" slot="table">
         <el-table
           v-bind="getTableProps()"
           v-on="getTableListeners()"
-          :data="[{}]"
+          :data="[]"
           @header-click="handleTableColumnForm">
           <el-table-column v-for="(item,index) in config.table.column" :key="index" v-bind="item">
             <template v-slot:header="scope">
@@ -49,6 +52,9 @@
           </el-table-column>
           <el-table-column align="right">
             <template slot="header">
+              <el-tooltip content="表格设置" placement="top">
+                <el-button size="mini" icon="el-icon-setting" @click.stop="handleTableForm()"></el-button>
+              </el-tooltip>
               <el-tooltip content="创建表格列" placement="top">
                 <el-button size="mini" icon="el-icon-plus" @click.stop="handleTableColumnForm()"></el-button>
               </el-tooltip>
@@ -56,6 +62,11 @@
           </el-table-column>
         </el-table>
       </div>
+      <template slot="action" v-if="config.table.export || config.table.import">
+        <el-button size="small" v-if="config.table.import">导入</el-button>
+        <el-button size="small" v-if="config.table.export" @click="handleExport">导出</el-button>
+        <el-button size="small" v-if="config.table.batchDelete" @click="handleExport">删除</el-button>
+      </template>
     </ms-page-list-layout>
   </div>
 </template>
@@ -64,6 +75,7 @@
 const Form = () => import('./components/Form')
 const TabsForm = () => import('./components/TabsForm')
 const TableForm = () => import('./components/TableForm')
+const TableColumnForm = () => import('./components/TableColumnForm')
 
 export default {
   mixins: [
@@ -98,7 +110,15 @@ export default {
             */
           ]
         },
+        form: {          
+          option: []
+        },
         table: {
+          create: false,
+          delete: false,
+          batchDelete: false,
+          export: false,
+          import: false,
           column: [
             /*
             {
@@ -186,14 +206,42 @@ export default {
         this.config.tabs.option = this.config.tabs.option.filter(item => item.name !== name)
       })
     },
+    handleTableForm () {
+      let config = this.config
+      let {option, ...params} = config.table
+      ms.navigator.push(this, TableForm, {
+        title: '设置',
+        params: {
+          ...params
+        },
+        promiseSubmit (form) {
+          Object.keys(form).forEach(key => {
+            config.table[key] = form[key]
+          })
+          return Promise.resolve(form)
+        }
+      })
+    },
     handleTableColumnForm (column, event) {
       let config = this.config
-      ms.navigator.push(this, TableForm, {
+      let action = []
+      if (column) {
+        if (config.form.option.some(item => item.prop === column.property && item.action.includes('create'))) {
+          action.push('create')
+        }
+        if (config.form.option.some(item => item.prop === column.property && item.action.includes('update'))) {
+          action.push('update')
+        }
+        if (config.search.option.some(item => item.prop === column.property)) {
+          action.push('search')
+        }
+      }
+      ms.navigator.push(this, TableColumnForm, {
         title: column ? '编辑' : '创建',
         params: column ? {
           label: column.label,
           prop: column.property,
-          isSearch: config.search.option.some(item => item.prop === column.property)
+          action
         } : undefined,
         promiseSubmit (form) {
           let result = config.table.column.find(item => item.prop === form.prop)
@@ -206,7 +254,7 @@ export default {
               prop: form.prop
             })
           }
-          if (form.isSearch) {
+          if (form.action.includes('search')) {
             let result = config.search.option.find(item => item.prop === form.prop)
             if (result) {
               result.label = form.label
@@ -215,6 +263,20 @@ export default {
               config.search.option.push({
                 label: form.label,
                 prop: form.prop
+              })
+            }
+          }
+          if (form.action.includes('create') || form.action.includes('update')) {
+            let result = config.form.option.find(item => item.prop === form.prop)
+            if (result) {
+              result.label = form.label
+              result.prop = form.prop
+              result.action = form.action
+            } else {
+              config.form.option.push({
+                label: form.label,
+                prop: form.prop,
+                action: form.action
               })
             }
           }

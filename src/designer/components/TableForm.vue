@@ -1,20 +1,20 @@
 <template>
   <!--v-bind="getFormProps()" @submit.native.prevent="handleSubmit"是必须的-->
   <el-form v-bind="getFormProps()" @submit.native.prevent="handleSubmit">
-    <el-form-item label="属性key" prop="prop" :rules="[{ required: true, message: '请输入属性key' }]">
-      <el-input v-model.trim="form.prop"></el-input>
+    <el-form-item label="是否可创建" prop="create">
+      <el-switch v-model="form.create"></el-switch>
     </el-form-item>
-    <el-form-item label="属性名" prop="label" :rules="[{ required: true, message: '请输入属性名' }]">
-      <el-input v-model.trim="form.label"></el-input>
+    <el-form-item label="是否可删除" prop="delete">
+      <el-switch v-model="form.delete"></el-switch>
     </el-form-item>
-    <el-form-item label="属性模拟值" prop="value">
-      <el-input v-model.trim="form.value"></el-input>
+    <el-form-item label="批量删除" prop="export">
+      <el-switch v-model="form.batchDelete"></el-switch>
     </el-form-item>
-    <el-form-item label="是否可搜索" prop="value">
-      <el-switch v-model="form.isSearch"></el-switch>
+    <el-form-item label="是否可导出" prop="import">
+      <el-switch v-model="form.export"></el-switch>
     </el-form-item>
-    <el-form-item label="是否可编辑" prop="value">
-      <el-switch v-model="form.isUpdate"></el-switch>
+    <el-form-item label="是否可导入" prop="batchDelete">
+      <el-switch v-model="form.import"></el-switch>
     </el-form-item>
   </el-form>
 </template>
@@ -27,19 +27,17 @@ export default {
   data () {
     return {
       form: { // 必须使用form来绑定表单数据
-        prop: '',
-        label: '',
-        value: '',
-        isSearch: false,
-        isUpdate: false
+        create: false,
+        delete: false,
+        export: false,
+        import: false,
+        batchDelete: false
       }
     }
   },
   methods: {
     fetch () {
-      return new Promise((resolve, reject) => {
-        setTimeout(resolve(this.params), 2000)
-      })
+      return Promise.resolve(this.params)
     }
   }
 }
