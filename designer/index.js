@@ -1,9 +1,10 @@
 'use strict'
 const fs = require('fs')
 const path = require('path')
+const archiver = require('archiver');
+var bodyParser = require('body-parser');
 
 const writeFileRecursive = function(_path, buffer, callback){
-  console.log('path', _path)
   fs.mkdir(path.parse(_path).dir, {recursive: true}, (err) => {
       if (err) return callback(err);
       fs.writeFile(_path, buffer, function(err){
@@ -14,6 +15,10 @@ const writeFileRecursive = function(_path, buffer, callback){
 }
 
 module.exports = function (app) {
+  // 解析 application/json
+  app.use(bodyParser.json()); 
+  // 解析 application/x-www-form-urlencoded
+  app.use(bodyParser.urlencoded());
   /*
   app.get('/designer', function(req, res) {
     writeFileRecursive(path.join(__filename, '../../src/views/user/index.vue'), 'afdsafdsa', function (err) {
@@ -25,54 +30,35 @@ module.exports = function (app) {
     })
   });
   */
-  app.get('/designer', function(req, res) {
-    // const config = JSON.parse(req.body.config)
-    const config = {
-      tabs: {
-        prop: 'status',
-        option: [
-          {
-            label: '全部',
-            name: 'tab1'
-          },
-          {
-            label: '禁用',
-            name: 'tab2'
-          }
-        ]
-      },
-      search: {
-        option: [
-          {
-            component: 'el-input',
-            label: '关键字',
-            prop: 'keyword'
-          }
-        ]
-      },
-      table: {
-        column: [
-          {
-            label: '用户名',
-            prop: 'username'
-          },
-          {
-            label: '年龄',
-            prop: 'age'
-          }
-        ]
-      }
+  app.get('/designer/download/:fileName', function(req, res) {
+    var fileName = req.params.fileName
+    var filePath = path.join(__filename, '../../src/views', fileName)
+    var stats = fs.statSync(filePath)
+    if(stats.isFile()){
+      res.set({
+        'Content-Type': 'application/octet-stream',
+        'Content-Disposition': 'attachment; filename=' + fileName,
+        'Content-Length': stats.size
+      });
+      fs.createReadStream(filePath).pipe(res)
+    } else {
+      res.end(404)
     }
-    const data = `
+  })
+
+  app.post('/designer', function(req, res) {
+    const config = req.body.config
+    console.log('req.body.config', req.body.config)
+    const page = `
   <template>
   <!--PageListLayout有四个插槽:breadcrumb,search,table,pagination(这个是默认存在的)-->
   <ms-page-list-layout>
     <template slot="search">
       <ms-search-form :option="searchOption" @submit="handleSubmit">
-        <el-tabs slot="prepend" v-model="query.active" type="card" @tab-click="handleTab">
+        <el-tabs slot="prepend" v-model="query.${config.tabs.prop}" type="card" @tab-click="handleTab">
           <el-tab-pane v-for="(item,index) in tabsOption" :key="index" v-bind="item"></el-tab-pane>
         </el-tabs>
-        <el-button size="small" @click="handleCreate()">创建</el-button>
+        ${config.form.option.some(item => item.action.includes('create')) ? `<el-button size="small" @click="handleForm()">创建</el-button>` : ''}
       </ms-search-form>
     </template>
     <el-table slot="table"
@@ -87,22 +73,27 @@ module.exports = function (app) {
         </template>
       </el-table-column>`
       }).join('\n')}
+      <el-table-column label="操作">
+        <template v-slot="scope">
+          ${config.form.option.some(item => item.action.includes('update')) ? `<el-button type="text" @click="handleForm(scope.row)">编辑</el-button>` : ''}
+          ${config.page.delete ? `<el-button size="small" @click="handleDelete(scope.row)">删除</el-button>` : ''}
+        </template>
+      </el-table-column>
     </el-table>
     <template slot="action">
-      <el-button size="small">导入</el-button>
-      <el-button :disabled="multipleSelectionAll.length==0" size="small" @click="handleExport">导出</el-button>
+      ${config.page.import ? `<el-button size="small" @click="handleImport()">导入</el-button>` : ''}
+      ${config.page.export ? `<el-button size="small" @click="handleExport()">导出</el-button>` : ''}
+      ${config.page.batchDelete ? `<el-button size="small" @click="handleDelete()">删除</el-button>` : ''}
     </template>
   </ms-page-list-layout>
 </template>
 
 <script>
 const Form = () => import('./components/Form')
-const Detail = () => import('./components/Detail')
-const List = () => import('./components/List')
-// const api = ms.restful('/user')
+const api = ms.restful('${config.page.api}')
 
 export default {
-  name: 'user',
+  name: '${config.page.module}',
   mixins: [
     ms.mixins.pageList
   ],
@@ -117,40 +108,63 @@ export default {
   },
   methods: {
     fetch (query) { // 获取数据的方法，必须要重写
-      return this.$axios({
-        url: '/user',
-        query
-      })
+      return api.fetch(query)
     },
-    handleDelete () {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+    handleDelete (row) {
+      this.$confirm('确定删除此数据?', '提示', {
         type: 'warning'
       }).then(() => {
-        this.$message({
-          message: '删除成功',
-          type: 'success'
+        api.delete(row[${config.page.idProp}]).then(res => {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
         })
       })
     },
-    handleCreate (params) {
+    handleForm (row) {
       ms.navigator.push(this, Form, {
-        params,
-        title: params ? '编辑' : '创建',
-        done: cb => {
-          cb()
-          this.refresh()
-        }
+        params: row,
+        title: row ? '编辑' : '创建'
       })
-    },
+    }
   }
 }
 </script>`
 
-    writeFileRecursive(path.join(__filename, '../../src/views/user/index.vue'), data, function (err) {
+const Form = `<el-form v-bind="getFormProps()" @submit.native.prevent="handleSubmit">
+  ${config.form.option.map(function (item) {
+    return `<el-form-item label="${item.prop}" :rules="${item.rules}">
+    <${item.component} v-model="form.${item.prop}"></${item.component}>
+  </el-form-item>`
+  })}
+</el-form>`
+  console.log('page', Form)
+    let _path = path.join(__filename, `../../src/views/${config.page.module}/index.vue`)
+    writeFileRecursive(_path, page, function (err) {
       if (!err) {
-        res.json({ code: '200' });
+        if (config.form && config.form.option && config.form.option.length) {
+          writeFileRecursive(path.join(__filename, `../../src/views/${config.page.module}/components/Form.vue`), Form, function (err) {
+            if (!err) {
+              const output = fs.createWriteStream(`${path.parse(_path).dir}.zip`);
+              const archive = archiver('zip');
+              archive.on('error', function (err) {
+                throw err;
+              });
+              archive.pipe(output);
+              // 文件夹压缩
+              archive.directory(path.parse(_path).dir, false);
+              archive.finalize();
+              res.json({ code: 200, data:  `/designer/download/${config.page.module}.zip`});
+            } else {
+              res.json({ code: 500 });
+            }
+          })
+        } else {
+          res.json({ code: 200, data:  `/designer/download/${config.page.module}.zip`});
+        }
       } else {
-        res.json({ code: '500' });
+        res.json({ code: 500 });
       }
     })
   })

@@ -26,8 +26,8 @@
               <el-button style="min-width:0" icon="el-icon-plus" @click="handleSearchForm()"></el-button>
             </el-tooltip>
           </el-form-item>
-          <el-form-item v-if="config.table.create">
-            <el-button @click="handleSearchForm()">创建</el-button>
+          <el-form-item v-if="config.form.option.some(item => item.action.includes('create'))">
+            <el-button @click="handleForm()">创建</el-button>
           </el-form-item>
         </div>
       </el-form>
@@ -35,7 +35,7 @@
         <el-table
           v-bind="getTableProps()"
           v-on="getTableListeners()"
-          :data="[]"
+          :data="config.tableData"
           @header-click="handleTableColumnForm">
           <el-table-column v-for="(item,index) in config.table.column" :key="index" v-bind="item">
             <template v-slot:header="scope">
@@ -44,10 +44,11 @@
                 <span>{{scope.column.label}}</span>
               </el-tooltip>
             </template>
-            <template v-if="item.actions">
-              <el-button v-for="(item, index) in item.action" :key="index" type="text">
-                {{item.label}}
-              </el-button>
+          </el-table-column>
+          <el-table-column label="操作" v-if="config.page.delete || config.form.option.some(item => item.action.includes('update'))">
+            <template v-slot="scope">
+              <el-button type="text" v-if="config.form.option.some(item => item.action.includes('update'))" @click="handleForm('update')">编辑</el-button>
+              <el-button type="text" v-if="config.page.delete">删除</el-button>
             </template>
           </el-table-column>
           <el-table-column align="right">
@@ -62,10 +63,10 @@
           </el-table-column>
         </el-table>
       </div>
-      <template slot="action" v-if="config.table.export || config.table.import">
-        <el-button size="small" v-if="config.table.import">导入</el-button>
-        <el-button size="small" v-if="config.table.export" @click="handleExport">导出</el-button>
-        <el-button size="small" v-if="config.table.batchDelete" @click="handleExport">删除</el-button>
+      <template slot="action" v-if="config.page.export || config.page.import">
+        <el-button size="small" v-if="config.page.import">导入</el-button>
+        <el-button size="small" v-if="config.page.export" @click="handleExport">导出</el-button>
+        <el-button size="small" v-if="config.page.batchDelete" @click="handleExport">删除</el-button>
       </template>
     </ms-page-list-layout>
   </div>
@@ -73,6 +74,7 @@
 
 <script>
 const Form = () => import('./components/Form')
+const SearchForm = () => import('./components/SearchForm')
 const TabsForm = () => import('./components/TabsForm')
 const TableForm = () => import('./components/TableForm')
 const TableColumnForm = () => import('./components/TableColumnForm')
@@ -84,6 +86,15 @@ export default {
   data () {
     return {
       config: {
+        page: {
+          module: '',
+          api: '',
+          idProp: 'id',
+          delete: false,
+          batchDelete: false,
+          export: false,
+          import: false
+        },
         tableData: [
           {}
         ],
@@ -110,15 +121,10 @@ export default {
             */
           ]
         },
-        form: {          
+        form: {
           option: []
         },
         table: {
-          create: false,
-          delete: false,
-          batchDelete: false,
-          export: false,
-          import: false,
           column: [
             /*
             {
@@ -147,7 +153,7 @@ export default {
   methods: {
     handleSearchForm (params) {
       let config = this.config
-      ms.navigator.push(this, Form, {
+      ms.navigator.push(this, SearchForm, {
         title: params ? '编辑' : '创建',
         params,
         promiseSubmit (form) {
@@ -208,15 +214,14 @@ export default {
     },
     handleTableForm () {
       let config = this.config
-      let {option, ...params} = config.table
       ms.navigator.push(this, TableForm, {
         title: '设置',
         params: {
-          ...params
+          ...config.page
         },
         promiseSubmit (form) {
           Object.keys(form).forEach(key => {
-            config.table[key] = form[key]
+            config.page[key] = form[key]
           })
           return Promise.resolve(form)
         }
@@ -289,6 +294,18 @@ export default {
         type: 'warning'
       }).then(() => {
         this.config.table.column = this.config.table.column.filter(item => item.prop !== property)
+      })
+    },
+    handleForm (type = 'create') {
+      let config = this.config
+      const params = config.form.option.filter(item => item.action.includes(type))
+      ms.navigator.push(this, Form, {
+        title: type === 'create' ? '创建' : '编辑',
+        params,
+        promiseSubmit (form) {
+          config.form.option = form
+          return Promise.resolve(form)
+        }
       })
     }
   }

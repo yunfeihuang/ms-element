@@ -26,6 +26,20 @@ export default {
       vm.isRouterView = true
     })
   },
+  updated () {
+    if (this.msDrawer) {
+      let form = this.$el.tagName.toLocaleLowerCase() === 'form' ? this.$el : this.$el.querySelector('form')
+      if (form) {
+        let node = form.querySelector('button[type="submit"]')
+        if (!node) {
+          let button = document.createElement('button')
+          button.type = 'submit'
+          button.style.display = 'none'
+          form.appendChild(button)
+        }
+      }
+    }
+  },
   methods: {
     getFormProps (props) { // 获取el-form表单props
       return Object.assign({
@@ -53,10 +67,13 @@ export default {
         })
       }
     },
+    getFormData () {
+      return this.form
+    },
     beforeSubmit () {
       if (!this.posting) {
         if (this.promiseSubmit) {
-          let promise = this.promiseSubmit(JSON.parse(JSON.stringify(this.form)))
+          let promise = this.promiseSubmit(JSON.parse(JSON.stringify(this.getFormData())))
           if (promise && promise.then) {
             this.posting = true
             promise.then(res => {

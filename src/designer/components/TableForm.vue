@@ -1,8 +1,14 @@
 <template>
   <!--v-bind="getFormProps()" @submit.native.prevent="handleSubmit"是必须的-->
   <el-form v-bind="getFormProps()" @submit.native.prevent="handleSubmit">
-    <el-form-item label="是否可创建" prop="create">
-      <el-switch v-model="form.create"></el-switch>
+    <el-form-item label="模块名称" prop="api">
+      <el-input v-model="form.module"></el-input>
+    </el-form-item>
+    <el-form-item label="接口地址" prop="api">
+      <el-input v-model="form.api"></el-input>
+    </el-form-item>
+    <el-form-item label="数据id prop" prop="idProp">
+      <el-input v-model="form.idProp"></el-input>
     </el-form-item>
     <el-form-item label="是否可删除" prop="delete">
       <el-switch v-model="form.delete"></el-switch>
@@ -16,10 +22,12 @@
     <el-form-item label="是否可导入" prop="batchDelete">
       <el-switch v-model="form.import"></el-switch>
     </el-form-item>
+    <el-button @click="handleExport">生成代码并导出</el-button>
   </el-form>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   mixins: [
     ms.mixins.form
@@ -27,7 +35,9 @@ export default {
   data () {
     return {
       form: { // 必须使用form来绑定表单数据
-        create: false,
+        module: '',
+        api: '',
+        idProp: 'id',
         delete: false,
         export: false,
         import: false,
@@ -38,6 +48,26 @@ export default {
   methods: {
     fetch () {
       return Promise.resolve(this.params)
+    },
+    handleExport () {
+      this.msDrawer.target.config.page = this.form
+      axios({
+        url: '/designer',
+        method: 'post',
+        data: {
+          config: this.msDrawer.target.config
+        }
+      }).then(res => {
+        if (res.data.data) {
+          const link = document.createElement('a')
+          link.download = res.data.data
+          link.style.display = 'none'
+          link.href = res.data.data
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+        }
+      })
     }
   }
 }
