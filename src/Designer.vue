@@ -29,6 +29,10 @@ export default {
           iconClass: 'el-icon-monitor',
           title: '设计首页',
           route: '/'
+        },
+        {
+          title: '用户管理',
+          route: '/user'
         }
       ]
     }

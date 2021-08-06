@@ -65,9 +65,14 @@ router.afterEach(() => {
   NProgress.done()
 })
 
-new Vue({ // eslint-disable-line
+window.$app = new Vue({ // eslint-disable-line
   router,
   store,
   el: '#app',
+  mounted () {
+    setTimeout(() => {
+      import('@/views/index.js')
+    })
+  },
   render: h => h(App)
 })
