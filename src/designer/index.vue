@@ -16,7 +16,7 @@
         </div>
         <div class="ms-designer--pagelist-search">
           <el-tooltip placement="top" v-for="(item,index) in designer.search.option" :key="index">
-            <el-button type="text" slot="content"  @click="handleSearchFormRemove(item)">删除</el-button>
+            <el-button type="text" slot="content"  @click="handleSearchRemove(item)">删除</el-button>
             <el-form-item :label="item.label" @click.native="handleSearchForm(item)">
               <component :is="item.component || 'el-input'" v-bind="item.props" readonly/>
             </el-form-item>
@@ -40,21 +40,21 @@
           <el-table-column v-for="(item,index) in designer.table.column" :key="index" v-bind="item">
             <template v-slot:header="scope">
               <el-tooltip placement="top">
-                <el-button type="text" slot="content" @click="handleTableColumnFormRemove(scope.column)">删除</el-button>
+                <el-button type="text" slot="content" @click="handleTableColumnRemove(scope.column)">删除</el-button>
                 <span>{{scope.column.label}}</span>
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column label="操作" v-if="designer.page.delete || designer.form.option.some(item => item.action.includes('update'))">
+          <el-table-column label="操作" v-if="designer.setting.delete || designer.form.option.some(item => item.action.includes('update'))">
             <template v-slot="scope">
               <el-button type="text" v-if="designer.form.option.some(item => item.action.includes('update'))" @click="handleForm('update')">编辑</el-button>
-              <el-button type="text" v-if="designer.page.delete">删除</el-button>
+              <el-button type="text" v-if="designer.setting.delete">删除</el-button>
             </template>
           </el-table-column>
           <el-table-column align="right">
             <template slot="header">
               <el-tooltip content="表格设置" placement="top">
-                <el-button size="mini" icon="el-icon-setting" @click.stop="handleTableForm()"></el-button>
+                <el-button size="mini" icon="el-icon-setting" @click.stop="handleSettingForm()"></el-button>
               </el-tooltip>
               <el-tooltip content="创建表格列" placement="top">
                 <el-button size="mini" icon="el-icon-plus" @click.stop="handleTableColumnForm()"></el-button>
@@ -63,10 +63,19 @@
           </el-table-column>
         </el-table>
       </div>
-      <template slot="action" v-if="designer.page.export || designer.page.import">
-        <el-button size="small" v-if="designer.page.import">导入</el-button>
-        <el-button size="small" v-if="designer.page.export" @click="handleExport">导出</el-button>
-        <el-button size="small" v-if="designer.page.batchDelete" @click="handleExport">删除</el-button>
+      <template slot="action">
+        <el-tooltip placement="top" v-for="(item,index) in designer.setting.table.batch" :key="index">
+          <el-button type="text" slot="content"  @click="handleBatchRemove(item)">删除</el-button>
+          <template>
+            <el-button v-if="item.type === 'import'" size="small" @click="handleBatchForm(item,index)">{{item.label}}</el-button>
+            <el-button v-else-if="item.type === 'export'" size="small" @click="handleBatchForm(item,index)">{{item.label}}</el-button>
+            <el-button v-else-if="item.type === 'delete'" size="small" @click="handleBatchForm(item,index)">{{item.label}}</el-button>
+            <el-button v-else-if="item.type === 'update'" size="small" @click="handleBatchForm(item,index)">{{item.label}}</el-button>
+          </template>
+        </el-tooltip>
+        <el-tooltip content="创建批量操作项" placement="top">
+          <el-button size="small" icon="el-icon-plus" @click="handleBatchForm()"></el-button>
+        </el-tooltip>
       </template>
     </ms-page-list-layout>
   </div>
@@ -77,22 +86,25 @@ import axios from 'axios'
 const Form = () => import('./components/Form')
 const SearchForm = () => import('./components/SearchForm')
 const TabsForm = () => import('./components/TabsForm')
-const TableForm = () => import('./components/TableForm')
+const SettingForm = () => import('./components/SettingForm')
 const TableColumnForm = () => import('./components/TableColumnForm')
+const BatchForm = () => import('./components/BatchForm')
 
 const designer = {
-  page: {
+  setting: {
+    dir: '',
     route: {
       path: '',
       meta: {
         title: ''
       }
     },
-    dir: '',
-    api: '',
-    idProp: 'id',
-    action: [], //['delete', 'export', 'import'],
-    serialNumber: false
+    restfulApi: '',
+    table: {
+      idProp: 'id',
+      batch: [],
+      serialNumber: false
+    }
   },
   tabs: {
     prop: '',
@@ -158,7 +170,7 @@ export default {
   watch: {
     designer: {
       handler (value) {
-        localStorage.setItem('ms-designer', JSON.stringify(designer))
+        localStorage.setItem('ms-designer', JSON.stringify(value))
       },
       deep: true
     }
@@ -186,7 +198,7 @@ export default {
         }
       })
     },
-    handleSearchFormRemove ({prop}) {
+    handleSearchRemove ({prop}) {
       this.$confirm('确认删除该搜索项?', '提示', {
         type: 'warning'
       }).then(() => {
@@ -225,17 +237,15 @@ export default {
         this.designer.tabs.option = this.designer.tabs.option.filter(item => item.name !== name)
       })
     },
-    handleTableForm () {
+    handleSettingForm () {
       let designer = this.designer
-      ms.navigator.push(this, TableForm, {
+      ms.navigator.push(this, SettingForm, {
         title: '设置',
         params: {
-          ...designer.page
+          ...designer.setting
         },
         promiseSubmit (form) {
-          Object.keys(form).forEach(key => {
-            designer.page[key] = form[key]
-          })
+          designer.setting = form
           return axios({
             url: '/designer',
             method: 'POST',
@@ -248,14 +258,10 @@ export default {
                 type: 'success',
                 message: '生成成功'
               })
-              /*
               // localStorage.removeItem('ms-designer')
-              setTimeout(() => {
-                this.$router.push({
-                  path: designer.page.route.path
-                })
-              }, 2000)
-              */
+              this.$router.push({
+                path: designer.setting.route.path
+              })
             }
           })
         }
@@ -324,7 +330,7 @@ export default {
         }
       })
     },
-    handleTableColumnFormRemove ({property}) {
+    handleTableColumnRemove ({property}) {
       this.$confirm('确认删除该列?', '提示', {
         type: 'warning'
       }).then(() => {
@@ -341,6 +347,28 @@ export default {
           designer.form.option = form
           return Promise.resolve(form)
         }
+      })
+    },
+    handleBatchForm (params, index) {
+      let designer = this.designer
+      ms.navigator.push(this, BatchForm, {
+        title: !params ? '创建' : '编辑',
+        params,
+        promiseSubmit (form) {
+          if (params) {
+            Object.assign(params, form)
+          } else {
+            designer.setting.table.batch.push(form)
+          }
+          return Promise.resolve(form)
+        }
+      })
+    },
+    handleBatchRemove (value) {
+      this.$confirm('确认删除?', '提示', {
+        type: 'warning'
+      }).then(() => {
+        this.designer.setting.table.batch = this.designer.setting.table.batch.filter(item => item !== value)
       })
     }
   }

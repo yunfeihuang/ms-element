@@ -12,7 +12,7 @@ module.exports = function (designer) {
 </template>
 
 <script>
-const api = ms.restful('${designer.page.api}')
+const api = ms.restful('${designer.setting.restfulApi}')
 export default {
   mixins: [
     ms.mixins.form
@@ -28,14 +28,14 @@ export default {
   },
   methods: {
     fetch () {
-      if (this.params && this.params.${designer.page.idProp}) {
-        return api.get({url: '/' + this.params.${designer.page.idProp}})
+      if (this.params && this.params.${designer.setting.idProp}) {
+        return api.get({url: '/' + this.params.${designer.setting.idProp}})
       }
       // return Promise.resolve(this.params)
     },
     submit () { // 表单校验通过后调用的方法，一般是请求后台接口的方法
-      if (this.params && this.params.${designer.page.idProp}) { // 更新
-        return api.put({url: '/' + this.params.${designer.page.idProp} , data: this.form})
+      if (this.params && this.params.${designer.setting.idProp}) { // 更新
+        return api.put({url: '/' + this.params.${designer.setting.idProp} , data: this.form})
       } else {
         return api.post({data: this.form}) // 创建
       }

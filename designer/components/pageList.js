@@ -15,10 +15,10 @@ module.exports = function (designer) {
       v-bind="getTableProps()"
       v-on="getTableListeners()"
       :data="pageData.data">
-      ${designer.page.action.includes('import') || designer.page.action.includes('export') || designer.page.action.includes('delete') ? `<el-table-column
+      ${designer.setting.table.batch.some(item => item.type === 'import') || designer.setting.table.batch.some(item => item.type === 'export') || designer.setting.table.batch.some(item => item.type === 'delete') ? `<el-table-column
         type="selection"
         width="58">
-      </el-table-column>\n` : ''}${designer.page.serialNumber ? `<el-table-column
+      </el-table-column>\n` : ''}${designer.setting.table.serialNumber ? `<el-table-column
         v-bind="getIndexColumnProps()">
       </el-table-column>\n` : ''}${designer.table.column.map(function (item) {
         return `<el-table-column
@@ -35,26 +35,32 @@ module.exports = function (designer) {
         </template>
       </el-table-column>
     </el-table>
-    <template slot="action">
-      ${designer.page.action.includes('import') ? `<el-button size="small" @click="handleImport()">导入</el-button>` : ''}
-      ${designer.page.action.includes('export') ? `<el-button size="small" @click="handleExport()">导出</el-button>` : ''}
-      ${designer.page.action.includes('delete') ? `<el-button :disabled="multipleSelectionAll.length==0" size="small" @click="handleBatchDelete()">删除</el-button>` : ''}
+    <template slot="action">${designer.setting.table.batch.map(item => {
+        if (item.type === 'delete') {
+          return `<el-button :disabled="multipleSelectionAll.length==0" size="small" @click="handleBatchDelete()">${item.label}</el-button>`
+        } else if (item.type === 'import') {
+          return `<el-button size="small" @click="handleImport()">${item.label}</el-button>`
+        } else if (item.type === 'export') {
+          return `<el-button size="small" @click="handleExport()">${item.label}</el-button>`
+        } else {
+          return `<el-button size="small">${item.label}</el-button>`
+        }
+      }).join('\n')}
     </template>
   </ms-page-list-layout>
 </template>
 
 <script>
-const api = ms.restful('${designer.page.api}')
+const api = ms.restful('${designer.setting.restfulApi}')
 
 export default {
-  name: '${designer.page.dir}',
-  route: ${JSON.stringify(designer.page.route, null, 2).replace(/"/g,"'")},
+  name: '${designer.setting.dir.split('/').join('-')}',
   mixins: [
     ms.mixins.pageList
   ],
   data () {
     return {
-      multipleSelectionProp: '${designer.page.idProp}',
+      multipleSelectionProp: '${designer.setting.idProp}',
       tabsOption: ${JSON.stringify(designer.tabs.option, null, 2).replace(/"/g,"'")},
       searchOption: ${JSON.stringify(designer.search.option, null, 2).replace(/"/g,"'")},
       query: this.getQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象
@@ -73,7 +79,7 @@ export default {
       this.$confirm('确定删除此数据?', '提示', {
         type: 'warning'
       }).then(() => {
-        api.delete({url: '/' + row[${designer.page.idProp}]}).then(res => {
+        api.delete({url: '/' + row[${designer.setting.idProp}]}).then(res => {
           this.$message({
             message: '删除成功',
             type: 'success'
@@ -85,7 +91,7 @@ export default {
       this.$confirm('确定删除选中的数据?', '提示', {
         type: 'warning'
       }).then(() => {
-        let data = {delete: this.multipleSelectionAll.map(item => {return item["${designer.page.idProp}"]})}
+        let data = {delete: this.multipleSelectionAll.map(item => {return item["${designer.setting.idProp}"]})}
         api.batch({data}).then(res => {
           this.$message({
             message: '删除成功',

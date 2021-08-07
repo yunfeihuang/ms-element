@@ -5,6 +5,7 @@ const archiver = require('archiver');
 var bodyParser = require('body-parser');
 const pageList = require('./components/pageList')
 const form = require('./components/form')
+const route = require('./components/route')
 
 const writeFileRecursive = function(_path, buffer, callback){
   fs.mkdir(path.parse(_path).dir, {recursive: true}, (err) => {
@@ -41,12 +42,25 @@ module.exports = function (app) {
   app.post('/designer', function(req, res) {
     const designer = req.body.designer
     console.log('req.body.designer', req.body.designer)
-    let root = `../../src/views/${designer.page.dir}`
+    let root = `../../src/views/${designer.setting.dir}`
     writeFileRecursive(path.join(__filename, root, '/index.vue'), pageList(designer), function (err) {
       if (!err) {
         if (designer.form && designer.form.option && designer.form.option.length) {
           writeFileRecursive(path.join(__filename, root, '/components/Form.vue'), form(designer), function (err) {
             if (!err) {
+              writeFileRecursive(path.join(__filename, root, '/route.js'), route(designer), function (err) {
+                if (!err) {
+                  writeFileRecursive(path.join(__filename, root, '/designer.json'), JSON.stringify(designer), function (err) {
+                    if (!err) {
+                      res.json({ code: 200 });
+                    } else {
+                      res.json({ code: 500, msg: err });
+                    }
+                  });
+                } else {
+                  res.json({ code: 500, msg: err });
+                }
+              })
               /*
               const output = fs.createWriteStream(`${path.parse(_path).dir}.zip`);
               const archive = archiver('zip');
@@ -58,13 +72,6 @@ module.exports = function (app) {
               archive.directory(path.parse(_path).dir, false);
               archive.finalize();
               */
-              writeFileRecursive(path.join(__filename, root, '/designer.json'), JSON.stringify(designer), function (err) {
-                if (!err) {
-                  res.json({ code: 200 });
-                } else {
-                  res.json({ code: 500, msg: err });
-                }
-              })
             } else {
               res.json({ code: 500, msg: err });
             }
