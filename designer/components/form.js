@@ -1,30 +1,31 @@
 const utils = require('../utils')
 module.exports = function (designer) {
   const renderChildren = function (item) {
+    if (item.component === 'el-upload') {
+      return `\n<el-button>上传</el-button>\n`
+    }
     let tag = ''
     if (item.component === 'el-select') {
       tag = 'el-option'
-    }
-    if (item.component === 'el-checkbox-group') {
+    } else if (item.component === 'el-checkbox-group') {
       tag = 'el-checkbox'
-    }
-    if (item.component === 'el-radio-group') {
+    } else if (item.component === 'el-radio-group') {
       tag = 'el-radio'
     }
     if (item.slots && item.slots.length) {
       return `\n${item.slots.map(item => {
-        return `<${tag} ${utils.objectToProps(item)}></${tag}>`
+        return `<${tag}${utils.objectToProps(item)}></${tag}>`
       }).join('\n')}\n`
     }else{
       return ''
     }
-  } 
+  }
   return `
 <template>
   <el-form v-bind="getFormProps()" @submit.native.prevent="handleSubmit">
     ${designer.form.option.map(function (item) {
       return `<el-form-item label="${item.label}" prop="${item.prop}" ${item.rules && item.rules.length ? `:rules="${utils.arrayToValue(item.rules)}"` : ''}>
-      <${item.component} v-model="form.${item.prop}" ${item.props ? utils.objectToProps(item.props) : ''}>${renderChildren(item)}</${item.component}>
+      <${item.component} v-model="form.${item.prop}"${utils.objectToProps(item.props)}>${renderChildren(item)}</${item.component}>
     </el-form-item>`
     }).join('\n')}
   </el-form>

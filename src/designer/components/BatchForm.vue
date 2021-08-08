@@ -20,9 +20,9 @@ export default {
   data () {
     return {
       options: [
-        {value: 'delete', label: '删除'}, 
+        {value: 'delete', label: '删除'},
         {value: 'export', label: '导出'},
-        {value: 'import', label: '导入'}, 
+        {value: 'import', label: '导入'},
         {value: 'update', label: '更新'}
       ],
       form: { // 必须使用form来绑定表单数据
@@ -32,7 +32,7 @@ export default {
     }
   },
   methods: {
-    handleChange(value) {
+    handleChange (value) {
       let result = this.options.find(item => item.value === value)
       if (result) {
         this.form.label = result.label

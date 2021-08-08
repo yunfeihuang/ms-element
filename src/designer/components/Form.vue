@@ -138,7 +138,7 @@ export default {
           format: 'YYYY-MM-dd'
         }
       }
-      if (['el-select', 'el-checkbox-group', 'el-radio-group']) {
+      if (['el-select', 'el-checkbox-group', 'el-radio-group'].includes(value)) {
         item.slots = []
       }
       this.$forceUpdate()

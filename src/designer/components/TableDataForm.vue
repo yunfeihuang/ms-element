@@ -4,7 +4,6 @@
     <el-form-item v-for="(item,index) in column" :key="index" :label="item.label">
       <el-input v-model="form[item.prop]"></el-input>
     </el-form-item>
-    
   </el-form>
 </template>
 

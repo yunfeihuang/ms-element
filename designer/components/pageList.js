@@ -1,15 +1,38 @@
 const utils = require('../utils')
 module.exports = function (designer) {
+  const renderChildren = function ({component, slots, prop, label}) {
+    if (component === 'el-upload') {
+      return `\n<el-button>上传</el-button>\n`
+    }
+    let tag = ''
+    if (component === 'el-select') {
+      tag = 'el-option'
+    } else if (component === 'el-checkbox-group') {
+      tag = 'el-checkbox'
+    } else if (component === 'el-radio-group') {
+      tag = 'el-radio'
+    }
+    if (slots && slots.length) {
+      return `\n${slots.map(item => {
+        return `<${tag}${utils.objectToProps(item)} placeholder="请输入${label}"></${tag}>`
+      }).join('\n')}\n`
+    }else{
+      return ''
+    }
+  }
   return `
 <template>
   <!--PageListLayout有四个插槽:,search,table,pagination(这个是默认存在的)-->
   <ms-page-list-layout>
     <template slot="search">
-      <ms-search-form :option="searchOption" @submit="handleSubmit">
+      <ms-search-form :search-slots="searchSlots" @submit="handleSubmit">
         ${designer.tabs.option.length ? `<el-tabs slot="prepend" v-model="query.${designer.tabs.prop}" type="card" @tab-click="handleTab">
           <el-tab-pane v-for="(item,index) in tabsOption" :key="index" v-bind="item"></el-tab-pane>
-        </el-tabs>\n` : ''}${designer.form.option.some(item => item.action.includes('create')) ? `<el-button size="small" @click="handleForm()">创建</el-button>` : ''}
-      </ms-search-form>
+        </el-tabs>\n` : ''}${designer.search.option.map(item => {
+          return `<el-form-item slot="$${item.prop}"${utils.objectToProps({prop:item.prop, label: item.label})}>\n<${item.component}${utils.objectToProps(item.props)} v-model="query.${item.prop}" clearable>${renderChildren(item)}</${item.component}>\n</el-form-item>`
+        }).join('\n')}
+        ${designer.form.option.some(item => item.action.includes('create')) ? `<el-button size="small" @click="handleForm()">创建</el-button>` : ''}
+        </ms-search-form>
     </template>
     <el-table slot="table"
       v-bind="getTableProps()"
@@ -65,7 +88,7 @@ export default {
     return {
       multipleSelectionProp: '${designer.setting.idProp}',
       tabsOption: ${JSON.stringify(designer.tabs.option, null, 2).replace(/"/g,"'")},
-      searchOption: ${JSON.stringify(designer.search.option, null, 2).replace(/"/g,"'")},
+      searchSlots: ${JSON.stringify(designer.search.option.map(item => item.prop)).replace(/"/g,"'")},
       query: this.getQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象
         ${designer.search.option.map(item => {
           return `${item.prop}: null`

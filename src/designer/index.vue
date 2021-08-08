@@ -18,7 +18,7 @@
           <el-tooltip placement="top" v-for="(item,index) in designer.search.option" :key="index">
             <el-button type="text" slot="content"  @click="handleSearchRemove(item)">删除</el-button>
             <el-form-item :label="item.label" @click.native="handleSearchForm(item)">
-              <component :is="item.component || 'el-input'" v-bind="item.props" readonly controls-position="right">
+              <component :is="item.component" v-bind="item.props" readonly controls-position="right">
                 <template v-if="item.component === 'el-select'">
                   <el-option v-for="(item,index) in item.slots" :key="index" v-bind="item"></el-option>
                 </template>
@@ -231,7 +231,6 @@ export default {
         }
       })
     },
-    
     handleTabsForm (tab) {
       let designer = this.designer
       ms.navigator.push(this, TabsForm, {
@@ -242,7 +241,7 @@ export default {
           prop: designer.tabs.prop
         } : {prop: designer.tabs.prop},
         promiseSubmit (form) {
-          let { prop, ...other} = form 
+          let { prop, ...other } = form
           designer.tabs.prop = form.prop
           let result = designer.tabs.option.find(item => item.name === form.name)
           if (result) {
@@ -320,8 +319,8 @@ export default {
               Object.assign(result, other)
             } else {
               designer.search.option.push({
-                  ...other,
-                  component: 'el-input'
+                ...other,
+                component: 'el-input'
               })
             }
           }
@@ -389,12 +388,16 @@ export default {
         designer.table.column.forEach(item => {
           _row[item.prop] = ''
         })
+      } else {
+        _row = row
       }
       ms.navigator.push(this, TableDataForm, {
         title,
         params: {
           column: designer.table.column,
-          row: row ? row : _row
+          row: {
+            ..._row
+          }
         },
         promiseSubmit (form) {
           if (row) {
