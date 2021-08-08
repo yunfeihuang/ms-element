@@ -98,31 +98,6 @@
     font-family: inherit;
   }
 }
-.form-search{
-  .el-input__inner{
-    width:15rem;
-    max-width: 100%;
-  }
-  .el-date-editor{
-    width:15rem;
-    .el-input__inner{
-      width: 100%;
-    }
-    &--datetimerange{
-      &.el-input,&.el-input__inner{
-        width:28.4rem;
-      }
-    }
-    &--daterange,&--timerange{
-      &.el-input,&.el-input__inner{
-        width:18.4rem;
-      }
-    }
-    &--month,&--year{
-      width:auto;
-    }
-  }
-}
 .table-primary{
   &.el-table{
     color: inherit;

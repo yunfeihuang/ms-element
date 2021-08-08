@@ -18,6 +18,12 @@ export default {
       default () {
         return true
       }
+    },
+    excludeValue: {
+      type: Array,
+      default () {
+        return [null, undefined, '']
+      }
     }
   },
   computed: {
@@ -61,7 +67,6 @@ export default {
     }
   },
   mounted () {
-    this.initial()
     this.handleResize()
     window.addEventListener('resize', this.handleResize, false)
   },
@@ -78,23 +83,11 @@ export default {
         this.beforeFetch(query)
       })
     },
-    handleTab () {
-      let query = Object.assign(this.query, {page: 1})
-      this.$router.replace({
-        path: this.$route.path,
-        query
-      })
+    parseResponse (res) {
+      this.pageData = res.data
+      return res
     },
-    handleRangeInput (value, keys = ['start_time', 'end_time']) {
-      if (value && value[0]) {
-        this.query[keys[0]] = value[0]
-        this.query[keys[1]] = value[1]
-      } else {
-        keys.forEach(item => {
-          this.query[item] = null
-        })
-      }
-    },
+    fetch (query) {}, // 需要被重写并返回Promise， 初始化会执行，路由参数变化也会执行
     getIndexColumnProps () {
       return {
         label: '序号',
@@ -109,21 +102,6 @@ export default {
         return '999+'
       }
       return result
-    },
-    handleClearSelection () {
-      this.$refs.table && this.$refs.table.clearSelection && this.$refs.table.clearSelection()
-      this.multipleSelection = this.multipleSelectionAll = []
-    },
-    handleResize () {
-      this.$nextTick(() => {
-        if (this.fixedTableHead) {
-          let node = this.$el.querySelector('.ms-page-list-layout--table')
-          node && (this.tableBodyHeight = node.offsetHeight + '')
-        }
-      })
-    },
-    initial () { // 初始化
-      this.$paginationProps = {} // 分页props
     },
     getQuery (query) { // 获取请求参数
       if (this.params) {
@@ -140,33 +118,46 @@ export default {
       }
       return Object.assign({page: 1, rows: 20}, this.params || {}, this.$route && this.isHistory ? this.$route.query : {}, query)
     },
+    queryFilter (query) {
+      let result = {...query}
+      for (let name in result) {
+        if (this.excludeValue.includes(result[name])) {
+          delete result[name]
+        }
+      }
+      return result
+    },
     getPaginationProps (data = {}) { // 获取分页默认props
       if (data.count !== undefined) {
         data.total = data.count
+      }
+      let props = {
+        pagerCount: 5,
+        layout: 'total, prev, pager, next, sizes, jumper',
+        background: true,
+        pageSize: 20,
+        currentPage: 1,
+        total: data.total,
+        pageSizes: [10, 15, 20, 30, 40, 50, 100]
       }
       if (data && data.total && this.query) {
         let query = this.query
         let rows = query.rows ? Number(query.rows) : 20
         let page = query.page ? Number(query.page) : 1
-        let layout = 'total, prev, pager, next, sizes, jumper'
-        let pagerCount = 5
+        Object.assign(props, {
+          rows,
+          page
+        })
         if (process.browser && document.ontouchstart !== undefined) {
-          layout = 'total, prev, pager, next, sizes'
-          pagerCount = 3
+          Object.assign(props, {
+            layout: 'total, prev, pager, next, sizes',
+            pagerCount: 3
+          })
         }
-        this.$paginationProps = {
-          pagerCount,
-          layout,
-          background: true,
-          pageSize: rows,
-          currentPage: page,
-          total: data.total,
-          pageSizes: [10, 15, 20, 30, 40, 50, 100]
-        }
-        return this.$paginationProps
+        return props
       } else {
         return {
-          ...this.$paginationProps,
+          ...props,
           style: {
             display: 'none'
           }
@@ -184,9 +175,49 @@ export default {
     },
     getTableListeners () {
       return {
-        'sort-change': this.handleSortChange,
         'selection-change': this.handleSelectionChange
       }
+    },
+    getFormProps (props) { // 获取默认表单props
+      return Object.assign({
+        novalidate: 'novalidate',
+        inline: true,
+        size: 'small',
+        ref: 'search',
+        model: this.query
+      }, props)
+    },
+    getSearchForm (props) {
+      return this.getFormProps(props)
+    },
+    handleTab () {
+      let query = Object.assign(this.query, {page: 1})
+      this.$router.replace({
+        path: this.$route.path,
+        query: this.queryFilter(query)
+      })
+    },
+    handleRangeInput (value, keys = ['start_time', 'end_time']) {
+      if (value && value[0]) {
+        this.query[keys[0]] = value[0]
+        this.query[keys[1]] = value[1]
+      } else {
+        keys.forEach(item => {
+          this.query[item] = null
+        })
+      }
+    },
+    handleClearSelection () {
+      this.$refs.table && this.$refs.table.clearSelection && this.$refs.table.clearSelection()
+      this.multipleSelection = this.multipleSelectionAll = []
+    },
+    handleResize () {
+      this.$nextTick(() => {
+        if (this.fixedTableHead) {
+          let node = this.$el.querySelector('.ms-page-list-layout--table')
+          node && (this.tableBodyHeight = node.offsetHeight + '')
+        }
+      })
     },
     handleCurrentChange (value) { // 修改页数事件
       if (value != this.query.page) { //eslint-disable-line
@@ -200,41 +231,20 @@ export default {
     },
     updateRoute (query) { // 更新URL地址
       if (this.isHistory) {
-        let _query = {...query}
-        /*
-        for (let name in _query) { // 清除 值为null|undefined
-          if (_query[name] === null || _query[name] === undefined || _query[name] === '') {
-            delete _query[name]
-          }
-        }
-        */
-        this.$router.push({path: this.$route.path, query: _query})
+        this.$router.push({path: this.$route.path, query: this.queryFilter(query)})
       } else {
-        this.query = query
-        this.triggerFetch(this.query)
+        this.query = this.queryFilter(query)
+        this.triggerFetch(this.queryFilter(query))
       }
     },
     handleSubmit () { // 表单提交事件
       this.query.page = 1
       this.updateRoute(this.query)
     },
-    getFormProps (props) { // 获取默认表单props
-      return Object.assign({
-        class: 'form-search',
-        novalidate: 'novalidate',
-        inline: true,
-        size: 'small',
-        ref: 'query',
-        model: this.query
-      }, props)
-    },
     handleReset () {
       this.query = Object.assign({page: 1, rows: 20}, this.$$query)
-      this.triggerFetch(this.query)
-      // this.$refs.query && this.$refs.query.resetFields && this.$refs.query.resetFields()
-    },
-    handleSortChange (...args) {
-      console.log(args)
+      // this.triggerFetch(this.query)
+      this.$refs.search && this.$refs.search.resetFields && this.$refs.search.resetFields()
     },
     handleSelectionChange (value) {
       let oldValue = JSON.parse(JSON.stringify(this.multipleSelection))
@@ -263,12 +273,7 @@ export default {
         }
       }
       this.multipleSelection = value
-    },
-    parseResponse (res) {
-      this.pageData = res.data
-      return res
-    },
-    fetch (query) {} // 需要被重写， 初始化会执行，路由参数变化也会执行
+    }
   },
   beforeRouteUpdate (to, from, next) { // 监听route地址变化
     if (to.path === from.path) {

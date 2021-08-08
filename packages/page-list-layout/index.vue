@@ -73,7 +73,7 @@ export default {
     &--table{
       padding:0;
     }
-    .form-search{
+    .ms-search-form{
       margin-left:0;
       margin-top:0;
     }

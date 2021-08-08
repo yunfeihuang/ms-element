@@ -1,34 +1,42 @@
 <template>
-  <el-form 
-    v-bind="msPageList.getFormProps(searchMode == 'default' ?  { class: ['form-search', 'ms-search-form']} : { class: 'ms-search-form--layout', labelWidth:'80px',inline:false})"
+  <el-form
+    v-bind="msPageList.getSearchForm(!isCollapse ?  { class: ['ms-search-form']} : { class: 'ms-search-form--layout', labelWidth:'80px',inline:false})"
     @submit.native.prevent="msPageList.handleSubmit">
     <div class="ms-search-form--prepend" v-if="$slots['prepend']">
       <slot name="prepend"></slot>
     </div>
-    <div :class="{'ms-search-form--body': searchMode == 'default'}">
-      <component :is="searchMode == 'default' ? 'div': 'el-row'" :class="{'ms-search-form--items': searchMode == 'default'}" :gutter="10">
-        <div :class="{'ms-search-form--items-inner': searchMode == 'default'}">
-          <component :is="searchMode == 'default' ? 'span': 'el-col'" v-for="(item, index) in searchSlots" :key="index" v-bind="getColProps()">
+    <div :class="{'ms-search-form--body': !isCollapse}">
+      <component :is="!isCollapse ? 'div': 'el-row'" :class="{'ms-search-form--items': !isCollapse}" :gutter="10">
+        <div :class="{'ms-search-form--items-inner': !isCollapse}">
+          <component
+            :is="!isCollapse ? 'span': 'el-col'"
+            v-for="(item, index) in searchSlots"
+            :key="index"
+            v-bind="getColProps()">
             <slot v-if="$scopedSlots['$'+item] || $slots['$'+item]" :name="'$'+item"></slot>
           </component>
         </div>
       </component>
-      <template v-if="searchMode == 'default'">
-        <el-tooltip v-if="searchSlots && searchSlots.length && isSearchMore" effect="dark" content="更多搜索" placement="bottom">
-          <div class="ms-search-form--items-more" @click="handleHighToggle">
+      <template v-if="!isCollapse">
+        <el-tooltip
+          v-if="searchSlots && searchSlots.length && isSearchMore"
+          effect="dark"
+          content="更多"
+          placement="bottom">
+          <div class="ms-search-form--items-more" @click="isCollapse = true">
             <i class="el-icon-d-arrow-right"></i>
           </div>
         </el-tooltip>
         <!--native-type="submit"是修改button type属性为submit-->
-        <el-button native-type="submit" size="small">搜索</el-button>
-        <el-button native-type="reset" size="small">重置</el-button>
+        <el-button native-type="submit" size="small">{{searchText}}</el-button>
+        <el-button @click="msPageList.handleReset" size="small">{{resetText}}</el-button>
         <slot></slot>
       </template>
       <el-row v-else>
         <el-form-item label=" ">
-          <el-button native-type="submit" type="primary" size="small">确定</el-button>
-          <el-button size="small" @click="handleHighCancel">收起</el-button>
-          <el-button native-type="reset" size="small">重置</el-button>
+          <el-button native-type="submit" type="primary" size="small">{{searchText}}</el-button>
+          <el-button size="small" @click="isCollapse = false">收起</el-button>
+          <el-button @click="msPageList.handleReset" size="small">{{resetText}}</el-button>
         </el-form-item>
       </el-row>
     </div>
@@ -50,18 +58,24 @@ export default {
       default () {
         return []
       }
+    },
+    searchText: {
+      type: String,
+      default: '搜索'
+    },
+    resetText: {
+      type: String,
+      default: '重置'
     }
   },
   watch: {
-    searchMode (value) {
+    isCollapse (value) {
       this.msPageList && this.msPageList.handleResize()
-      this.$emit('update:searchMode', value)
     }
   },
   data () {
     return {
-      searchMode: 'default',
-      highVisible: false,
+      isCollapse: false,
       isSearchMore: false
     }
   },
@@ -92,20 +106,21 @@ export default {
         sm: 12,
         ...props
       }
-    },
-    handleHighCancel () {
-      this.searchMode = 'default'
-      this.highVisible = false
-    },
-    handleHighToggle (visible) {
-      this.searchMode = 'hight'
-      this.highVisible = typeof visible === 'boolean' ? visible : !this.highVisible
     }
   }
 }
 </script>
 <style lang="scss">
   .ms-search-form{
+    margin:10px 10px 0;
+    .el-form-item,.el-button {
+      margin-bottom: 10px;
+    }
+    .el-button{
+      padding-right:8px;
+      padding-left:8px;
+      min-width:60px;
+    }
     &--prepend{
       margin-bottom:10px;
     }
@@ -149,17 +164,6 @@ export default {
     .el-tabs{
       &__header{
         margin-bottom:0;
-      }
-    }
-    &.form-search{
-      margin:10px 10px 0;
-      .el-form-item,.el-button {
-        margin-bottom: 10px;
-      }
-      .el-button{
-        padding-right:8px;
-        padding-left:8px;
-        min-width:60px;
       }
     }
   }
