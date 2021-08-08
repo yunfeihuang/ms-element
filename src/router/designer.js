@@ -11,7 +11,6 @@ requireComponent.keys().forEach(fileName => {
   routes.push(componentConfig.default)
 })
 
-console.log('routes', routes)
 export default [
   {
     path: '/',

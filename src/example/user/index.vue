@@ -11,6 +11,12 @@
         <input
           slot="custom"
           v-model="query.custom"/>
+          <input
+          slot="custom1"
+          v-model="query.custom"/>
+          <input
+          slot="custom2"
+          v-model="query.custom"/>
         <el-button size="small" @click="handleCreate()">创建</el-button>
       </ms-search-form>
     </template>

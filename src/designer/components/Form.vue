@@ -15,13 +15,13 @@
         :rules="item.rules">
         <component :is="item.component" v-bind="item.props" readonly controls-position="right">
           <template v-if="item.component === 'el-select'">
-            <el-option v-for="(item,index) in [{label: '选项1', value: '1'},{label: '选项2', value: '2'}]" :key="index" v-bind="item"></el-option>
+            <el-option v-for="(item,index) in item.slots" :key="index" v-bind="item"></el-option>
           </template>
           <template v-else-if="item.component === 'el-checkbox-group'">
-            <el-checkbox v-for="(item,index) in [{label: '选项1', value: '1'},{label: '选项2', value: '2'}]" :key="index" v-bind="item"></el-checkbox>
+            <el-checkbox v-for="(item,index) in item.slots" :key="index" v-bind="item"></el-checkbox>
           </template>
           <template v-else-if="item.component === 'el-radio-group'">
-            <el-radio v-for="(item,index) in [{label: '选项1', value: '1'},{label: '选项2', value: '2'}]" :key="index" v-bind="item"></el-radio>
+            <el-radio v-for="(item,index) in item.slots" :key="index" v-bind="item"></el-radio>
           </template>
           <template v-else-if="item.component === 'el-upload'">
             <el-button>上传</el-button>
@@ -38,8 +38,11 @@
         </el-form-item>
         <el-form-item label="输入框类型">
           <el-select v-model="item.component" @change="handleComponentChange(item, $event)">
-            <el-option v-for="(item,index) in componentOption" :key="index" v-bind="item"></el-option>
+            <el-option v-for="(item,index) in $const.componentOption" :key="index" v-bind="item"></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="候选数据" v-if="['el-select','el-checkbox-group','el-radio-group'].includes(item.component)">
+          <input-json v-model="item.slots"></input-json>
         </el-form-item>
         <el-form-item label="是否必填">
           <el-switch :value="item.rules.some(item => item.required)" @change="handleRequiredChange(item, $event)"></el-switch>
@@ -80,19 +83,11 @@
 </template>
 
 <script>
-const componentOption = [
-  { value: 'el-input', label: '文本输入框' },
-  { value: 'el-input-number', label: '数字框' },
-  { value: 'el-switch', label: '开关' },
-  { value: 'el-select', label: '下拉框' },
-  { value: 'el-checkbox-group', label: '复选框' },
-  { value: 'el-radio-group', label: '单选框' },
-  { value: 'el-upload', label: '上传' },
-  { value: 'el-date-picker', label: '日期选择器' },
-  { value: 'el-time-picker', label: '时间选择器' },
-  { value: 'el-cascader', label: '级联选择器' }
-]
+import InputJson from './InputJson'
 export default {
+  components: {
+    InputJson
+  },
   mixins: [
     ms.mixins.form
   ],
@@ -110,7 +105,6 @@ export default {
     })
     return {
       option,
-      componentOption,
       form
     }
   },
@@ -143,6 +137,9 @@ export default {
         item.props = {
           format: 'YYYY-MM-dd'
         }
+      }
+      if (['el-select', 'el-checkbox-group', 'el-radio-group']) {
+        item.slots = []
       }
       this.$forceUpdate()
     },

@@ -39,7 +39,9 @@ module.exports = function (designer) {
         if (item.type === 'delete') {
           return `<el-button :disabled="multipleSelectionAll.length==0" size="small" @click="handleBatchDelete()">${item.label}</el-button>`
         } else if (item.type === 'import') {
-          return `<el-button size="small" @click="handleImport()">${item.label}</el-button>`
+          return `<el-upload style="display:inline-block;" action="${designer.setting.restfulApi}/import">
+            <el-button size="small" @click="handleImport()">${item.label}</el-button>
+          </el-upload>`
         } else if (item.type === 'export') {
           return `<el-button size="small" @click="handleExport()">${item.label}</el-button>`
         } else {
@@ -51,7 +53,8 @@ module.exports = function (designer) {
 </template>
 
 <script>
-const api = ms.restful('${designer.setting.restfulApi}')
+const restfulApi = '${designer.setting.restfulApi || ''}'
+const api = ms.restful(restfulApi)
 
 export default {
   name: '${designer.setting.dir.split('/').join('-')}',
@@ -73,7 +76,11 @@ export default {
   },
   methods: {
     fetch (query) { // 获取数据的方法，必须要重写
-      return api.get({query})
+      if (restfulApi) {
+        return api.get({query})
+      } else {
+        return Promise.resolve({data: { total: 1000, data: JSON.parse(\`${JSON.stringify(designer.setting.table.data)}\`)}})
+      }
     },
     handleDelete (row) {
       this.$confirm('确定删除此数据?', '提示', {
@@ -84,6 +91,7 @@ export default {
             message: '删除成功',
             type: 'success'
           })
+          this.refresh()
         })
       })
     },
@@ -97,6 +105,7 @@ export default {
             message: '删除成功',
             type: 'success'
           })
+          this.refresh()
         })
       })
     },

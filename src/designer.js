@@ -28,6 +28,21 @@ Vue.use(ElementUI)
 Vue.use(MS)
 Vue.prototype.$axios = axios
 
+Vue.prototype.$const = {
+  componentOption: [
+    { value: 'el-input', label: '文本输入框' },
+    { value: 'el-input-number', label: '数字框' },
+    { value: 'el-switch', label: '开关' },
+    { value: 'el-select', label: '下拉框' },
+    { value: 'el-checkbox-group', label: '复选框' },
+    { value: 'el-radio-group', label: '单选框' },
+    { value: 'el-upload', label: '上传' },
+    { value: 'el-date-picker', label: '日期选择器' },
+    { value: 'el-time-picker', label: '时间选择器' },
+    { value: 'el-cascader', label: '级联选择器' }
+  ]
+}
+
 if (process.env.NODE_ENV === 'development') {
   import('@/mock').then(res => {
     res && res.default && res.default()

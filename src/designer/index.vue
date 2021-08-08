@@ -18,7 +18,20 @@
           <el-tooltip placement="top" v-for="(item,index) in designer.search.option" :key="index">
             <el-button type="text" slot="content"  @click="handleSearchRemove(item)">删除</el-button>
             <el-form-item :label="item.label" @click.native="handleSearchForm(item)">
-              <component :is="item.component || 'el-input'" v-bind="item.props" readonly/>
+              <component :is="item.component || 'el-input'" v-bind="item.props" readonly controls-position="right">
+                <template v-if="item.component === 'el-select'">
+                  <el-option v-for="(item,index) in item.slots" :key="index" v-bind="item"></el-option>
+                </template>
+                <template v-else-if="item.component === 'el-checkbox-group'">
+                  <el-checkbox v-for="(item,index) in item.slots" :key="index" v-bind="item"></el-checkbox>
+                </template>
+                <template v-else-if="item.component === 'el-radio-group'">
+                  <el-radio v-for="(item,index) in item.slots" :key="index" v-bind="item"></el-radio>
+                </template>
+                <template v-else-if="item.component === 'el-upload'">
+                  <el-button>上传</el-button>
+                </template>
+              </component>
             </el-form-item>
           </el-tooltip>
           <el-form-item>
@@ -35,8 +48,9 @@
         <el-table
           v-bind="getTableProps()"
           v-on="getTableListeners()"
-          :data="[{}]"
-          @header-click="handleTableColumnForm">
+          :data="designer.setting.table.data"
+          @header-click="handleTableColumnForm"
+          @row-click="handleTableDataForm">
           <el-table-column v-for="(item,index) in designer.table.column" :key="index" v-bind="item">
             <template v-slot:header="scope">
               <el-tooltip placement="top">
@@ -47,7 +61,7 @@
           </el-table-column>
           <el-table-column label="操作" v-if="designer.setting.delete || designer.form.option.some(item => item.action.includes('update'))">
             <template v-slot="scope">
-              <el-button type="text" v-if="designer.form.option.some(item => item.action.includes('update'))" @click="handleForm('update')">编辑</el-button>
+              <el-button type="text" v-if="designer.form.option.some(item => item.action.includes('update'))" @click.stop="handleForm('update')">编辑</el-button>
               <el-button type="text" v-if="designer.setting.delete">删除</el-button>
             </template>
           </el-table-column>
@@ -61,6 +75,9 @@
               </el-tooltip>
             </template>
           </el-table-column>
+          <div v-if="designer.table.column.length" slot="append" style="text-align:center;margin:10px;">
+            <el-button size="small" @click="handleTableDataForm()">添加模拟数据</el-button>
+          </div>
         </el-table>
       </div>
       <template slot="action">
@@ -88,6 +105,7 @@ const SearchForm = () => import('./components/SearchForm')
 const TabsForm = () => import('./components/TabsForm')
 const SettingForm = () => import('./components/SettingForm')
 const TableColumnForm = () => import('./components/TableColumnForm')
+const TableDataForm = () => import('./components/TableDataForm')
 const BatchForm = () => import('./components/BatchForm')
 
 const designer = {
@@ -96,12 +114,14 @@ const designer = {
     route: {
       path: '',
       meta: {
+        group: '',
         title: ''
       }
     },
     restfulApi: '',
+    idProp: 'id',
     table: {
-      idProp: 'id',
+      data: [],
       batch: [],
       serialNumber: false
     }
@@ -164,6 +184,11 @@ export default {
   ],
   data () {
     return {
+      pageData: {
+        data: designer.setting.data,
+        count: 1000
+      },
+      query: this.getQuery({}),
       designer: localStorage.getItem('ms-designer') ? JSON.parse(localStorage.getItem('ms-designer')) : designer
     }
   },
@@ -176,67 +201,6 @@ export default {
     }
   },
   methods: {
-    handleSearchForm (params) {
-      let designer = this.designer
-      ms.navigator.push(this, SearchForm, {
-        title: params ? '编辑' : '创建',
-        params,
-        promiseSubmit (form) {
-          let result = designer.search.option.find(item => item.prop === form.prop)
-          if (result) {
-            result.label = form.label
-            result.prop = form.prop
-            result.component = form.component
-          } else {
-            designer.search.option.push({
-              label: form.label,
-              prop: form.prop,
-              component: form.component
-            })
-          }
-          return Promise.resolve(form)
-        }
-      })
-    },
-    handleSearchRemove ({prop}) {
-      this.$confirm('确认删除该搜索项?', '提示', {
-        type: 'warning'
-      }).then(() => {
-        this.designer.search.option = this.designer.search.option.filter(item => item.prop !== prop)
-      })
-    },
-    handleTabsForm (tab) {
-      let designer = this.designer
-      ms.navigator.push(this, TabsForm, {
-        title: tab ? '编辑' : '创建',
-        params: tab ? {
-          label: tab.label,
-          name: tab.name,
-          prop: designer.tabs.prop
-        } : {prop: designer.tabs.prop},
-        promiseSubmit (form) {
-          designer.tabs.prop = form.prop
-          let result = designer.tabs.option.find(item => item.name === form.name)
-          if (result) {
-            result.label = form.label
-            result.name = form.name
-          } else {
-            designer.tabs.option.push({
-              label: form.label,
-              name: form.name
-            })
-          }
-          return Promise.resolve(form)
-        }
-      })
-    },
-    handleTabRemove (name) {
-      this.$confirm('确认删除该选项卡?', '提示', {
-        type: 'warning'
-      }).then(() => {
-        this.designer.tabs.option = this.designer.tabs.option.filter(item => item.name !== name)
-      })
-    },
     handleSettingForm () {
       let designer = this.designer
       ms.navigator.push(this, SettingForm, {
@@ -267,6 +231,60 @@ export default {
         }
       })
     },
+    
+    handleTabsForm (tab) {
+      let designer = this.designer
+      ms.navigator.push(this, TabsForm, {
+        title: tab ? '编辑' : '创建',
+        params: tab ? {
+          label: tab.label,
+          name: tab.name,
+          prop: designer.tabs.prop
+        } : {prop: designer.tabs.prop},
+        promiseSubmit (form) {
+          let { prop, ...other} = form 
+          designer.tabs.prop = form.prop
+          let result = designer.tabs.option.find(item => item.name === form.name)
+          if (result) {
+            Object.assign(result, other)
+          } else {
+            designer.tabs.option.push({
+              ...other
+            })
+          }
+          return Promise.resolve(form)
+        }
+      })
+    },
+    handleTabRemove (name) {
+      this.$confirm('确认删除该选项卡?', '提示', {
+        type: 'warning'
+      }).then(() => {
+        this.designer.tabs.option = this.designer.tabs.option.filter(item => item.name !== name)
+      })
+    },
+    handleSearchForm (params) {
+      let designer = this.designer
+      ms.navigator.push(this, SearchForm, {
+        title: params ? '编辑' : '创建',
+        params,
+        promiseSubmit (form) {
+          if (params) {
+            Object.assign(params, form)
+          } else {
+            designer.search.option.push(form)
+          }
+          return Promise.resolve(form)
+        }
+      })
+    },
+    handleSearchRemove ({prop}) {
+      this.$confirm('确认删除该搜索项?', '提示', {
+        type: 'warning'
+      }).then(() => {
+        this.designer.search.option = this.designer.search.option.filter(item => item.prop !== prop)
+      })
+    },
     handleTableColumnForm (column, event) {
       let designer = this.designer
       let action = []
@@ -289,39 +307,31 @@ export default {
           action
         } : undefined,
         promiseSubmit (form) {
+          let {action, ...other} = form
           let result = designer.table.column.find(item => item.prop === form.prop)
           if (result) {
-            result.label = form.label
-            result.prop = form.prop
+            Object.assign(result, other)
           } else {
-            designer.table.column.push({
-              label: form.label,
-              prop: form.prop
-            })
+            designer.table.column.push(other)
           }
           if (form.action.includes('search')) {
             let result = designer.search.option.find(item => item.prop === form.prop)
             if (result) {
-              result.label = form.label
-              result.prop = form.prop
+              Object.assign(result, other)
             } else {
               designer.search.option.push({
-                label: form.label,
-                prop: form.prop
+                  ...other,
+                  component: 'el-input'
               })
             }
           }
-          if (form.action.includes('create') || form.action.includes('update')) {
+          if (action.includes('create') || action.includes('update')) {
             let result = designer.form.option.find(item => item.prop === form.prop)
             if (result) {
-              result.label = form.label
-              result.prop = form.prop
-              result.action = form.action
+              Object.assign(result, form)
             } else {
               designer.form.option.push({
-                label: form.label,
-                prop: form.prop,
-                action: form.action,
+                ...form,
                 component: 'el-input'
               })
             }
@@ -369,6 +379,31 @@ export default {
         type: 'warning'
       }).then(() => {
         this.designer.setting.table.batch = this.designer.setting.table.batch.filter(item => item !== value)
+      })
+    },
+    handleTableDataForm (row) {
+      const title = !row ? '创建' : '编辑'
+      let designer = this.designer
+      let _row = {}
+      if (!row) {
+        designer.table.column.forEach(item => {
+          _row[item.prop] = ''
+        })
+      }
+      ms.navigator.push(this, TableDataForm, {
+        title,
+        params: {
+          column: designer.table.column,
+          row: row ? row : _row
+        },
+        promiseSubmit (form) {
+          if (row) {
+            Object.assign(row, form)
+          } else {
+            designer.setting.table.data.push(form)
+          }
+          return Promise.resolve(form)
+        }
       })
     }
   }

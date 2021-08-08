@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <ms-frame-layout
-      title="后台管理系统"
+      title="designer"
       :menus="menus"
       :menuProps="menuProps">
       <template v-slot:logo="scope">

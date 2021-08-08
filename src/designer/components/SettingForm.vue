@@ -1,6 +1,9 @@
 <template>
   <!--v-bind="getFormProps()" @submit.native.prevent="handleSubmit"是必须的-->
   <el-form v-bind="getFormProps({labelWidth: '8rem'})" @submit.native.prevent="handleSubmit">
+    <el-form-item label="分组">
+      <el-input v-model="form.route.meta.group"></el-input>
+    </el-form-item>
     <el-form-item label="目录名称" prop="dir" :rules="[{required: true, message: '请输入目录名称'}]">
       <el-input v-model="form.dir" placeholder="如: user" @change="val => {form.route.path = '/' + val}">
         <template slot="prepend">项目目录: src/views/</template>
@@ -12,7 +15,7 @@
     <el-form-item label="页面标题" prop="route.meta.title" :rules="[{required: true, message: '请输入页面标题'}]">
       <el-input v-model="form.route.meta.title" ></el-input>
     </el-form-item>
-    <el-form-item label="restful接口" prop="restfulApi" :rules="[{required: true, message: '请输入restful接口'}]">
+    <el-form-item label="restful接口" prop="restfulApi">
       <el-input v-model="form.restfulApi"></el-input>
       <a href="https://www.npmjs.com/package/restful-api" target="_blank">参考 https://www.npmjs.com/package/restful-api 规范</a>
       <div>响应回的JSON数据结构：{data: {currentPage: 1, pageSize: 20, total: 100, data: []}}</div>
