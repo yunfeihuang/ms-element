@@ -2,14 +2,11 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import routes from './router/designer'
-import store from './store'
+import routes from './router'
 import App from './Designer.vue'
 import '@/styles/import.scss'
 import ElementUI from '@element-ui'
 import * as MS from '../packages'
-import filters from './filters'
-import '@/directives'
 import axios from '@axios'
 
 const originalPush = Router.prototype.push
@@ -17,11 +14,6 @@ Router.prototype.push = function push (location, onResolve, onReject) {
   if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
   return originalPush.call(this, location).catch(err => err)
 }
-
-// register global utility filters.
-Object.keys(filters).forEach(key => {
-  Vue.filter(key, filters[key])
-})
 
 Vue.use(Router)
 Vue.use(ElementUI)
@@ -82,7 +74,6 @@ router.afterEach(() => {
 
 window.$app = new Vue({ // eslint-disable-line
   router,
-  store,
   el: '#app',
   render: h => h(App)
 })

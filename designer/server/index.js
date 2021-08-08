@@ -42,7 +42,7 @@ module.exports = function (app) {
   app.post('/designer', function(req, res) {
     const designer = req.body.designer
     console.log('req.body.designer', req.body.designer)
-    let root = `../../src/views/${designer.setting.dir}`
+    let root = `../../../src/views/${designer.setting.dir}`
     writeFileRecursive(path.join(__filename, root, '/index.vue'), pageList(designer), function (err) {
       if (!err) {
         if (designer.form && designer.form.option && designer.form.option.length) {

@@ -27,7 +27,7 @@ module.exports = {
   entry: {
     app: './src/main.js',
     demos: './src/demos.js',
-    designer: './src/designer.js'
+    designer: './designer/designer.js'
   },
   output: {
     path: config.build.assetsRoot,
