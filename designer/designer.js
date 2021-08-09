@@ -61,11 +61,10 @@ initRootFontSize()
 let router = new Router({
   routes
 })
-let loadedRoutes = []
 router.beforeEach((to, from, next) => {
-  if (!loadedRoutes.find(item => item.path === to.path)) {
-    loadedRoutes.push(to)
-    NProgress.start()
+  if (to.query.__) {
+    to.meta.title = to.query.__
+    delete to.query.__
   }
   next()
 })

@@ -229,7 +229,9 @@ export default {
       }).then(res => {
         if (res.data.data) {
           this.designer = res.data.data
-        } 
+        } else {
+          this.designer = designer
+        }
       })
     }
   },
@@ -243,7 +245,10 @@ export default {
     handlePreview () {
       sessionStorage.setItem('--ms-preview', JSON.stringify(this.designer))
       this.$router.push({
-        path: '/preview'
+        path: '/preview',
+        query: {
+          __: '预览'
+        }
       })
     },
     handleSettingForm () {

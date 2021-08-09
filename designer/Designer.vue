@@ -18,7 +18,7 @@
           default-expand-all
           :expand-on-click-node="false">
           <span class="designer-dir-tree-node" slot-scope="{ node, data }">
-            <span @click="data.type==1 && $router.push({path: `/${data.id}`})">{{ node.label }}</span>
+            <span @click="data.type==1 && $router.push({path: `/${data.id}`, query: {__: node.label}})">{{ node.label }}</span>
             <span>
               <i class="el-icon-plus" v-if="data.type==0" @click="handleDirForm(data)"></i>
               <i class="el-icon-close" @click="handleDelete(node, data)"></i>
