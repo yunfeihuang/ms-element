@@ -14,7 +14,7 @@
         </keep-alive>
         <router-view class="ms-frame-layout--slot ms-scroller" v-if="!$route.meta.keepAlive"></router-view>
       </template>
-      <div slot="sub" class="sub">
+      <div v-if="$route.path=='/'" slot="sub" class="sub">
         <div class="sub-item" @click="$root.$emit('setting')">
           <i class="el-icon-setting"></i>
           <small>设置</small>

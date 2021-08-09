@@ -51,6 +51,15 @@
           :data="designer.setting.table.data"
           @header-click="handleTableColumnForm"
           @row-click="handleTableDataForm">
+          <el-table-column
+            v-if="designer.setting.table.batch.some(item => ['import', 'export', 'delete', 'update'].includes(item.type))"
+            type="selection"
+            width="58">
+          </el-table-column>
+          <el-table-column
+            v-if="designer.setting.table.serialNumber"
+            v-bind="getIndexColumnProps()">
+          </el-table-column>
           <el-table-column v-for="(item,index) in designer.table.column" :key="index" v-bind="item">
             <template v-slot:header="scope">
               <el-tooltip placement="top">
@@ -63,6 +72,7 @@
             <template v-slot="scope">
               <el-button type="text" v-if="designer.form.option.some(item => item.action.includes('update'))" @click.stop="handleForm('update')">编辑</el-button>
               <el-button type="text" v-if="designer.setting.delete">删除</el-button>
+              <el-button type="text" @click.stop="handleClear(scope.row)">清理模拟数据</el-button>
             </template>
           </el-table-column>
           <el-table-column align="right">
@@ -381,7 +391,7 @@ export default {
       })
     },
     handleBatchRemove (value) {
-      this.$confirm('确认删除?', '提示', {
+      this.$confirm('确认删除批量操作项?', '提示', {
         type: 'warning'
       }).then(() => {
         this.designer.setting.table.batch = this.designer.setting.table.batch.filter(item => item !== value)
@@ -395,6 +405,7 @@ export default {
         designer.table.column.forEach(item => {
           _row[item.prop] = ''
         })
+        _row[designer.setting.idProp] = Math.random().toString(36).substr(2)
       } else {
         _row = row
       }
@@ -414,6 +425,13 @@ export default {
           }
           return Promise.resolve(form)
         }
+      })
+    },
+    handleClear (row) {
+      this.$confirm('确认删除模拟数据?', '提示', {
+        type: 'warning'
+      }).then(() => {
+        this.designer.setting.table.data = this.designer.setting.table.data.filter(item => item != row)
       })
     },
     handleImport () {

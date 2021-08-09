@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
 import routes from './router'
 import store from './store'
 import App from './Demos.vue'
@@ -52,17 +50,6 @@ window.addEventListener('resize', initRootFontSize)
 initRootFontSize()
 let router = new Router({
   routes
-})
-let loadedRoutes = []
-router.beforeEach((to, from, next) => {
-  if (!loadedRoutes.find(item => item.path === to.path)) {
-    loadedRoutes.push(to)
-    NProgress.start()
-  }
-  next()
-})
-router.afterEach(() => {
-  NProgress.done()
 })
 
 new Vue({ // eslint-disable-line

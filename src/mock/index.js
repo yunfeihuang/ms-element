@@ -1,4 +1,4 @@
-import axios from '@axios'
+import axios from 'axios'
 import adapter from 'axios-mock-adapter'
 import res from './res'
 

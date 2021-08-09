@@ -38,7 +38,7 @@ module.exports = function (designer) {
       v-bind="getTableProps()"
       v-on="getTableListeners()"
       :data="pageData.data">
-      ${designer.setting.table.batch.some(item => item.type === 'import') || designer.setting.table.batch.some(item => item.type === 'export') || designer.setting.table.batch.some(item => item.type === 'delete') ? `<el-table-column
+      ${designer.setting.table.batch.some(item => ['import', 'export', 'delete', 'update'].includes(item.type)) ? `<el-table-column
         type="selection"
         width="58">
       </el-table-column>\n` : ''}${designer.setting.table.serialNumber ? `<el-table-column
