@@ -4,11 +4,12 @@
     <template slot="search">
       <ms-search-form :search-slots="designer.search.option.map(item => item.prop)" @submit="handleSubmit">
         <el-tabs
-            slot="prepend"
-            type="card"
-            v-model="query[designer.tabs.prop]">
-            <el-tab-pane v-for="(item,index) in designer.tabs.option" :key="index" v-bind="item"></el-tab-pane>
-          </el-tabs>
+          slot="prepend"
+          type="card"
+          v-model="query[designer.tabs.prop]"
+          @tab-click="handleTab">
+          <el-tab-pane v-for="(item,index) in designer.tabs.option" :key="index" v-bind="item"></el-tab-pane>
+        </el-tabs>
         <el-form-item v-for="(item,index) in designer.search.option" :key="index" :label="item.label" :prop="item.prop" :slot="'$'+item.prop">
           <component :is="item.component || 'el-input'" v-model="query[item.prop]" clearable></component>
         </el-form-item>
@@ -34,25 +35,29 @@
       <el-table-column label="操作" v-if="designer.setting.table.batch.some(item => ['delete'].includes(item.type)) || designer.form.option.some(item => item.action.includes('update'))">
         <template v-slot="scope">
           <el-button type="text" v-if="designer.form.option.some(item => item.action.includes('update'))" @click.stop="handleForm(scope.row)">编辑</el-button>
-          <el-button type="text" v-if="designer.setting.table.batch.some(item => ['delete'].includes(item.type))">删除</el-button>
+          <el-button type="text" v-if="designer.setting.table.batch.some(item => ['delete'].includes(item.type))" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <template slot="action">
-      <el-button size="small" v-for="(item,index) in designer.setting.table.batch" :key="index">{{item.label}}</el-button>
+      <el-button
+        size="small"
+        v-for="(item,index) in designer.setting.table.batch"
+        :key="index"
+        :disabled="item.type == 'delete' ? multipleSelectionAll.length === 0 : false">{{item.label}}</el-button>
     </template>
   </ms-page-list-layout>
 </template>
 
 <script>
- 
+import axios from 'axios'
 let api = null
 let designer = null
 export default {
   mixins: [
     ms.mixins.pageList
   ],
-  beforeRouteEnter (from, to, next) {
+  beforeRouteEnter (to, from, next) {
     designer = JSON.parse(sessionStorage.getItem('--ms-preview'))
     api = ms.restful(designer.setting.api)
     next()

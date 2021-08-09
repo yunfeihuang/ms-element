@@ -115,7 +115,7 @@ const TableColumnForm = () => import('./components/TableColumnForm')
 const TableDataForm = () => import('./components/TableDataForm')
 const BatchForm = () => import('./components/BatchForm')
 
-const designer = {
+let designer = {
   setting: {
     dir: '',
     route: {
@@ -202,16 +202,36 @@ export default {
   watch: {
     designer: {
       handler (value) {
-        localStorage.setItem('ms-designer', JSON.stringify(value))
+        if (this.$route.params.id) {
+          axios({
+            url: `/designer/config/${this.$route.params.id}`,
+            method: 'PUT',
+            data: {
+              designer: value
+            }
+          })
+        } else {
+          localStorage.setItem('ms-designer', JSON.stringify(value))
+        }
       },
       deep: true
     }
   },
   mounted () {
+    this.isRouterView = false
     this.$root.$on('setting', this.handleSettingForm)
     this.$root.$on('create-column', this.handleTableColumnForm)
     this.$root.$on('import', this.handleImport)
     this.$root.$on('preview', this.handlePreview)
+    if (this.$route.params.id) {
+      axios({
+        url: `/designer/config/${this.$route.params.id}`
+      }).then(res => {
+        if (res.data.data) {
+          this.designer = res.data.data
+        } 
+      })
+    }
   },
   beforeDestroy () {
     this.$root.$off('setting', this.handleSettingForm)

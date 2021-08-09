@@ -1,19 +1,32 @@
 <template>
   <div id="app">
     <ms-frame-layout
-      title="designer"
-      :menus="menus"
-      :menuProps="menuProps">
+      title="designer">
       <template v-slot:logo="scope">
         <i :style="`font-size:${scope.isCollapse?14:26}px;font-style:normal;`">designer</i>
       </template>
+      <div
+        class="designer-dir"
+        slot="menu">
+        <div class="designer-dir-toolbar">
+          <div>目录</div>
+          <i class="el-icon-plus" @click="handleDirForm()"></i>
+        </div>
+        <el-tree
+          :data="dir"
+          node-key="id"
+          default-expand-all
+          :expand-on-click-node="false">
+          <span class="designer-dir-tree-node" slot-scope="{ node, data }">
+            <span @click="data.type==1 && $router.push({path: `/${data.id}`})">{{ node.label }}</span>
+            <span>
+              <i class="el-icon-plus" v-if="data.type==0" @click="handleDirForm(data)"></i>
+              <i class="el-icon-close" @click="handleDelete(node, data)"></i>
+            </span>
+          </span>
+        </el-tree>
+      </div>
       <div slot="nav"></div>
-      <template v-slot="scope">
-        <keep-alive :include="scope.include">
-          <router-view class="ms-frame-layout--slot ms-scroller" v-if="$route.meta.keepAlive"></router-view>
-        </keep-alive>
-        <router-view class="ms-frame-layout--slot ms-scroller" v-if="!$route.meta.keepAlive"></router-view>
-      </template>
       <div v-if="$route.path=='/'" slot="sub" class="sub">
         <div class="sub-item" @click="$root.$emit('setting')">
           <i class="el-icon-setting"></i>
@@ -44,31 +57,71 @@
 export default {
   data () {
     return {
-      menuProps: {},
-      menus: [
+      loading: false,
+      dir: [
         {
-          iconClass: 'el-icon-monitor',
-          title: '设计首页',
-          route: '/'
+          label: '设计首页',
         },
         {
-          title: '用户管理',
-          route: '/user'
+          label: '用户管理'
         }
       ]
     }
   },
+  mounted () {
+    this.fetch()
+  },
   methods: {
-    handleThemeChange () {
-      if (this.menuProps && !this.menuProps.backgroundColor) {
-        this.menuProps = {
-          backgroundColor: '#333',
-          textColor: '#fff',
-          activeTextColor: '#ffd04b'
+    fetch () {
+      this.loading = true
+      this.$axios({
+        url: '/designer/dir/index'
+      }).then(res => {
+        this.dir = res.data.data
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    update () {
+      return this.$axios({
+        url: '/designer/dir/index',
+        method: 'PUT',
+        data: {
+          dir: this.dir
         }
-      } else {
-        this.menuProps = {}
-      }
+      })
+    },
+    handleDirForm (data, params) {
+      let self = this
+      ms.navigator.push(this, () => import('./components/DirForm'), {
+        title: !params ? '创建' : '编辑',
+        params,
+        promiseSubmit (form) {
+          if (!form.id) {
+            form.id = Math.random().toString(36).substr(2)
+          }
+          if (data) {
+            if (!data.children) {
+              self.$set(data, 'children', [])
+            }
+            data.children.push(form)
+          } else {
+            self.dir.push(form)
+          }
+          return self.update()
+        }
+      })
+    },
+    handleDelete (node, data) {
+      this.$confirm('确定删除此数据?', '提示', {
+        type: 'warning'
+      }).then(() => {
+        const parent = node.parent
+        const children = parent.data.children || parent.data
+        const index = children.findIndex(d => d.id === data.id)
+        children.splice(index, 1)
+        this.update()
+      })
     }
   }
 }
@@ -96,6 +149,38 @@ export default {
       }
       small{
         font-size:12px;
+      }
+    }
+  }
+  .designer-dir{
+    &-toolbar{
+      padding:0 10px;
+      border-top: 1px solid #f5f5f5;
+      position: sticky;
+      top:0;
+      display: flex;
+      line-height: 32px;
+      align-items: center;
+      >div{
+        flex: 1;
+      }
+      i{
+        padding:0 5px;
+      }
+    }
+    &-tree-node{
+      flex:1;
+      display: flex;
+      padding-right:10px;
+      >span:first-child{
+        flex:1;
+      }
+      i{
+        margin-left:10px;
+        display:none;
+      }
+      &:hover i{
+        display:inline;
       }
     }
   }

@@ -41,7 +41,6 @@ module.exports = function (app) {
   
   app.post('/designer', function(req, res) {
     const designer = req.body.designer
-    console.log('req.body.designer', req.body.designer)
     let root = `../../../src/views/${designer.setting.dir}`
     writeFileRecursive(path.join(__filename, root, '/index.vue'), pageList(designer), function (err) {
       if (!err) {
@@ -77,7 +76,6 @@ module.exports = function (app) {
             }
           })
         } else {
-//            res.json({ code: 200, data:  `/designer/download/${name}.zip`});
           res.json({ code: 200 });
         }
       } else {
@@ -86,7 +84,78 @@ module.exports = function (app) {
       }
     })
   })
-  app.post('/designer/downdown', function(req, res) {
-
+  const dirPath = '../../data/dir'
+  app.get('/designer/dir/:id', function(req, res) {
+    fs.readFile(path.join(__filename, dirPath, `/${req.params.id}.json`), 'utf-8', function (err, data) {
+      if (err) {
+        res.json({ code: 500, msg: err })
+      } else {
+        data = data + ''
+        res.json({ code: 200, data: data && data.trim() ? JSON.parse(data) : [] })
+      }
+    })
+  })
+  app.put('/designer/dir/:id', function(req, res) {
+    fs.writeFile(path.join(__filename, dirPath, `/${req.params.id}.json`), JSON.stringify(req.body.dir), function(err){
+      if (err) {
+        res.json({ code: 500, msg: err })
+      } else {
+        res.json({ code: 200 })
+      }
+    })
+  })
+  const designerPath = '../../data/designer'
+  app.get('/designer/config/:id', function(req, res) {
+    fs.readFile(path.join(__filename, designerPath, `/${req.params.id}.json`), 'utf-8', function (err, data) {
+      if (err) {
+        res.json({ code: 200, data: null })
+      } else {
+        data = data + ''
+        res.json({ code: 200, data: data ? JSON.parse(data) : null })
+      }
+    })
+  })
+  app.put('/designer/config/:id', function(req, res) {
+    fs.writeFile(path.join(__filename, designerPath, `/${req.params.id}.json`), JSON.stringify(req.body.designer), function(err){
+      if (err) {
+        res.json({ code: 500, msg: err })
+      } else {
+        res.json({ code: 200 })
+      }
+    })
+  })
+  app.post('/designer/generate', function(req, res) {
+    const designer = req.body.designer
+    let root = `../../../src/views/${designer.setting.dir}`
+    writeFileRecursive(path.join(__filename, root, '/index.vue'), pageList(designer), function (err) {
+      if (!err) {
+        if (designer.form && designer.form.option && designer.form.option.length) {
+          writeFileRecursive(path.join(__filename, root, '/components/Form.vue'), form(designer), function (err) {
+            if (!err) {
+              writeFileRecursive(path.join(__filename, root, '/route.js'), route(designer), function (err) {
+                if (!err) {
+                  writeFileRecursive(path.join(__filename, root, '/designer.json'), JSON.stringify(designer), function (err) {
+                    if (!err) {
+                      res.json({ code: 200 });
+                    } else {
+                      res.json({ code: 500, msg: err });
+                    }
+                  });
+                } else {
+                  res.json({ code: 500, msg: err });
+                }
+              })
+            } else {
+              res.json({ code: 500, msg: err });
+            }
+          })
+        } else {
+          res.json({ code: 200 });
+        }
+      } else {
+        res.json({ code: 500, msg: err });
+        throw err;
+      }
+    })
   })
 }

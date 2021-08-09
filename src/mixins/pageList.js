@@ -191,11 +191,16 @@ export default {
       return this.getFormProps(props)
     },
     handleTab () {
-      let query = Object.assign(this.query, {page: 1})
-      this.$router.replace({
-        path: this.$route.path,
-        query: this.queryFilter(query)
-      })
+      let query = this.queryFilter(Object.assign(this.query, {page: 1}))
+      if (this.isHistory) {
+        this.$router.replace({
+          path: this.$route.path,
+          query
+        })
+      } else {
+        this.query = query
+        this.triggerFetch(query)
+      }
     },
     handleRangeInput (value, keys = ['start_time', 'end_time']) {
       if (value && value[0]) {

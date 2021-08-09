@@ -7,7 +7,7 @@ import App from './Designer.vue'
 import '@/styles/import.scss'
 import ElementUI from '@element-ui'
 import * as MS from '../packages'
-import axios from '@axios'
+import axios from 'axios'
 
 const originalPush = Router.prototype.push
 Router.prototype.push = function push (location, onResolve, onReject) {
@@ -34,12 +34,13 @@ Vue.prototype.$const = {
     { value: 'el-cascader', label: '级联选择器' }
   ]
 }
-
+/*
 if (process.env.NODE_ENV === 'development') {
   import('@/mock').then(res => {
     res && res.default && res.default()
   })
 }
+*/
 let initRootFontSize = function () {
   let width = window.innerWidth
   if (window.devicePixelRatio > 1 && document.ontouchstart !== undefined) {

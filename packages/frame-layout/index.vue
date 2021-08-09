@@ -12,6 +12,7 @@
       <div class="ms-frame-layout--menu ms-scroller">
         <slot v-if="$slots['menu']" name="menu" v-bind="{isCollapse:isCollapse}"></slot>
         <el-menu
+          v-else
           class="ms-frame-layout--menus"
           :collapse="isCollapse"
           :router="true"
@@ -206,6 +207,9 @@ export default {
             }
           }
         }
+      }
+      if (value.meta && !value.meta.keepAlive) {
+        this.routerViewKey = value.path
       }
     },
     apps (value) {
