@@ -4,16 +4,7 @@ export default [
     path: '/',
     component: () => import('../index.vue'),
     meta: {
-      title: '设计首页',
-      keepAlive: true
-    }
-  },
-  {
-    path: '/',
-    component: () => import('../index.vue'),
-    meta: {
-      title: '设计首页',
-      keepAlive: true
+      title: '设计首页'
     }
   },
   {

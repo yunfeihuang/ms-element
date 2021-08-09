@@ -27,7 +27,7 @@
         </el-tree>
       </div>
       <div slot="nav"></div>
-      <div v-if="$route.path=='/'" slot="sub" class="sub">
+      <div v-if="$route.path=='/' || $route.path == '/' + $route.params.id" slot="sub" class="sub">
         <div class="sub-item" @click="$root.$emit('setting')">
           <i class="el-icon-setting"></i>
           <small>设置</small>
