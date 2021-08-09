@@ -23,7 +23,7 @@
           <i class="el-icon-plus"></i>
           <small>创建列</small>
         </div>
-        <div class="sub-item" @click="$root.$emit('el-icon-view')">
+        <div class="sub-item" @click="$root.$emit('preview')">
           <i class="el-icon-view"></i>
           <small>预览</small>
         </div>

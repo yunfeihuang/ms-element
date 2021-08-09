@@ -15,5 +15,12 @@ export default [
       keepAlive: true
     }
   },
+  {
+    path: '/preview',
+    component: () => import('../preview/index.vue'),
+    meta: {
+      title: '预览'
+    }
+  },
   ...routes
 ]

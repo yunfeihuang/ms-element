@@ -47,6 +47,13 @@
         <el-form-item label="是否必填">
           <el-switch :value="item.rules.some(item => item.required)" @change="handleRequiredChange(item, $event)"></el-switch>
         </el-form-item>
+        <!--
+        <el-form-item label="校验规则">
+          <el-select>
+            <el-option v-for="(item,index) in validator" :key="index" :value="item" :label=""></el-option>
+          </el-select>
+        </el-form-item>
+        -->
         <template v-if="item.component == 'el-input'">
           <el-form-item label="是否多行">
             <el-switch :value="item.props.type == 'textarea'" @change="handlePropsChange(item.props, 'type', $event)"></el-switch>

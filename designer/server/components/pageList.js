@@ -54,7 +54,7 @@ module.exports = function (designer) {
       <el-table-column label="操作">
         <template v-slot="scope">
           ${designer.form.option.some(item => item.action.includes('update')) ? `<el-button type="text" @click="handleForm(scope.row)">编辑</el-button>` : ''}
-          <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
+          ${designer.setting.table.batch.some(item => ['delete'].includes(item.type)) ? `<el-button type="text" @click="handleDelete(scope.row)">删除</el-button>`:''}
         </template>
       </el-table-column>
     </el-table>

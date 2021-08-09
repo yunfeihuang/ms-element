@@ -68,10 +68,10 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column label="操作" v-if="designer.setting.delete || designer.form.option.some(item => item.action.includes('update'))">
+          <el-table-column label="操作" v-if="designer.setting.table.batch.some(item => ['delete'].includes(item.type)) || designer.form.option.some(item => item.action.includes('update'))">
             <template v-slot="scope">
               <el-button type="text" v-if="designer.form.option.some(item => item.action.includes('update'))" @click.stop="handleForm('update')">编辑</el-button>
-              <el-button type="text" v-if="designer.setting.delete">删除</el-button>
+              <el-button type="text" v-if="designer.setting.table.batch.some(item => ['delete'].includes(item.type))">删除</el-button>
               <el-button type="text" @click.stop="handleClear(scope.row)">清理模拟数据</el-button>
             </template>
           </el-table-column>
@@ -211,13 +211,21 @@ export default {
     this.$root.$on('setting', this.handleSettingForm)
     this.$root.$on('create-column', this.handleTableColumnForm)
     this.$root.$on('import', this.handleImport)
+    this.$root.$on('preview', this.handlePreview)
   },
   beforeDestroy () {
     this.$root.$off('setting', this.handleSettingForm)
     this.$root.$off('create-column', this.handleTableColumnForm)
     this.$root.$off('import', this.handleImport)
+    this.$root.$off('preview', this.handlePreview)
   },
   methods: {
+    handlePreview () {
+      sessionStorage.setItem('--ms-preview', JSON.stringify(this.designer))
+      this.$router.push({
+        path: '/preview'
+      })
+    },
     handleSettingForm () {
       let designer = this.designer
       ms.navigator.push(this, SettingForm, {
