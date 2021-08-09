@@ -1,9 +1,9 @@
-import $axios from '@axios'
+import axios from 'axios'
 
 /*
 * 参考 https://www.npmjs.com/package/restful-api
 */
-export default (rootUrl, axios = $axios) => {
+export default (rootUrl) => {
   return {
     fetch (option) {
       let {url, ...other} = option

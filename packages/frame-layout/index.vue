@@ -89,14 +89,17 @@
           </el-dropdown>
         </div>
       </div>
-      <div class="ms-frame-layout--body">
-        <slot v-if="$slots['default'] || $scopedSlots['default']" v-bind="{include: keepAliveInclude, routerViewKey: routerViewKey}"></slot>
-        <template v-else>
-          <keep-alive :include="keepAliveInclude" :exclude="keepAliveExclude">
-            <router-view class="ms-frame-layout--slot ms-scroller" ref="routerView" v-if="$route.meta.keepAlive"></router-view>
-          </keep-alive>
-          <router-view class="ms-frame-layout--slot ms-scroller" :key="routerViewKey" v-if="!$route.meta.keepAlive"></router-view>
-        </template>
+      <div class="ms-frame-layout--main">
+        <div class="ms-frame-layout--body">
+          <slot v-if="$slots['default'] || $scopedSlots['default']" v-bind="{include: keepAliveInclude, routerViewKey: routerViewKey}"></slot>
+          <template v-else>
+            <keep-alive :include="keepAliveInclude" :exclude="keepAliveExclude">
+              <router-view class="ms-frame-layout--slot ms-scroller" ref="routerView" v-if="$route.meta.keepAlive"></router-view>
+            </keep-alive>
+            <router-view class="ms-frame-layout--slot ms-scroller" :key="routerViewKey" v-if="!$route.meta.keepAlive"></router-view>
+          </template>
+        </div>
+        <slot name="sub"></slot>
       </div>
     </div>
     <slot name="other"></slot>
@@ -592,11 +595,14 @@ export default {
       vertical-align:middle;
       padding-left:10px;
     }
-    &--body{
+    &--body, &--main{
       position:relative;
       flex: 1;
       min-width: 0;
       background:$--background-color-base;
+    }
+    &--main{
+      display:flex;
     }
     &--menus{
       width:100%;

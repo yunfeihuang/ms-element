@@ -1,8 +1,3 @@
-const Layout = {
-  template: `<router-view/>`
-}
-console.log(Layout)
-
 let routes = []
 
 const requireComponent = require.context('../../src/views', true, /route.js$/) // 找到components文件夹下以.vue命名的文件

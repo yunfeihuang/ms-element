@@ -139,7 +139,11 @@ export default {
         }
       }
       if (['el-select', 'el-checkbox-group', 'el-radio-group'].includes(value)) {
-        item.slots = []
+        if (!item.slots) {
+          item.slots = []
+        }
+      } else {
+        delete item.slots
       }
       this.$forceUpdate()
     },

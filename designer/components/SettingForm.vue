@@ -18,7 +18,7 @@
     <el-form-item label="restful接口" prop="restfulApi">
       <el-input v-model="form.restfulApi"></el-input>
       <a href="https://www.npmjs.com/package/restful-api" target="_blank">参考 https://www.npmjs.com/package/restful-api 规范</a>
-      <div>响应回的JSON数据结构：{data: {currentPage: 1, pageSize: 20, total: 100, data: []}}</div>
+      <div>响应回的JSON数据结构：{data: {page: 1, rows: 20, total: 100, data: []}}</div>
     </el-form-item>
     <el-form-item label="数据id prop" prop="idProp" :rules="[{required: true, message: '请输入数据id prop'}]">
       <el-input v-model="form.idProp"></el-input>

@@ -67,9 +67,6 @@
           </el-table-column>
           <el-table-column align="right">
             <template slot="header">
-              <el-tooltip content="表格设置" placement="top">
-                <el-button size="mini" icon="el-icon-setting" @click.stop="handleSettingForm()"></el-button>
-              </el-tooltip>
               <el-tooltip content="创建表格列" placement="top">
                 <el-button size="mini" icon="el-icon-plus" @click.stop="handleTableColumnForm()"></el-button>
               </el-tooltip>
@@ -199,6 +196,16 @@ export default {
       },
       deep: true
     }
+  },
+  mounted () {
+    this.$root.$on('setting', this.handleSettingForm)
+    this.$root.$on('create-column', this.handleTableColumnForm)
+    this.$root.$on('import', this.handleImport)
+  },
+  beforeDestroy () {
+    this.$root.$off('setting', this.handleSettingForm)
+    this.$root.$off('create-column', this.handleTableColumnForm)
+    this.$root.$off('import', this.handleImport)
   },
   methods: {
     handleSettingForm () {
@@ -404,6 +411,18 @@ export default {
             Object.assign(row, form)
           } else {
             designer.setting.table.data.push(form)
+          }
+          return Promise.resolve(form)
+        }
+      })
+    },
+    handleImport () {
+      ms.navigator.push(this, () => import('./components/ImportForm'), {
+        title: '导入',
+        promiseSubmit (form) {
+          const config = JSON.parse(form.json)
+          if (config) {
+            this.config = config
           }
           return Promise.resolve(form)
         }

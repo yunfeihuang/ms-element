@@ -2,21 +2,15 @@
   <!--PageListLayout有四个插槽:breadcrumb,search,table,pagination(这个是默认存在的)-->
   <ms-page-list-layout>
     <template slot="search">
-      <ms-search-form :option="option" @submit="handleSubmit">
+      <ms-search-form :search-slots="option.map(item => item.prop)" @submit="handleSubmit">
         <el-tabs slot="prepend" v-model="query.active" type="card" @tab-click="handleTab">
           <el-tab-pane label="黄金" name="first"></el-tab-pane>
           <el-tab-pane label="白金" name="second"></el-tab-pane>
           <el-tab-pane label="白银" name="third"></el-tab-pane>
         </el-tabs>
-        <input
-          slot="custom"
-          v-model="query.custom"/>
-          <input
-          slot="custom1"
-          v-model="query.custom"/>
-          <input
-          slot="custom2"
-          v-model="query.custom"/>
+        <el-form-item v-for="(item,index) in option" :key="index" :label="item.label" :prop="item.prop" :slot="'$'+item.prop">
+          <component :is="item.component || 'el-input'" v-model="query[item.prop]" clearable></component>
+        </el-form-item>
         <el-button size="small" @click="handleCreate()">创建</el-button>
       </ms-search-form>
     </template>
@@ -153,10 +147,6 @@ export default {
             valueFormat: 'YYYY-MM-dd'
           },
           value: ['', '']
-        },
-        {
-          prop: 'custom',
-          label: '自定义'
         }
       ],
       query: this.getQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象
