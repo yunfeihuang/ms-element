@@ -11,7 +11,7 @@
           <el-tab-pane v-for="(item,index) in designer.tabs.option" :key="index" v-bind="item"></el-tab-pane>
         </el-tabs>
         <el-form-item v-for="(item,index) in designer.search.option" :key="index" :label="item.label" :prop="item.prop" :slot="'$'+item.prop">
-          <component :is="item.component || 'el-input'" v-model="query[item.prop]" clearable></component>
+          <component :is="item.component || 'el-input'" v-model="query[item.prop]" :placeholder="'请输入'+item.label" clearable></component>
         </el-form-item>
         <el-button size="small" @click="handleForm()">创建</el-button>
       </ms-search-form>

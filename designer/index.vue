@@ -18,7 +18,7 @@
           <el-tooltip placement="top" v-for="(item,index) in designer.search.option" :key="index">
             <el-button type="text" slot="content"  @click="handleSearchRemove(item)">删除</el-button>
             <el-form-item :label="item.label" @click.native="handleSearchForm(item)">
-              <component :is="item.component" v-bind="item.props" readonly controls-position="right">
+              <component :is="item.component" v-bind="item.props" :placeholder="'请输入'+item.label" readonly controls-position="right">
                 <template v-if="item.component === 'el-select'">
                   <el-option v-for="(item,index) in item.slots" :key="index" v-bind="item"></el-option>
                 </template>

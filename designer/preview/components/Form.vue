@@ -7,7 +7,7 @@
         :label="item.label"
         :prop="item.prop"
         :rules="item.rules">
-        <component :is="item.component" v-bind="item.props" readonly controls-position="right" v-model="form[item.prop]">
+        <component :is="item.component" v-bind="item.props" readonly controls-position="right" v-model="form[item.prop]" :placeholder="'请输入'+item.label">
           <template v-if="item.component === 'el-select'">
             <el-option v-for="(item,index) in item.slots" :key="index" v-bind="item"></el-option>
           </template>

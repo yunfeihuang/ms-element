@@ -2,7 +2,7 @@
   <!--v-bind="getFormProps()" @submit.native.prevent="handleSubmit"是必须的-->
   <el-form v-bind="getFormProps({labelWidth: '8rem'})" @submit.native.prevent="handleSubmit">
     <el-form-item v-for="(item,index) in column" :key="index" :label="item.label">
-      <el-input v-model="form[item.prop]"></el-input>
+      <el-input v-model="form[item.prop]" :placeholder="'请输入'+item.label"></el-input>
     </el-form-item>
   </el-form>
 </template>
