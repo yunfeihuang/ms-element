@@ -222,13 +222,14 @@ export default {
     this.$root.$on('setting', this.handleSettingForm)
     this.$root.$on('create-column', this.handleTableColumnForm)
     this.$root.$on('import', this.handleImport)
+    this.$root.$on('export', this.handleExport)
     this.$root.$on('preview', this.handlePreview)
     if (this.$route.params.id) {
       axios({
         url: `/designer/config/${this.$route.params.id}`
       }).then(res => {
-        if (res.data.data) {
-          this.designer = res.data.data
+        if (res.data) {
+          this.designer = res.data
         } else {
           this.designer = designer
         }
@@ -239,16 +240,14 @@ export default {
     this.$root.$off('setting', this.handleSettingForm)
     this.$root.$off('create-column', this.handleTableColumnForm)
     this.$root.$off('import', this.handleImport)
+    this.$root.$off('export', this.handleExport)
     this.$root.$off('preview', this.handlePreview)
   },
   methods: {
     handlePreview () {
       sessionStorage.setItem('--ms-preview', JSON.stringify(this.designer))
       this.$router.push({
-        path: '/preview',
-        query: {
-          __: '预览'
-        }
+        path: '/page/preview'
       })
     },
     handleSettingForm () {
@@ -360,11 +359,11 @@ export default {
         promiseSubmit (form) {
           if (column && form.prop !== column.prop) {
             let result = designer.table.column.find(item => item.prop === column.property)
-            result.prop = form.prop
+            result && (result.prop = form.prop)
             result = designer.search.option.find(item => item.prop === column.property)
-            result.prop = form.prop
+            result && (result.prop = form.prop)
             result = designer.form.option.find(item => item.prop === column.property)
-            result.prop = form.prop
+            result && (result.prop = form.prop)
           }
           let {action, ...other} = form
           let result = designer.table.column.find(item => item.prop === form.prop)
@@ -479,14 +478,23 @@ export default {
       })
     },
     handleImport () {
+      let self = this
       ms.navigator.push(this, () => import('./components/ImportForm'), {
         title: '导入',
         promiseSubmit (form) {
-          const config = JSON.parse(form.json)
-          if (config) {
-            this.config = config
+          const designer = JSON.parse(form.json)
+          if (designer) {
+            self.designer = designer
           }
           return Promise.resolve(form)
+        }
+      })
+    },
+    handleExport () {
+      ms.navigator.push(this, () => import('./components/ExportForm'), {
+        title: '导出',
+        params: {
+          json: JSON.stringify(this.designer)
         }
       })
     }

@@ -8,10 +8,10 @@
       <el-input v-model.trim="form.label"></el-input>
     </el-form-item>
     <el-form-item label="是否排序" prop="sortable">
-      <el-switch v-model.trim="form.sortable"></el-switch>
+      <el-switch v-model="form.sortable"></el-switch>
     </el-form-item>
     <el-form-item label="是否隐藏列" prop="hidden">
-      <el-switch v-model.trim="form.hidden"></el-switch>
+      <el-switch v-model="form.hidden"></el-switch>
     </el-form-item>
     <el-form-item label="创/编/搜" prop="isUpdate">
       <el-checkbox-group v-model="form.action">
@@ -43,9 +43,7 @@ export default {
   },
   methods: {
     fetch () {
-      return new Promise((resolve, reject) => {
-        setTimeout(resolve(this.params), 2000)
-      })
+      return Promise.resolve(this.params)
     }
   }
 }

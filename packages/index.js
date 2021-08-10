@@ -17,7 +17,7 @@ const components = [
 const install = (Vue) => {
   window.Vue = Vue
   components.map(component => {
-    component.componentName && Vue.component(component.componentName, component)
+    component.name && Vue.component(component.name, component)
   })
 }
 

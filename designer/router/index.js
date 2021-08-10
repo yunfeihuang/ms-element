@@ -8,21 +8,14 @@ export default [
     }
   },
   {
-    path: '/view/:id',
-    component: () => import('../preview/index.vue'),
-    meta: {
-      title: '页面'
-    }
-  },
-  {
-    path: '/preview',
+    path: '/page/preview',
     component: () => import('../preview/index.vue'),
     meta: {
       title: '预览'
     }
   },
   {
-    path: '/:id/:title',
+    path: '/page/:id/:title',
     component: () => import('../index.vue'),
     meta: {
       title: '页面'

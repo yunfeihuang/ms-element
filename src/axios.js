@@ -2,7 +2,7 @@ import axios from 'axios'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
-axios.defaults.baseURL = '/api'
+// axios.defaults.baseURL = '/api'
 axios.interceptors.request.use(config => {
   // Do something before request is sent
   if (config.headers && sessionStorage.getItem('token')) {

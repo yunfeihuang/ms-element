@@ -43,7 +43,7 @@
 
 <script>
 export default {
-  componentName: 'MsPageListLayout',
+  name: 'MsPageListLayout',
   inject: ['msPageList'],
   props: {
     isScroll: {

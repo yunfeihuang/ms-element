@@ -7,13 +7,14 @@
         v-bind="getSearchFormProps()"
         @submit="handleSubmit">
         <el-tabs
+          v-if="designer.tabs.option.length"
           slot="prepend"
           type="card"
           v-model="query[designer.tabs.prop]"
           @tab-click="handleTab">
           <el-tab-pane v-for="(item,index) in designer.tabs.option" :key="index" v-bind="item"></el-tab-pane>
         </el-tabs>
-        <el-form-item v-for="(item,index) in designer.search.option" :key="index" :label="item.label" :prop="item.prop" :slot="'$'+item.prop">
+        <el-form-item v-for="(item,index) in designer.search.option" :key="index" :label="item.label" :prop="item.prop" :slot="item.prop+'-slot'">
           <component :is="item.component || 'el-input'" v-model="query[item.prop]" :placeholder="'请输入'+item.label" clearable></component>
         </el-form-item>
         <el-button size="small" @click="handleForm()">创建</el-button>

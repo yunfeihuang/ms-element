@@ -18,7 +18,7 @@
           default-expand-all
           :expand-on-click-node="false">
           <span class="designer-dir-tree-node" slot-scope="{ node, data }">
-            <span @click="data.type==1 && $router.push({path: `/${data.id}/${node.label}`})">{{ node.label }}</span>
+            <span @click="data.type==1 && $router.push({path: `/page/${data.id}/${node.label}`})">{{ node.label }}</span>
             <span>
               <i class="el-icon-plus" v-if="data.type==0" @click="handleDirForm(data)"></i>
               <i class="el-icon-close" @click="handleDelete(node, data)"></i>
@@ -27,7 +27,7 @@
         </el-tree>
       </div>
       <div slot="nav"></div>
-      <div v-if="$route.path=='/' || $route.path == `/${$route.params.id}/${$route.params.title}`" slot="sub" class="sub">
+      <div v-if="$route.path=='/' || ($route.path.includes('/page/') && $route.params.id)" slot="sub" class="sub">
         <div class="sub-item" @click="$root.$emit('setting')">
           <i class="el-icon-setting"></i>
           <small>设置</small>
@@ -77,7 +77,7 @@ export default {
       this.$axios({
         url: '/designer/dir/index'
       }).then(res => {
-        this.dir = res.data.data
+        this.dir = res.data
       }).finally(() => {
         this.loading = false
       })

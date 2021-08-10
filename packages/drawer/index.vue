@@ -77,7 +77,7 @@
 
 <script>
 export default {
-  componentName: 'MsDrawer',
+  name: 'MsDrawer',
   props: {
     mode: {
       type: String,

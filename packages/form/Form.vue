@@ -52,7 +52,7 @@
 
 <script>
 export default {
-  componentName: 'MsForm',
+  name: 'MsForm',
   props: {
     option: {
       type: Array

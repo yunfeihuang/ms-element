@@ -7,7 +7,7 @@ import App from './Designer.vue'
 import '@/styles/import.scss'
 import ElementUI from '@element-ui'
 import * as MS from '../packages'
-import axios from 'axios'
+import axios from '../src/axios'
 
 const originalPush = Router.prototype.push
 Router.prototype.push = function push (location, onResolve, onReject) {
@@ -60,16 +60,6 @@ window.addEventListener('resize', initRootFontSize)
 initRootFontSize()
 let router = new Router({
   routes
-})
-router.beforeEach((to, from, next) => {
-  if (to.query.__) {
-    to.meta.title = to.query.__
-    delete to.query.__
-  }
-  next()
-})
-router.afterEach(() => {
-  NProgress.done()
 })
 
 window.$app = new Vue({ // eslint-disable-line

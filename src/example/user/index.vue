@@ -3,7 +3,7 @@
   <ms-page-list-layout>
     <template slot="search">
       <ms-search-form
-        :search-slots="option.map(item => item.prop)" 
+        :search-slots="option.map(item => item.prop)"
         v-bind="getSearchFormProps()"
         @submit.native.prevent="handleSubmit">
         <el-tabs slot="prepend" v-model="query.active" type="card" @tab-click="handleTab">

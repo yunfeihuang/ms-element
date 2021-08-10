@@ -11,7 +11,7 @@
             v-for="(item, index) in searchSlots"
             :key="index"
             v-bind="getColProps()">
-            <slot v-if="$scopedSlots['$'+item] || $slots['$'+item]" :name="'$'+item"></slot>
+            <slot v-if="$scopedSlots[item+'-slot'] || $slots[item+'-slot']" :name="item+'-slot'"></slot>
           </component>
         </div>
       </component>
@@ -47,7 +47,7 @@
 <script>
 import {Form} from 'element-ui'
 export default {
-  componentName: 'MsSearchForm',
+  name: 'MsSearchForm',
   inject: ['msPageList'],
   props: {
     ...Form.props,

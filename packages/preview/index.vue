@@ -24,7 +24,7 @@
 
 <script>
 export default {
-  componentName: 'MsPreview',
+  name: 'MsPreview',
   methods: {
     handleClose (listeners) {
       listeners.close && listeners.close()

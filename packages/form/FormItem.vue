@@ -42,7 +42,7 @@
 
 <script>
 export default {
-  componentName: 'MsFormItem',
+  name: 'MsFormItem',
   props: {
     option: {
       type: Array

@@ -111,7 +111,7 @@
 let routerFromTab = false
 let replaceRoute = false
 export default {
-  componentName: 'MsFrameLayout',
+  name: 'MsFrameLayout',
   provide () {
     return {
       'msFrameLayout': this
