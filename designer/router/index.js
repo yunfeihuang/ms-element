@@ -22,7 +22,7 @@ export default [
     }
   },
   {
-    path: '/:id',
+    path: '/:id/:title',
     component: () => import('../index.vue'),
     meta: {
       title: '页面'

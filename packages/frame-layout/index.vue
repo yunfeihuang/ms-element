@@ -351,7 +351,7 @@ export default {
       })
     },
     getAppTitle (value) {
-      return value.meta && value.meta.title ? typeof value.meta.title === 'function' ? value.meta.title(value) : value.meta.title : value.fullPath
+      return value.params.title ? value.params.title : value.meta && value.meta.title ? typeof value.meta.title === 'function' ? value.meta.title(value) : value.meta.title : value.fullPath
     },
     getAppByPath (path) {
       return this.apps.find(item => {
