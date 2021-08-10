@@ -23,6 +23,37 @@ module.exports = function (app) {
   // 解析 application/x-www-form-urlencoded
   app.use(bodyParser.urlencoded());
 
+  let exampleData = []
+  for (let i = 0; i < 20; i++) {
+    exampleData.push({
+      id: Math.random().toString(),
+      date: new Date().toLocaleString(),
+      name: `张三${i}`,
+      address: `上海市普陀区金沙江路${i}号`,
+      age: Math.floor(Math.random() * 100),
+      email: `${Math.floor(Math.random() * 100000000)}@qq.com`,
+      state: '启用',
+      url: '/static/images/img_qr.jpg',
+      sex: '男',
+      hoppy: ['足球', '篮球'],
+      start_time: new Date().toLocaleString(),
+      end_time: new Date().toLocaleString(),
+      desc: '如果出现发生系统错误 1067 请把db目录下的mongod.lock文件删除后重新输入net start MongoDB启动服务即可'
+    })
+  }
+  app.get('/designer/example/data', function(req, res) {
+    res.json({code: 200, data: {total: 100, rows: 20, data: exampleData}})
+  })
+  app.put('/designer/example/data', function(req, res) {
+    res.json({code: 200, data: exampleData[0]})
+  })
+  app.post('/designer/example/data', function(req, res) {
+    res.json({code: 200, data: exampleData[0]})
+  })
+  app.delete('/designer/example/data', function(req, res) {
+    res.json({code: 200})
+  })
+
   app.get('/designer/download/:fileName', function(req, res) {
     var fileName = req.params.fileName
     var filePath = path.join(__filename, '../../src/views', fileName)

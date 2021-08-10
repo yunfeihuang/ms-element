@@ -46,7 +46,7 @@ export default (rootUrl) => {
     batch (option) { // 批量操作
       let {url, ...other} = option
       return this.fetch({
-        url: url ? rootUrl + '/batch' + url : rootUrl + '/batch',
+        url: url ? '/batch' + url : '/batch',
         method: 'POST',
         ...other
       })
