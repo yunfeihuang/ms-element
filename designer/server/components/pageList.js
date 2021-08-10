@@ -25,7 +25,7 @@ module.exports = function (designer) {
   <!--PageListLayout有四个插槽:,search,table,pagination(这个是默认存在的)-->
   <ms-page-list-layout>
     <template slot="search">
-      <ms-search-form :search-slots="searchSlots" @submit="handleSubmit">
+      <ms-search-form :search-slots="searchSlots" v-bind="getSearchFormProps()" @submit="handleSubmit">
         ${designer.tabs.option.length ? `<el-tabs slot="prepend" v-model="query.${designer.tabs.prop}" type="card" @tab-click="handleTab">
           <el-tab-pane v-for="(item,index) in tabsOption" :key="index" v-bind="item"></el-tab-pane>
         </el-tabs>\n` : ''}${designer.search.option.map(item => {
@@ -43,7 +43,7 @@ module.exports = function (designer) {
         width="58">
       </el-table-column>\n` : ''}${designer.setting.table.serialNumber ? `<el-table-column
         v-bind="getIndexColumnProps()">
-      </el-table-column>\n` : ''}${designer.table.column.map(function (item) {
+      </el-table-column>\n` : ''}${designer.table.column.filter(item => !item.hidden).map(function (item) {
         return `<el-table-column
         label="${item.label}">
         <template v-slot="scope">

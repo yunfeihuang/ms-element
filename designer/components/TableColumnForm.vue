@@ -7,11 +7,12 @@
     <el-form-item label="属性名" prop="label" :rules="[{ required: true, message: '请输入属性名' }]">
       <el-input v-model.trim="form.label"></el-input>
     </el-form-item>
-    <!--
-    <el-form-item label="属性模拟值" prop="value">
-      <el-input v-model.trim="form.value"></el-input>
+    <el-form-item label="是否排序" prop="sortable">
+      <el-switch v-model.trim="form.sortable"></el-switch>
     </el-form-item>
-    -->
+    <el-form-item label="是否隐藏列" prop="hidden">
+      <el-switch v-model.trim="form.hidden"></el-switch>
+    </el-form-item>
     <el-form-item label="创/编/搜" prop="isUpdate">
       <el-checkbox-group v-model="form.action">
         <el-checkbox
@@ -34,7 +35,8 @@ export default {
       form: { // 必须使用form来绑定表单数据
         prop: '',
         label: '',
-        // value: '',
+        sortable: false,
+        hidden: false,
         action: []
       }
     }

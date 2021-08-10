@@ -1,7 +1,5 @@
 <template>
-  <el-form
-    v-bind="msPageList.getSearchForm(!isCollapse ?  { class: ['ms-search-form']} : { class: 'ms-search-form--layout', labelWidth:'80px',inline:false})"
-    @submit.native.prevent="msPageList.handleSubmit">
+  <el-form class="ms-search-form" v-bind="!isCollapse ? {...$props} : { ...$props, class: 'ms-search-form--layout', labelWidth:'80px', inline: false}">
     <div class="ms-search-form--prepend" v-if="$slots['prepend']">
       <slot name="prepend"></slot>
     </div>

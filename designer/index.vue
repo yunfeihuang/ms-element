@@ -60,7 +60,7 @@
             v-if="designer.setting.table.serialNumber"
             v-bind="getIndexColumnProps()">
           </el-table-column>
-          <el-table-column v-for="(item,index) in designer.table.column" :key="index" v-bind="item">
+          <el-table-column v-for="(item,index) in designer.table.column" :key="index" v-bind="item" :class-name="item.hidden ? 'is-hidden-column' : ''">
             <template v-slot:header="scope">
               <el-tooltip placement="top">
                 <el-button type="text" slot="content" @click="handleTableColumnRemove(scope.column)">删除</el-button>
@@ -353,9 +353,19 @@ export default {
         params: column ? {
           label: column.label,
           prop: column.property,
+          sortable: column.sortable,
+          hidden: column.className.includes('is-hidden-column'),
           action
         } : undefined,
         promiseSubmit (form) {
+          if (column && form.prop !== column.prop) {
+            let result = designer.table.column.find(item => item.prop === column.property)
+            result.prop = form.prop
+            result = designer.search.option.find(item => item.prop === column.property)
+            result.prop = form.prop
+            result = designer.form.option.find(item => item.prop === column.property)
+            result.prop = form.prop
+          }
           let {action, ...other} = form
           let result = designer.table.column.find(item => item.prop === form.prop)
           if (result) {
@@ -385,6 +395,7 @@ export default {
               })
             }
           }
+          this.$forceUpdate()
           return Promise.resolve(form)
         }
       })
@@ -482,7 +493,11 @@ export default {
   }
 }
 </script>
-
+<style lang="scss">
+  .is-hidden-column{
+    opacity: 0.3;
+  }
+</style>
 <style lang="scss" scoped>
   /deep/ {
     .el-tabs__header{
@@ -496,4 +511,5 @@ export default {
     outline: 1px dashed #ccc;
     outline-offset: 4px;
   }
+  
 </style>

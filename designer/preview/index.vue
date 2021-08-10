@@ -2,7 +2,10 @@
   <!--PageListLayout有四个插槽:breadcrumb,search,table,pagination(这个是默认存在的)-->
   <ms-page-list-layout>
     <template slot="search">
-      <ms-search-form :search-slots="designer.search.option.map(item => item.prop)" @submit="handleSubmit">
+      <ms-search-form
+        :search-slots="designer.search.option.map(item => item.prop)"
+        v-bind="getSearchFormProps()"
+        @submit="handleSubmit">
         <el-tabs
           slot="prepend"
           type="card"

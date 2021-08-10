@@ -187,7 +187,7 @@ export default {
         model: this.query
       }, props)
     },
-    getSearchForm (props) {
+    getSearchFormProps (props) {
       return this.getFormProps(props)
     },
     handleTab () {

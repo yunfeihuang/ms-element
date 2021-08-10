@@ -24,7 +24,8 @@
             <el-radio v-for="(item,index) in item.slots" :key="index" v-bind="item"></el-radio>
           </template>
           <template v-else-if="item.component === 'el-upload'">
-            <el-button>上传</el-button>
+            <i v-if="item.props.listType == 'picture-card'" class="el-icon-plus"></i>
+            <el-button v-else>上传</el-button>
           </template>
         </component>
       </el-form-item>
@@ -71,6 +72,15 @@
         <template v-else-if="item.component == 'el-select'">
           <el-form-item label="是否多选">
             <el-switch v-model="item.props.multiple" @change="handleSelectMultipleChange(item, $event)"></el-switch>
+          </el-form-item>
+        </template>
+        <template v-else-if="item.component == 'el-upload'">
+          <el-form-item label="上传文件类型">
+            <el-select v-model="item.props.listType" @change="$forceUpdate()">
+              <el-option value="text" label="文件"></el-option>
+              <el-option value="picture" label="图片列表"></el-option>
+              <el-option value="picture-card" label="照片墙"></el-option>
+            </el-select>
           </el-form-item>
         </template>
         <template v-else-if="item.component == 'el-date-picker'">
@@ -151,6 +161,9 @@ export default {
         }
       } else {
         delete item.slots
+      }
+      if (value === 'el-upload') {
+        item.listType = 'text'
       }
       this.$forceUpdate()
     },
