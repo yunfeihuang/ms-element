@@ -1,95 +1,101 @@
 <template>
-  <!--PageListLayout有四个插槽:breadcrumb,search,table,pagination(这个是默认存在的)-->
   <ms-page-list-layout>
-    <template slot="search">
+    <template #search>
       <ms-search-form
         :search-slots="option.map(item => item.prop)"
-        v-bind="getSearchFormProps()"
-        @submit.native.prevent="handleSubmit">
-        <el-tabs slot="prepend" v-model="query.active" type="card" @tab-click="handleTab">
-          <el-tab-pane label="黄金" name="first"></el-tab-pane>
-          <el-tab-pane label="白金" name="second"></el-tab-pane>
-          <el-tab-pane label="白银" name="third"></el-tab-pane>
-        </el-tabs>
-        <el-form-item v-for="(item,index) in option" :key="index" :label="item.label" :prop="item.prop" :slot="'$'+item.prop">
-          <component :is="item.component || 'el-input'" v-model="query[item.prop]" clearable></component>
-        </el-form-item>
+        v-bind="getFormProps()"
+        @submit.prevent="handleSubmit">
+        <template #prepend>
+          <el-tabs v-model="query.active" type="card" @tab-click="handleTab">
+            <el-tab-pane label="黄金" name="first"></el-tab-pane>
+            <el-tab-pane label="白金" name="second"></el-tab-pane>
+            <el-tab-pane label="白银" name="third"></el-tab-pane>
+          </el-tabs>
+        </template>
+        <template v-for="(item,index) in option" :key="index" v-slot:[`${item.prop}-slot`]>
+          <el-form-item :label="item.label" :prop="item.prop">
+            <component :is="item.component || 'el-input'" v-model="query[item.prop]" clearable></component>
+          </el-form-item>
+        </template>
         <el-button size="small" @click="handleCreate()">创建</el-button>
       </ms-search-form>
     </template>
-    <!--v-bind="getTableProps()"是必须的-->
-    <el-table slot="table"
-      v-bind="getTableProps()"
-      v-on="getTableListeners()"
-      :data="pageData.data">
-      <el-table-column
-        type="selection"
-        width="58">
-      </el-table-column>
-      <el-table-column
-        v-bind="getIndexColumnProps()">
-      </el-table-column>
-      <el-table-column
-        label="头像">
-        <template v-slot="scope">
-          <img src="/static/images/img_qr.jpg" v-preview style="width:30px;height:30px">
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="姓名">
-        <template v-slot="scope">
-          {{scope.row.name}}
-        </template>
-      </el-table-column>
-      <el-table-column
-        width="60"
-        label="年龄">
-        <template v-slot="scope">
-          {{scope.row.age}}
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="邮箱">
-        <template v-slot="scope">
-          {{scope.row.email}}
-        </template>
-      </el-table-column>
-      <el-table-column
-        width="60"
-        label="状态">
-        <template v-slot="scope">
-          {{scope.row.state}}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        label="地址" show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column
-        sortable="custom"
-        prop="date"
-        label="创建日期" show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column
-        label="操作">
-        <template v-slot="scope">
-          <el-button type="text" @click="handleCreate(scope.row)">编辑</el-button>
-          <el-button type="text" @click="handleDetail(scope.row)">详情</el-button>
-          <el-dropdown trigger="click">
-            <el-button type="text" style="margin-left: 10px;">更多</el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="handleLargeDetail(scope.row)">详情大弹窗</el-dropdown-item>
-              <el-dropdown-item @click.native="handleCustom(scope.row)">自定义弹框</el-dropdown-item>
-              <el-dropdown-item @click.native="handleOpen">iframe弹框</el-dropdown-item>
-              <el-dropdown-item @click.native="handleOpenComponent">引入组件弹框</el-dropdown-item>
-              <el-dropdown-item @click.native="$router.push({path: $route.path + '/detail', query: scope.row})">页面式详情</el-dropdown-item>
-              <el-dropdown-item @click.native="handleDelete">删除</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </template>
-      </el-table-column>
-    </el-table>
-    <template slot="action">
+    <template #table>
+      <el-table
+        v-bind="getTableProps()"
+        v-on="getTableListeners()"
+        :data="response.data">
+        <el-table-column
+          type="selection"
+          width="58">
+        </el-table-column>
+        <el-table-column
+          v-bind="getIndexColumnProps()">
+        </el-table-column>
+        <el-table-column
+          label="头像">
+          <template>
+            <el-image src="/images/img_qr.jpg" style="width:30px;height:30px"/>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="姓名">
+          <template v-slot="scope">
+            {{scope.row.name}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          width="60"
+          label="年龄">
+          <template v-slot="scope">
+            {{scope.row.age}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="邮箱">
+          <template v-slot="scope">
+            {{scope.row.email}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          width="60"
+          label="状态">
+          <template v-slot="scope">
+            {{scope.row.state}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="地址" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column
+          sortable="custom"
+          prop="date"
+          label="创建日期" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column
+          label="操作">
+          <template v-slot="scope">
+            <el-button type="text" @click="handleCreate(scope.row)">编辑</el-button>
+            <el-button type="text" @click="handleDetail(scope.row)">详情</el-button>
+            <el-dropdown trigger="click">
+              <el-button type="text" style="margin-left: 10px;">更多</el-button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item @click="handleLargeDetail(scope.row)">详情大弹窗</el-dropdown-item>
+                  <el-dropdown-item @click="handleCustom(scope.row)">自定义弹框</el-dropdown-item>
+                  <el-dropdown-item @click="handleOpen">iframe弹框</el-dropdown-item>
+                  <el-dropdown-item @click="handleOpenComponent">引入组件弹框</el-dropdown-item>
+                  <el-dropdown-item @click="$router.push({path: $route.path + '/detail', query: scope.row})">页面式详情</el-dropdown-item>
+                  <el-dropdown-item @click="handleDelete">删除</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
+    <template #action>
       <el-button size="small">导入</el-button>
       <el-button :disabled="multipleSelectionAll.length==0" size="small" @click="handleExport">导出</el-button>
     </template>
@@ -97,6 +103,7 @@
 </template>
 
 <script>
+import ms from 'ms-element/ms'
 const Form = () => import('./components/Form')
 const Detail = () => import('./components/Detail')
 const List = () => import('./components/List')
@@ -140,16 +147,6 @@ export default {
           props: {
             valueFormat: 'YYYY-MM-dd'
           }
-        },
-        {
-          prop: ['startDate', 'endDate'],
-          component: 'el-date-picker',
-          label: '日期范围',
-          props: {
-            type: 'daterange',
-            valueFormat: 'YYYY-MM-dd'
-          },
-          value: ['', '']
         }
       ],
       query: this.getQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象
@@ -163,13 +160,14 @@ export default {
   },
   methods: {
     fetch (query) { // 获取数据的方法，必须要重写
+      console.log('query', query)
       /*
       return this.$axios({
         url: '/user',
-        query
+        params: query
       })
       */
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         let data = []
         for (let i = 0; i < 20; i++) {
           data.push({
@@ -192,7 +190,7 @@ export default {
           resolve({
             code: 200,
             data: {
-              count: 1000,
+              total: 1000,
               data
             }
           })
@@ -247,7 +245,7 @@ export default {
         },
         metbods: {
           fetch () {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
               setTimeout(resolve(this.params), 2000)
             })
           }
@@ -277,13 +275,13 @@ export default {
         },
         promiseSubmit (data) {
           console.log('promiseSubmit', data)
-          return new Promise((resolve, reject) => {
+          return new Promise((resolve) => {
             setTimeout(resolve, 1000)
           })
         }
       })
     },
-    handleOpen (row) {
+    handleOpen () {
       ms.navigator.push(this, this.$route.fullPath, {
         mode: 'dialog',
         title: 'iframe弹窗列表',
@@ -303,7 +301,7 @@ export default {
         }
       })
     },
-    handleExport (type, event) {
+    handleExport () {
       this.$confirm('确认执行此批量操作？', '提示', {
         type: 'warning'
       }).then(() => {

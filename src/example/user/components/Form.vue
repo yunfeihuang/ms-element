@@ -1,6 +1,5 @@
 <template>
-  <!--v-bind="getFormProps()" @submit.native.prevent="handleSubmit"是必须的-->
-  <el-form v-bind="getFormProps()" @submit.native.prevent="handleSubmit">
+  <el-form v-bind="getFormProps()" @submit.prevent="handleSubmit">
     <!--
     <el-form-item label="头像">
       <e-img-upload clearable v-model="form.url"/>
@@ -60,6 +59,7 @@
 </template>
 
 <script>
+import ms from 'ms-element/ms'
 export default {
   mixins: [
     ms.mixins.form

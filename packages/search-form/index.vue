@@ -1,18 +1,31 @@
 <template>
-  <el-form class="ms-search-form" v-bind="!isCollapse ? {...$props} : { ...$props, class: 'ms-search-form--layout', labelWidth:'80px', inline: false}">
+  <el-form
+    class="ms-search-form"
+    v-bind="!isCollapse ? {...$props} : { ...$props, class: 'ms-search-form--layout', labelWidth:'80px', inline: false}">
     <div class="ms-search-form--prepend" v-if="$slots['prepend']">
       <slot name="prepend"></slot>
     </div>
     <div :class="{'ms-search-form--body': !isCollapse}">
       <component :is="!isCollapse ? 'div': 'el-row'" :class="{'ms-search-form--items': !isCollapse}" :gutter="10">
         <div :class="{'ms-search-form--items-inner': !isCollapse}">
-          <component
-            :is="!isCollapse ? 'span': 'el-col'"
-            v-for="(item, index) in searchSlots"
-            :key="index"
-            v-bind="getColProps()">
-            <slot v-if="$scopedSlots[item+'-slot'] || $slots[item+'-slot']" :name="item+'-slot'"></slot>
-          </component>
+          <template v-if="searchSlots && searchSlots.length">
+            <component
+              :is="!isCollapse ? 'span': 'el-col'"
+              v-for="(item, index) in searchSlots"
+              :key="index"
+              v-bind="getColProps()">
+              <slot v-if="$slots[item+'-slot']" :name="item+'-slot'"></slot>
+            </component>
+          </template>
+          <template v-else>
+            <component
+              :is="!isCollapse ? 'span': 'el-col'"
+              v-for="(item, index) in searchSlotKeys"
+              :key="index"
+              v-bind="getColProps()">
+              <slot v-if="$slots[item]" :name="item"></slot>
+            </component>
+          </template>
         </div>
       </component>
       <template v-if="!isCollapse">
@@ -26,8 +39,8 @@
           </div>
         </el-tooltip>
         <!--native-type="submit"是修改button type属性为submit-->
-        <el-button native-type="submit" size="small">{{searchText}}</el-button>
-        <el-button @click="msPageList.handleReset" size="small">{{resetText}}</el-button>
+        <el-button v-if="searchSlotKeys.length" native-type="submit" size="small">{{searchText}}</el-button>
+        <el-button v-if="searchSlotKeys.length" @click="msPageList.handleReset" size="small">{{resetText}}</el-button>
         <slot></slot>
       </template>
       <el-row v-else>
@@ -45,17 +58,12 @@
 </template>
 
 <script>
-import {Form} from 'element-ui'
 export default {
   name: 'MsSearchForm',
   inject: ['msPageList'],
   props: {
-    ...Form.props,
     searchSlots: {
-      type: Array,
-      default () {
-        return []
-      }
+      type: Array
     },
     searchText: {
       type: String,
@@ -66,8 +74,13 @@ export default {
       default: '重置'
     }
   },
+  computed: {
+    searchSlotKeys () {
+      return Object.keys(this.$slots).filter(key => key.includes('-slot'))
+    }
+  },
   watch: {
-    isCollapse (value) {
+    isCollapse () {
       this.msPageList && this.msPageList.handleResize()
     }
   },
@@ -78,13 +91,15 @@ export default {
     }
   },
   mounted () {
+    console.log('slots', this)
     window.addEventListener('resize', this.handleResize, false)
+    this.handleResize()
   },
-  beforeDestroy () {
+  beforeUnmount () {
     window.removeEventListener('resize', this.handleResize, false)
   },
   updated () {
-    this.handleResize()
+    this.$nextTick(this.handleResize)
   },
   methods: {
     handleResize () {
@@ -108,61 +123,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-  .ms-search-form{
-    margin:10px 10px 0;
-    .el-form-item,.el-button {
-      margin-bottom: 10px;
-    }
-    .el-button{
-      padding-right:8px;
-      padding-left:8px;
-      min-width:60px;
-    }
-    &--prepend{
-      margin-bottom:10px;
-    }
-    &--layout{
-      margin:10px 10px 0;
-      .el-date-editor,.el-select{
-        width:100%;
-      }
-    }
-    &--body{
-      display:inline-flex;
-      max-width:100%
-    }
-    &--items{
-      flex:1;
-      overflow:hidden;
-      &-inner{
-        white-space: nowrap;
-        width: max-content;
-      }
-      &-more{
-        height: 32px;
-        line-height: 32px;
-        background:linear-gradient(90deg, rgba(255,255,255,0.1) 0%,rgba(255,255,255,1) 100%);
-        width: 40px;
-        margin-left:-40px;
-        display: inline-block;
-        // margin-right:10px;
-        text-align: right;
-        padding-right:10px;
-        z-index: 100;
-        position: relative;
-        cursor: pointer;
-        >i{
-          transform: rotate(90deg);
-          font-size: 1.25em;
-          background: #fff;
-        }
-      }
-    }
-    .el-tabs{
-      &__header{
-        margin-bottom:0;
-      }
-    }
-  }
-</style>

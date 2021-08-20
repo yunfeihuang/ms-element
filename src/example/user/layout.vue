@@ -1,7 +1,5 @@
 <template>
-  <div style="padding:10px;">
-    follow
-  </div>
+  <router-view></router-view>
 </template>
 
 <script>

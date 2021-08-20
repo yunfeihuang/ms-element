@@ -8,7 +8,6 @@
 
 <script>
 export default {
-  mixins: [ms.mixins.fetch]
 }
 </script>
 

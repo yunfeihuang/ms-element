@@ -1,5 +1,9 @@
-@import '../../../../../node_modules/element-ui/packages/theme-chalk/src/common/var.scss';
-
+// @import '../../../../../node_modules/element-plus/packages/theme-chalk/src/common/var.scss';
+$--css-prefix: ms-;
+$--color-primary : #409eff;
+$--color-white: #ffffff;
+$--background-color-base: #F5F7FA;
+$--border-color-base: rgb(220, 223, 230);
 $font-path              : 'iconfont'!default;
 // FrameLayout
 $frame-layout--header-height: 40px!default;

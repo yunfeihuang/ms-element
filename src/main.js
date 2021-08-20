@@ -1,26 +1,31 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import routes from './route.config.js'
-import store from './store'
+import { createApp } from 'vue'
+import { createRouter, createWebHashHistory } from 'vue-router'
+import routes from './router'
 import App from './App.vue'
-import '@/styles/import.scss'
-import ElementUI from '@element-ui'
+import 'element-plus/lib/theme-chalk/index.css'
+import ElementPlus from 'element-plus'
+import '../packages/style/src/theme/index.scss'
 import * as MS from '../packages'
-import DomPortal from 'vue-dom-portal'
-import filters from '@/filters'
-import '@/directives'
-import axios from '@axios'
+import axios from './axios'
 
-// register global utility filters.
-Object.keys(filters).forEach(key => {
-  Vue.filter(key, filters[key])
-})
+const $createApp = (...args) => {
+  const app = createApp(...args).use(ElementPlus, {
+    inputNumber: {
+      'controls-position': 'right'
+    }
+  }).use(MS)
+  app.config.performance = true
+  app.config.globalProperties.$axios = axios
+  return app
+}
 
-Vue.use(Router)
-Vue.use(DomPortal)
-Vue.use(ElementUI)
-Vue.use(MS)
-Vue.prototype.$axios = axios
+const app = $createApp(App).use(createRouter({
+  history: createWebHashHistory(),
+  routes: routes
+}))
+
+window.$app = app.mount('#app')
+window.$createApp = $createApp
 
 let initRootFontSize = function () {
   let width = window.innerWidth
@@ -39,12 +44,3 @@ let initRootFontSize = function () {
 }
 window.addEventListener('resize', initRootFontSize)
 initRootFontSize()
-
-new Vue({ // eslint-disable-line
-  router: new Router({
-    routes
-  }),
-  store,
-  el: '#app',
-  render: h => h(App)
-})

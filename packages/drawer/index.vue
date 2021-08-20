@@ -3,24 +3,26 @@
     :is="`el-${mode}`"
     v-bind="drawer"
     :title="drawerTitle || drawer.title"
-    :visible="visible"
+    :model-value="visible"
     @close="handleClose"
     @opened="handleOpened"
     @closed="handleClosed">
-    <component v-if="titleSlot" slot="title" :is="titleSlot"></component>
-    <div v-if="mode=='dialog'" class="ms-drawer--dialog-body" v-loading="loading">
+    <template v-if="titleSlot" #title>
+      <component :is="titleSlot"></component>
+    </template>
+    <div ref="body" v-if="mode=='dialog'" class="ms-drawer--dialog-body" v-loading="loading">
       <iframe v-if="to" :src="to" frameborder="0" @load="handleLoading(false)"></iframe>
       <component
         v-else
         ref="component"
         :is="component"
         v-bind="componentProps || props"
-        @hook:mounted="handleMounted"
+        @mounted="handleMounted"
         @loading="handleLoading"
         @posting="handlePosting"
       />
     </div>
-    <template slot="footer" v-if="mode=='dialog' && isFormComponent">
+    <template #footer v-if="mode=='dialog' && isFormComponent">
       <el-button
         size="small"
         nativeType="button"
@@ -35,13 +37,13 @@
         {{confirmText}}
       </el-button>
     </template>
-    <div v-if="mode=='drawer'" class="ms-drawer--layout" v-loading="loading">
+    <div ref="body" v-if="mode=='drawer'" class="ms-drawer--layout" v-loading="loading">
       <div class="ms-drawer--body ms-scroller">
         <component
           ref="component"
           :is="component"
           v-bind="componentProps || props"
-          @hook:mounted="handleMounted"
+          @mounted="handleMounted"
           @loading="handleLoading"
           @posting="handlePosting"
         />
@@ -52,19 +54,16 @@
       <div class="ms-drawer--footer" v-else-if="isFormComponent">
         <el-button
           type="primary"
-          size="small"
           nativeType="button"
           @click="handleSubmit">
           {{confirmText}}
         </el-button>
         <el-button
-          size="small"
           nativeType="button"
           @click="handleReset">
           {{resetText}}
         </el-button>
         <el-button
-          size="small"
           nativeType="button"
           @click="handleClose">
           {{cancelText}}
@@ -139,6 +138,7 @@ export default {
     }
   },
   mounted () {
+    console.log('ddd', this)
     this.visible = true
   },
   methods: {
@@ -183,7 +183,7 @@ export default {
         }
         promise.then(res => {
           this.component = addMixins(res.default)
-        }).finally(res => {
+        }).finally(() => {
           setTimeout(() => {
             this.loadingDone && this.loadingDone()
           }, 100)
@@ -207,6 +207,18 @@ export default {
     },
     handleOpened () {
       this.loadComponent()
+      this.$nextTick(() => {
+        let node = this.$refs.body.closest('.el-overlay')
+        if (node) {
+          node.title = '双击可以快速关闭弹框'
+          node.querySelector('.ms-drawer').title = ''
+          node.ondblclick = e => {
+            if (node === e.target) {
+              this.handleClose()
+            }
+          }
+        }
+      })
     },
     handleMouseDown (e) {
       let pageX = e.pageX
@@ -221,16 +233,6 @@ export default {
       }
     },
     handleMounted () {
-      let node = this.$el.querySelector('.el-drawer__container')
-      if (node) {
-        node.title = '双击可以快速关闭弹框'
-        node.querySelector('.ms-drawer').title = ''
-        node.ondblclick = e => {
-          if (node === e.target) {
-            this.handleClose()
-          }
-        }
-      }
       if (this.$refs.component && this.$refs.component.handleSubmit && this.$refs.component.form) {
         this.isFormComponent = true
       } else {
@@ -240,125 +242,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-  $width: 42rem;
-  .ms-drawer{
-    max-height: 100%;
-    max-width: 100%;
-    &--error,&--loading{
-      margin:auto;
-      font-size:1.2em;
-      color:#ccc;
-      text-align:center;
-      i{
-        font-size:3em;
-      }
-      .el-spinner-inner .path{
-        stroke: $--color-primary;
-      }
-    }
-    &--mini{
-      min-width:$width * 0.5;
-      width:$width * 0.5;
-    }
-    &--small{
-      min-width:$width * 0.65;
-      width:$width * 0.65;
-    }
-    &--default{
-      min-width:$width;
-      width:$width;
-    }
-    &--large{
-      min-width:$width;
-      width:$width * 1.8;
-    }
-    &--layout{
-      display:flex;
-      flex-direction:column;
-      height: 100%;
-    }
-    &--body{
-      flex:auto;
-      padding: 0 15px;
-      position: relative;
-    }
-    &--footer{
-      text-align:center;
-      padding:15px 0;
-      .el-button{
-        min-width:100px;
-      }
-    }
-    &--resize{
-      position:absolute;
-      top:0;
-      width:10px;
-      height:100%;
-      left:0;
-      cursor: e-resize;
-      margin-left:-5px;
-    }
-    &--mask{
-      pointer-events: none;
-    }
-    &--dialog-body{
-      min-height:100px;
-      >.ms-page-list-layout{
-        min-height:72vh;
-      }
-    }
-    &.is-frame{
-      .el-dialog{
-        &__body{
-          padding:0;
-          iframe{
-            width:100%;
-            height:72vh;
-            display: block;
-          }
-        }
-      }
-    }
-    .el-drawer{
-      &__container{
-        overflow:hidden;
-      }
-      &__header{
-        margin-bottom:15px;
-        padding:15px;
-        padding-bottom:0;
-        line-height:1;
-        >span{
-          font-size:1.2rem;
-          outline: none;
-        }
-        button{
-          outline:none;
-          padding:0;
-        }
-      }
-      &__body{
-        max-height:calc(100% - 55px);
-      }
-    }
-    .el-dialog{
-      &__header{
-        padding:15px;
-        padding-bottom:10px;
-      }
-      &__body{
-        padding-top:10px;
-        padding-bottom:10px;
-      }
-      &__title{
-        font-size:1.2rem;
-      }
-    }
-    &.el-dialog{
-      &.ms-drawer--large{
-        min-width: 90%;
-      }
-    }
-  }
-</style>

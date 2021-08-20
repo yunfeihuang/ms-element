@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import ms from 'ms-element/ms'
 export default {
   mixins: [ms.mixins.fetch],
   methods: {

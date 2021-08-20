@@ -1,0 +1,60 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+.#{$--css-prefix}{
+  &search-form{
+    margin:10px 10px 0;
+    .el-form-item,.el-button {
+      margin-bottom: 10px;
+    }
+    .el-button{
+      padding-right:8px;
+      padding-left:8px;
+      min-width:60px;
+    }
+    &--prepend{
+      margin-bottom:10px;
+    }
+    &--layout{
+      margin:10px 10px 0;
+      .el-date-editor,.el-select{
+        width:100%;
+      }
+    }
+    &--body{
+      display:inline-flex;
+      max-width:100%
+    }
+    &--items{
+      flex:1;
+      overflow:hidden;
+      &-inner{
+        white-space: nowrap;
+        width: max-content;
+      }
+      &-more{
+        height: 32px;
+        line-height: 32px;
+        background:linear-gradient(90deg, rgba(255,255,255,0.1) 0%,rgba(255,255,255,1) 100%);
+        width: 40px;
+        margin-left:-40px;
+        display: inline-block;
+        // margin-right:10px;
+        text-align: right;
+        padding-right:10px;
+        z-index: 100;
+        position: relative;
+        cursor: pointer;
+        >i{
+          transform: rotate(90deg);
+          font-size: 1.25em;
+          background: #fff;
+        }
+      }
+    }
+    .el-tabs{
+      &__header{
+        margin-bottom:0;
+      }
+    }
+  }
+}

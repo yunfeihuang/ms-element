@@ -14,7 +14,6 @@
 <script>
 const routers = ['/profile', '/profile/follow', '/profile/others']
 export default {
-  mixins: [ms.mixins.fetch],
   data () {
     return {
       active: routers.findIndex(item => item === this.$route.path) + ''

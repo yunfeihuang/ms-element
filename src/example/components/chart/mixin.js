@@ -36,9 +36,9 @@ export default {
     initChart () {
       let self = this
       import('echarts').then(res => {
-        import('echarts/theme/shine').then(res2 => {
+        import('echarts/theme/shine').then(() => {
           if (self.option) {
-            self.$$chart = res.default.init(self.$el, self.theme)
+            self.$$chart = res.init(self.$el, self.theme)
             self.render()
           }
         })

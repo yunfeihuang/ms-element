@@ -1,0 +1,111 @@
+@import 'common/variable.scss';
+@import 'common/mixins.scss';
+.#{$--css-prefix}{
+  &frame-layout--body{
+    .ms-page-list-layout{
+      position:absolute;
+      width:100%;
+      height:100%;
+    }
+  }
+  &drawer--body{
+    .ms-page-list-layout{
+      position: relative;;
+      width:100%;
+      height:100%;
+      &--table{
+        padding:0;
+      }
+      .ms-search-form{
+        margin-left:0;
+        margin-top:0;
+      }
+    }
+  }
+  .is-iframe{
+    .ms-page-list-layout{
+      box-shadow: none;
+    }
+  }
+  .ms-dialog .el-dialog__body .ms-page-list-layout{
+    min-height: 85vh;
+    height:100%;
+    position: relative;;
+  }
+  &page-list-layout{
+    background-color: $--color-white;
+    .el-table__body-wrapper{
+      overflow:auto;
+      @include scroller(#ddd,6px);
+    }
+    &.is-flexbox{
+      display:flex;
+      flex-direction: column;
+      box-sizing:border-box;
+    }
+    &--table{
+      overflow: hidden;
+      box-sizing:border-box;
+      padding: 0 10px;
+      flex: auto;
+    }
+    &--footer{
+      padding:5px 10px;
+    }
+    &.is-breadcrumb{
+      border-top:30px solid transparent;
+    }
+    .el-breadcrumb{
+      position:absolute;
+      top:-30px;
+      z-index:1;
+      left:0;
+      font-size:0.9rem;
+    }
+    .el-table{
+      &__empty-text{
+        line-height:1;
+        color: #999;
+        &:before{
+          font-family: e-iconfont!important;
+          font-style: normal;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          font-size: 16px;
+          line-height: 100%;
+          content: "\e708";
+          display:block;
+          font-size: 40px;
+          font-size: 6rem;
+          margin-bottom:10px;
+        }
+      }
+      &-column--index{
+        white-space: nowrap;
+        .cell{
+          padding:0 4px;
+          white-space: nowrap;
+        }
+      }
+    }
+    &--action{
+      flex:1;
+      .el-button--default{
+        &.el-button--small{
+          padding-left:10px;
+          padding-right:10px;
+          height:28px;
+        }
+      }
+    }
+    .el-tabs__item{
+      line-height:32px;
+      height:34px;
+    }
+    .el-table{
+      &:before{
+        display: none;
+      }
+    }
+  }
+}

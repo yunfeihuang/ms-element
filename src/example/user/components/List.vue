@@ -1,8 +1,8 @@
 <template>
   <ms-page-list-layout>
-      <template slot="search">
+      <template #search>
         <!--ElForm组件的v-bind="getFormProps()"传递props和@submit.native.prevent="handleSubmit"注册事件是必须的-->
-        <el-form v-bind="getFormProps()" @submit.native.prevent="handleSubmit">
+        <el-form v-bind="getFormProps()" @submit.prevent="handleSubmit">
           <el-form-item label="姓名">
             <el-input v-model.trim="query.keyword" placeholder="请输入姓名"></el-input>
           </el-form-item>
@@ -12,53 +12,55 @@
         </el-form>
       </template>
       <!--v-bind="getTableProps()"是必须的-->
-      <el-table slot="table"
-        v-bind="getTableProps()"
-        v-on="getTableListeners()">
-        <el-table-column
-          type="selection"
-          width="58">
-        </el-table-column>
-        <el-table-column
-          v-bind="getIndexColumnProps()">
-        </el-table-column>
-        <el-table-column
-          label="姓名">
-          <template v-slot="scope">
-            {{scope.row.name}}
-          </template>
-        </el-table-column>
-        <el-table-column
-          width="60"
-          label="年龄">
-          <template v-slot="scope">
-            {{scope.row.age}}
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="邮箱">
-          <template v-slot="scope">
-            {{scope.row.email}}
-          </template>
-        </el-table-column>
-        <el-table-column
-          width="60"
-          label="状态">
-          <template v-slot="scope">
-            {{scope.row.state}}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          label="地址" show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column
-          sortable="custom"
-          prop="date"
-          label="创建日期" show-overflow-tooltip>
-        </el-table-column>
-      </el-table>
-      <template slot="action">
+      <template #table>
+        <el-table
+          v-bind="getTableProps()"
+          v-on="getTableListeners()">
+          <el-table-column
+            type="selection"
+            width="58">
+          </el-table-column>
+          <el-table-column
+            v-bind="getIndexColumnProps()">
+          </el-table-column>
+          <el-table-column
+            label="姓名">
+            <template v-slot="scope">
+              {{scope.row.name}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            width="60"
+            label="年龄">
+            <template v-slot="scope">
+              {{scope.row.age}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="邮箱">
+            <template v-slot="scope">
+              {{scope.row.email}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            width="60"
+            label="状态">
+            <template v-slot="scope">
+              {{scope.row.state}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="address"
+            label="地址" show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column
+            sortable="custom"
+            prop="date"
+            label="创建日期" show-overflow-tooltip>
+          </el-table-column>
+        </el-table>
+      </template>
+      <template #action>
         <el-button size="small">导入</el-button>
         <el-button :disabled="multipleSelectionAll.length==0" size="small">导出</el-button>
       </template>
@@ -66,6 +68,7 @@
 </template>
 
 <script>
+import ms from 'ms-element/ms'
 const Form = () => import('./Form')
 export default {
   mixins: [
@@ -92,13 +95,14 @@ export default {
   },
   methods: {
     fetch (query) { // 获取数据的方法，必须要重写
+      console.log('query', query)
       /*
       return this.$axios({
         url: '/user',
-        query
+        params: query
       })
       */
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         let data = []
         for (let i = 0; i < 20; i++) {
           data.push({

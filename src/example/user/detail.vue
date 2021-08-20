@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import ms from 'ms-element/ms'
 import Detail from './components/Detail'
 export default {
   mixins: [ms.mixins.fetch],
