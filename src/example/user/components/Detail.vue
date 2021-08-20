@@ -43,7 +43,7 @@ export default {
   mixins: [ms.mixins.fetch],
   methods: {
     fetch () {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         setTimeout(resolve(this.params || this.$attrs.params), 2000)
       })
     },

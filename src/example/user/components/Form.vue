@@ -88,12 +88,12 @@ export default {
   },
   methods: {
     fetch () {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         setTimeout(resolve(this.params), 2000)
       })
     },
     submit () { // 表单校验通过后调用的方法，一般是请求后台接口的方法
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         setTimeout(resolve, 1000)
       })
     },
