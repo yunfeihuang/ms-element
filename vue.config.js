@@ -1,7 +1,7 @@
 const path = require('path')
 const fs = require('fs')
 //const webpack = require('webpack')
-// const designer = require('./server')
+const MSDevServer = require('ms-designer/devServer')
 // var Components = require('./components.json');
 
 function resolve (dir) {
@@ -14,10 +14,28 @@ module.exports = {
   devServer: {
     overlay: {
       error: false
+    },
+    proxy: {
+      '/designer/': {
+        target: 'http://mselement.bittyos.com/'
+      },
+      '/designer-api/': {
+        target: 'http://mselement.bittyos.com/',
+        changeOrigin: true
+      }
+    },
+    before (app) {
+      console.log('MSDevServer', MSDevServer)
+      MSDevServer(app, path.join(__filename, '../'))
+      /*
+      app.post('/designer-dev-api/generate', function (req, res) {
+        console.log('ddddddd')
+      })
+      */
     }
   },
   pages: {
-    app: {
+    index: {
        // page 的入口
        entry: 'src/main.js',
        // 模板来源
@@ -29,7 +47,7 @@ module.exports = {
        title: 'MS Element',
        // 在这个页面中包含的块，默认情况下会包含
        // 提取出来的通用 chunk 和 vendor chunk。
-       chunks: ['chunk-vendors', 'chunk-common', 'app']
+       chunks: ['chunk-vendors', 'chunk-common', 'index']
     }
   },
   configureWebpack: config => {
