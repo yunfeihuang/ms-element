@@ -90,6 +90,9 @@
     }
     &--action{
       flex:1;
+      >div{
+        display: inline-block;
+      }
       .el-button--default{
         &.el-button--small{
           padding-left:10px;

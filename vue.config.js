@@ -25,7 +25,6 @@ module.exports = {
       }
     },
     before (app) {
-      console.log('MSDevServer', MSDevServer)
       MSDevServer(app, path.join(__filename, '../'))
       /*
       app.post('/designer-dev-api/generate', function (req, res) {
