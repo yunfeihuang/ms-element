@@ -159,8 +159,7 @@ export default {
       return Object.assign({
         ref: 'table',
         class: 'table-primary',
-        height: !this.fixedTableHead ? undefined : this.tableBodyHeight,
-        size: 'small'
+        height: !this.fixedTableHead ? undefined : this.tableBodyHeight
       }, props)
     },
     getTableListeners () {
