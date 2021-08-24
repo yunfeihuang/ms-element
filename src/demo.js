@@ -1,10 +1,10 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
+import routes from './router'
+import App from './Demo.vue'
 import 'element-plus/lib/theme-chalk/index.css'
 import ElementPlus from 'element-plus'
 import '../packages/style/src/theme/index.scss'
-import routes from './route.config.js'
-import App from './App.vue'
 import * as MS from '../packages'
 import axios from './axios'
 
