@@ -54,4 +54,4 @@ devServer: {
   }
 }
 ```
-###  3.访问当然项目启动后地址，如http://localhost:8080/designer/
+###  3.访问当然项目启动后地址，如：http://localhost:8080/designer/

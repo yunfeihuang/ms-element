@@ -26,11 +26,6 @@ module.exports = {
     },
     before (app) {
       MSDevServer(app, path.join(__filename, '../'))
-      /*
-      app.post('/designer-dev-api/generate', function (req, res) {
-        console.log('ddddddd')
-      })
-      */
     }
   },
   pages: {
