@@ -2,7 +2,9 @@
   <div :class="[
     `ms-page-list-layout`,
     {'is-flexbox': msPageList && msPageList.fixedTableHead ? msPageList.fixedTableHead : false}]">
-    <slot name="breadcrumb"></slot>
+    <teleport v-if="$slots['breadcrumb']" :to="breadcrumbTeleportTo">
+      <slot name="breadcrumb"></slot>
+    </teleport>
     <slot name="tabs"></slot>
     <slot name="search"></slot>
     <div class="ms-page-list-layout--table ms-loading-element" :class="{'ms-scroller': isScroll}">
@@ -47,6 +49,10 @@ export default {
     isScroll: {
       type: Boolean,
       default: false
+    },
+    breadcrumbTeleportTo: {
+      type: String,
+      default: '.ms-frame-layout--breadcrumb'
     }
   },
   setup () {

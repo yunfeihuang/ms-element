@@ -1,75 +1,80 @@
 <template>
   <div :class="['ms-frame-layout']">
     <div
-      class="ms-frame-layout--aside"
+      class="ms-frame-layout--sidebar"
       :class="{'is-collapse': isCollapse}"
       :style="{backgroundColor: menuProps ? menuProps.backgroundColor : ''}">
-      <div
-        v-if="$slots['logo']"
-        class="ms-frame-layout--logo">
-        <slot name="logo" v-bind="{isCollapse:isCollapse}"></slot>
-      </div>
-      <div class="ms-frame-layout--menu ms-scroller">
-        <slot v-if="$slots['menu']" name="menu" v-bind="{isCollapse:isCollapse}"></slot>
-        <el-menu
-          v-else
-          class="ms-frame-layout--menus"
-          :collapse="isCollapse"
-          :router="true"
-          :default-active="$route.path"
-          v-bind="menuProps">
-          <template v-for="(item,index) in _menus">
-            <el-submenu
-              v-if="item.options"
-              :index="item.index || item.title"
-              :key="index"
-              popper-class="ms-frame-layout--submenu">
-              <template #title>
-                <template v-if="item.icon">
-                  <div style="display:inline" v-if="item.icon.indexOf('</i>')>-1" v-html="item.icon"></div>
-                  <i v-else :class="item.iconClass || iconClass" v-html="item.icon"></i>
+      <slot v-if="$slots['sidebar']" name="sidebar"></slot>
+      <template v-else>
+        <div
+          v-if="$slots['logo']"
+          class="ms-frame-layout--logo">
+          <slot name="logo" v-bind="{isCollapse:isCollapse}"></slot>
+        </div>
+        <div class="ms-frame-layout--menu ms-scroller">
+          <slot v-if="$slots['menu']" name="menu" v-bind="{isCollapse:isCollapse}"></slot>
+          <el-menu
+            v-else
+            class="ms-frame-layout--menus"
+            :collapse="isCollapse"
+            :router="true"
+            :default-active="$route.path"
+            v-bind="menuProps">
+            <template v-for="(item,index) in _menus">
+              <el-submenu
+                v-if="item.options"
+                :index="item.index || item.title"
+                :key="index"
+                popper-class="ms-frame-layout--submenu">
+                <template #title>
+                  <template v-if="item.icon">
+                    <div style="display:inline" v-if="item.icon.indexOf('</i>')>-1" v-html="item.icon"></div>
+                    <i v-else :class="item.iconClass || iconClass" v-html="item.icon"></i>
+                  </template>
+                  <i v-else :class="item.iconClass || iconClass"></i>
+                  <span>{{item.title}}</span>
                 </template>
-                <i v-else :class="item.iconClass || iconClass"></i>
-                <span>{{item.title}}</span>
-              </template>
-              <el-menu-item v-for="child in item.options"
-                :route="child.route"
-                :index="child.index"
-                :key="child.index">
-                  {{child.title}}
+                <el-menu-item v-for="child in item.options"
+                  :route="child.route"
+                  :index="child.index"
+                  :key="child.index">
+                    {{child.title}}
+                </el-menu-item>
+              </el-submenu>
+              <el-menu-item
+                v-else
+                class="el-submenu__title"
+                :route="item.route"
+                :index="item.index"
+                :key="item.index">
+                  <template v-if="item.icon">
+                    <div style="display:inline" v-if="item.icon.indexOf('</i>')>-1" v-html="item.icon"></div>
+                    <i v-else :class="item.iconClass || iconClass" v-html="item.icon"></i>
+                  </template>
+                  <i v-else :class="item.iconClass || iconClass"></i>
+                  <span>{{item.title}}</span>
               </el-menu-item>
-            </el-submenu>
-            <el-menu-item
-              v-else
-              class="el-submenu__title"
-              :route="item.route"
-              :index="item.index"
-              :key="item.index">
-                <template v-if="item.icon">
-                  <div style="display:inline" v-if="item.icon.indexOf('</i>')>-1" v-html="item.icon"></div>
-                  <i v-else :class="item.iconClass || iconClass" v-html="item.icon"></i>
-                </template>
-                <i v-else :class="item.iconClass || iconClass"></i>
-                <span>{{item.title}}</span>
-            </el-menu-item>
-          </template>
-        </el-menu>
-      </div>
+            </template>
+          </el-menu>
+        </div>
+      </template>
     </div>
-    <div class="ms-frame-layout--content">
+    <div class="ms-frame-layout--main">
       <div class="ms-frame-layout--header">
         <el-row
+          class="ms-frame-layout--navbar"
           type="flex"
           align="middle">
           <i v-if="asideCollapse" title="收起/展开左侧菜单" class="ms-frame-layout--collapse" :class="!isCollapse ? 'el-icon-s-fold': 'el-icon-s-unfold'"  @click="isCollapse=!isCollapse"></i>
-          <template v-if="!$slots['header']">
+          <template v-if="!$slots['navbar']">
             <el-col style="flex:1">
               <slot name="title" v-if="$slots['title']"></slot>
               <div class="ms-frame-layout--title" v-else>{{title}}&nbsp;</div>
+              <div class="ms-frame-layout--breadcrumb"></div>
             </el-col>
-            <slot name="nav"></slot>
+            <slot name="navbar-menu"></slot>
           </template>
-          <slot v-else name="header"></slot>
+          <slot v-else name="navbar"></slot>
         </el-row>
         <div class="ms-frame-layout--tabs" v-if="isTabs && apps.length">
           <el-tabs :modelValue="currentAppIndex + ''" @tab-click="handleTab" editable @edit="handleTabsEdit">
@@ -92,17 +97,17 @@
           </el-dropdown>
         </div>
       </div>
-      <div class="ms-frame-layout--main">
-        <div class="ms-frame-layout--body">
+      <div class="ms-frame-layout--body">
+        <div class="ms-frame-layout--content">
           <slot v-if="$slots['default']" v-bind="{include: keepAliveInclude, routerViewKey: routerViewKey}"></slot>
-          <template v-else>
-            <keep-alive :include="keepAliveInclude" :exclude="keepAliveExclude">
-              <router-view class="ms-frame-layout--slot ms-scroller" ref="routerView" v-if="$route.meta.keepAlive"></router-view>
+          <router-view v-else v-slot="{ Component }" class="ms-frame-layout--slot ms-scroller">
+            <keep-alive v-if="$route.meta.keepAlive" :include="keepAliveInclude" :exclude="keepAliveExclude">
+              <component :is="Component" ></component>
             </keep-alive>
-            <router-view class="ms-frame-layout--slot ms-scroller" :key="routerViewKey" v-if="!$route.meta.keepAlive"></router-view>
-          </template>
+            <component :is="Component" v-if="!$route.meta.keepAlive"></component>
+          </router-view>
         </div>
-        <slot name="sub"></slot>
+        <slot name="subbar"></slot>
       </div>
     </div>
     <slot name="other"></slot>

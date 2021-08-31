@@ -26,7 +26,7 @@
         margin:auto;
       }
     }
-    &--aside{
+    &--sidebar{
       display:flex;
       flex-direction:column;
       width:$frame-layout--aside-width;
@@ -43,7 +43,7 @@
         min-width: 0;
         margin-top:5px;
       }
-    &--content{
+    &--main{
       flex: 1;
       min-width: 0;
       position:relative;
@@ -127,13 +127,13 @@
       vertical-align:middle;
       padding-left:10px;
     }
-    &--body, &--main{
+    &--body, &--content{
       position:relative;
       flex: 1;
       min-width: 0;
       background:$--background-color-base;
     }
-    &--main{
+    &--body{
       display:flex;
     }
     &--menus{

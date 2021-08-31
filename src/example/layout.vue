@@ -6,7 +6,7 @@
       <template v-slot:logo="scope">
         <i :style="`font-size:${scope.isCollapse?14:26}px;font-style:normal;`">LOGO</i>
       </template>
-      <template #nav>
+      <template #navbar-menu>
         <div class="actions">
           <span @click="handleThemeChange">切换菜单栏颜色</span>
           <router-link to="/profile">个人中心</router-link>
