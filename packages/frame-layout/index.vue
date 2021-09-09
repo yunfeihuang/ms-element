@@ -1,6 +1,7 @@
 <template>
-  <div :class="['ms-frame-layout']">
+  <div :class="['ms-frame-layout', {'is-full-screen': fullScreen}]">
     <div
+      v-if="!fullScreen"
       class="ms-frame-layout--sidebar"
       :class="{'is-collapse': isCollapse}"
       :style="{backgroundColor: menuProps ? menuProps.backgroundColor : ''}">
@@ -60,7 +61,7 @@
       </template>
     </div>
     <div class="ms-frame-layout--main">
-      <div class="ms-frame-layout--header">
+      <div class="ms-frame-layout--header" v-if="!fullScreen">
         <el-row
           class="ms-frame-layout--navbar"
           type="flex"
@@ -81,6 +82,7 @@
             <el-tab-pane v-for="(item,index) in apps" :label="item.title" :name="index + ''" :key="index + item.route.path"></el-tab-pane>
           </el-tabs>
           <i class="el-icon-refresh ms-frame-layout--tabs-action" title="刷新" @click="refresh"></i>
+          <i class="el-icon-full-screen ms-frame-layout--tabs-action" @click="handleFullScreen"></i>
           <el-dropdown trigger="click" @command="handleCommand">
             <i class="el-icon-arrow-down ms-frame-layout--tabs-action" title="更多"></i>
             <template #dropdown>
@@ -98,9 +100,9 @@
         </div>
       </div>
       <div class="ms-frame-layout--body">
-        <div class="ms-frame-layout--content">
+        <div class="ms-frame-layout--content ms-scroller">
           <slot v-if="$slots['default']" v-bind="{include: keepAliveInclude, routerViewKey: routerViewKey}"></slot>
-          <router-view v-else v-slot="{ Component }" class="ms-frame-layout--slot ms-scroller">
+          <router-view v-else v-slot="{ Component }" class="ms-frame-layout--slot">
             <keep-alive v-if="$route.meta.keepAlive" :include="keepAliveInclude" :exclude="keepAliveExclude">
               <component :is="Component" ></component>
             </keep-alive>
@@ -201,6 +203,7 @@ export default {
     })
     return {
       apps,
+      fullScreen: false,
       isCollapse: document.ontouchstart !== undefined,
       keepAliveInclude: [],
       routerViewKey: Math.random().toString(36)
@@ -269,6 +272,9 @@ export default {
       this.refreshRoute && this.$router.addRoute(this.refreshRoute)
       this.parseRoute(this.$route)
     }
+    document.addEventListener("fullscreenchange", () => {
+      this.fullScreen = document.fullscreenElement ? true : false
+    })
   },
   methods: {
     parseRoute (value) {
@@ -487,6 +493,10 @@ export default {
           return true
         })
       }
+    },
+    handleFullScreen () {
+      this.fullScreen = true
+      document.body.requestFullscreen && document.body.requestFullscreen()
     }
   }
 }

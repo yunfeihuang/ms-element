@@ -42,7 +42,7 @@ export default {
 </script>
 <style lang="scss">
   .console{
-    background-color:$--background-color-base;
+    background-color:inherit;
     >.el-row{
       >.el-col{
         margin:5px 0;

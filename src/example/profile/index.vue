@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div style="padding:10px;">
+  <div style="padding:10px;">
+    <div>
       <el-tabs v-model="active" type="card" @tab-click="handleTab">
         <el-tab-pane label="资料" name="0"></el-tab-pane>
         <el-tab-pane label="关注" name="1"></el-tab-pane>

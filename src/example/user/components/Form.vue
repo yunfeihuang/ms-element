@@ -18,8 +18,7 @@
       <el-input v-model.trim="form.age"></el-input>
     </el-form-item>
     <el-form-item label="邮箱" prop="email" :rules="[
-      {required: true, message: '请输入邮箱'},
-      validator.rule.email
+      {required: true, message: '请输入邮箱'}
       ]">
       <el-input v-model.trim="form.email"></el-input>
     </el-form-item>

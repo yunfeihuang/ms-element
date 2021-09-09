@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div style="padding:10px;"><router-link :to="{path: '/message'}" replace>返回列表</router-link></div>
+  <div style="padding:10px;">
+    <div><router-link :to="{path: '/message'}" replace>返回列表</router-link></div>
   </div>
 </template>
 

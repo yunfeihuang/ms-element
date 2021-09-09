@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div style="padding:10px;">
+  <div style="padding:10px;">
+    <div>
       <router-link :to="{path: '/message/detail'}" replace>go to message detail</router-link>
     </div>
   </div>

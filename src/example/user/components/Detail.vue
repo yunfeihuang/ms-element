@@ -2,34 +2,34 @@
   <!--v-bind="getFormProps()" @submit.native.prevent="handleSubmit"是必须的-->
   <el-form class="form-primary" label-width="6rem">
     <el-form-item label="头像：" style="margin-bottom:0">
-      <img :src="res.url" class="img-size-large">
+      <img :src="response.url" class="img-size-large">
     </el-form-item>
     <el-form-item label="姓名：" style="margin-bottom:0">
-      {{res.name}}
+      {{response.name}}
     </el-form-item>
     <el-form-item label="性别：" style="margin-bottom:0">
-      {{res.sex}}
+      {{response.sex}}
     </el-form-item>
     <el-form-item label="年龄：" style="margin-bottom:0">
-      {{res.age}}
+      {{response.age}}
     </el-form-item>
     <el-form-item label="邮箱：" style="margin-bottom:0">
-      {{res.email}}
+      {{response.email}}
     </el-form-item>
     <el-form-item label="状态：" style="margin-bottom:0">
-      {{res.state}}
+      {{response.state}}
     </el-form-item>
     <el-form-item label="工作时间：" style="margin-bottom:0">
-      {{res.start_time}}~{{res.end_time}}
+      {{response.start_time}}~{{response.end_time}}
     </el-form-item>
     <el-form-item label="地址：" style="margin-bottom:0">
-      {{res.address}}
+      {{response.address}}
     </el-form-item>
     <el-form-item label="兴趣爱好：" style="margin-bottom:0">
-      {{res.hoppy}}
+      {{response.hoppy}}
     </el-form-item>
     <el-form-item label="个人介绍：" style="margin-bottom:0">
-      {{res.desc}}
+      {{response.desc}}
     </el-form-item>
     <el-form-item v-if="this.msDrawer" label="" style="margin-bottom:0">
       <el-button type="text" @click="handleClose">关闭当前弹框</el-button>
@@ -44,7 +44,7 @@ export default {
   methods: {
     fetch () {
       return new Promise((resolve) => {
-        setTimeout(resolve(this.params || this.$attrs.params), 2000)
+        setTimeout(resolve(this.params || this.$attrs.params || {}), 2000)
       })
     },
     handleClose () {
