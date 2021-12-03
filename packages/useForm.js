@@ -11,7 +11,6 @@ export default function (props, context, option) {
   })
   const form = option.form
   const beforeSubmit = (submit) => {
-    posting.value = true
     submit(form).then(res => {
       const cb = () => {
         msDrawer && msDrawer.handleClose()
@@ -41,6 +40,7 @@ export default function (props, context, option) {
     }
   }
   const handleSubmit = (submit) => {
+    posting.value = true
     RForm.value.validate(valid => {
       if (valid) {
         if (submit) {
@@ -53,6 +53,7 @@ export default function (props, context, option) {
           console.log('submit method null found')
         }
       } else {
+        posting.value = false
         validateFail()
         option.validateError && option.validateError()
       }
@@ -69,21 +70,15 @@ export default function (props, context, option) {
     }
   }
   return {
-    ...useFetch(props, context, () => {
-      if (option.fetch && typeof option.fetch === 'function') {
-        const promise = option.fetch()
-        if (promise && promise.then) {
-          return promise.then(res => {
-            mergeForm(res)
-            return res
-          })
-        }
-      }
-    }),
+    ...useFetch(props, context),
     posting,
     form,
     RForm,
     mergeForm,
+    fetchDone (res) {
+      mergeForm(res)
+      return res
+    },
     getFormProps (props) {
       return Object.assign({
         ref: 'RForm',

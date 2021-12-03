@@ -273,7 +273,7 @@ export default {
       this.parseRoute(this.$route)
     }
     document.addEventListener("fullscreenchange", () => {
-      this.fullScreen = document.fullscreenElement ? true : false
+      this.fullScreen = document.fullscreenElement ? true : false
     })
   },
   methods: {

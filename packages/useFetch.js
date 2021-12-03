@@ -1,12 +1,13 @@
-import { inject, onMounted, ref, watch } from "vue";
+import { inject, onMounted, ref, watch, getCurrentInstance } from "vue";
 
-export default function (props, {emit}, f) {
+export default function (props, {emit}) {
+  let { proxy } = getCurrentInstance()
   const loading = ref(false)
   const response = ref({})
   const msDrawer = inject('msDrawer')
-  const fetch = (option) => {
-    if (f) {
-      const promise = f(option)
+  const beforeFetch = (option) => {
+    if (proxy.fetch) {
+      const promise = proxy.fetch(option)
       if (promise && promise.then) {
         loading.value = true
         return promise.then(res => {
@@ -22,9 +23,17 @@ export default function (props, {emit}, f) {
       return Promise.resolve()
     }
   }
+  const refresh = (option) => {
+    if (proxy.beforeFetch) {
+      return proxy.beforeFetch(option).then(res => {
+        proxy.fetchDone && proxy.fetchDone(res)
+        return res
+      })
+    }
+  }
   onMounted(() => {
     msDrawer && emit('mounted')
-    fetch()
+    proxy.refresh()
   })
   watch(loading.value, val => {
     msDrawer && emit('loading', val)
@@ -32,7 +41,7 @@ export default function (props, {emit}, f) {
   return {
     loading,
     response,
-    fetch,
-    refresh: fetch
+    beforeFetch,
+    refresh
   }
 }

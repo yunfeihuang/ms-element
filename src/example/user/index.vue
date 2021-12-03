@@ -24,7 +24,7 @@
       <el-table
         v-bind="getTableProps()"
         v-on="getTableListeners()"
-        :data="response.data">
+        :data="response && response.data && response.data.data ? response.data.data : []">
         <el-table-column
           type="selection"
           width="58">
@@ -97,7 +97,7 @@
     </template>
     <template #action>
       <el-button size="small">导入</el-button>
-      <el-button :disabled="multipleSelectionAll.length==0" size="small" @click="handleExport">导出</el-button>
+      <el-button size="small" @click="handleExport">导出</el-button>
     </template>
   </ms-page-list-layout>
 </template>
@@ -111,9 +111,9 @@ const List = () => import('./components/List')
 
 export default {
   name: 'user',
-  mixins: [
-    ms.mixins.pageList
-  ],
+  setup (props, context) {
+    return ms.use.pageList(props, context)
+  },
   data () {
     return {
       option: [
@@ -149,12 +149,15 @@ export default {
           }
         }
       ],
-      query: this.getQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象
+      pageData: {
+        total: 0,
+        data: []
+      },
+      query: { // 初始化query查询条件数据，查询表单数据要绑定到query对象
         active: 'first',
         start_time: '',
-        end_time: '',
-        ...this.$route.query
-      }),
+        end_time: ''
+      },
       multipleSelectionProp: 'id' // 设置返回的数据列表唯一标识属性名
     }
   },

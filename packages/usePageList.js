@@ -2,67 +2,38 @@ import { getCurrentInstance, nextTick, onMounted, onUpdated, provide, ref } from
 import { onBeforeRouteUpdate } from "vue-router"
 import useFetch from "./useFetch"
 
-export default function (props, context, _option) {
+export default function (props, context) {
   let { proxy } = getCurrentInstance()
-  let option = Object.assign({
-    history: true,
-    fixedTableHead: true,
-    excludeValue: [null, undefined, '']
-  }, _option)
-  const fixedTableHead = ref(option.fixedTableHead)
-  const query = option.query
-  const $route = proxy.$root.$route
-  if ($route.query.page) {
-    $route.query.page = Number($route.query.page)
-  }
-  if (proxy.$root.$route.query.rows) {
-    $route.query.rows = Number($route.query.rows)
-  }
-  const pagerQuery = {
-    page: 1, 
-    rows: 20
-  }
-  Object.assign(query, proxy.$root.$route.query)
-  Object.keys(pagerQuery).forEach(key => {
-    if (!query[key]) {
-      query[key] = pagerQuery[key]
-    }
-  })
+  const {beforeFetch, ...other } = useFetch(props, context)
+  let isRouterView = false
   const tableBodyHeight = ref(200)
+  
   const filterQuery = query => {
     let result = {...query}
     for (let name in result) {
-      if (option.excludeValue.includes(result[name])) {
+      if ((proxy.excludeValue || [null, undefined, '']).includes(result[name])) {
         delete result[name]
       }
     }
     return result
   }
-  const fetch = (query) => {
+  const beforeFetch2 = () => {
     if (proxy.$el && proxy.$el.parentNode) {
       let node = proxy.$el.parentNode.querySelector('.el-table__body-wrapper')
       node && (node.scrollTop = 0)
     }
-    return option.fetch(query)
+    return beforeFetch(proxy.query)
   }
   const updateRoute = (_query, replace) => { // 更新URL地址
     let query = filterQuery(_query)
-    if (option.history) {
-      if (replace) {
-        proxy.$root.$router.replace({
-          path: proxy.$root.$route.path,
-          params: proxy.$root.$route.params,
-          query
-        })
-      } else {
-        proxy.$root.$router.push({
-          path: proxy.$root.$route.path,
-          params: proxy.$root.$route.params,
-          query
-        })
-      }
+    if (isRouterView) {
+      proxy.$root.$router[replace ? 'replace' : 'push']({
+        path: proxy.$root.$route.path,
+        params: proxy.$root.$route.params,
+        query
+      })
     } else {
-      fetch(query)
+      proxy.beforeFetch && proxy.beforeFetch(query)
     }
   }
   const RSearch = ref(null)
@@ -72,22 +43,22 @@ export default function (props, context, _option) {
       inline: true,
       size: 'small',
       ref: 'RSearch',
-      model: query
+      model: proxy.query
     }, props)
   }
   const handleSubmit = () => {
-    updateRoute.call(this, {...query, page: 1})
+    updateRoute.call(this, {...proxy.query, page: 1})
   }
   const RTable = ref(null)
   const getTableProps = props => { // 获取表格默认props
     return Object.assign({
       ref: 'RTable',
-      height: fixedTableHead.value ? tableBodyHeight.value : undefined,
+      height: proxy.fixedTableHead !== false ? tableBodyHeight.value : undefined,
       size: 'small'
     }, props)
   }
   const indexMethod = (index) => {
-    let result = (query.page - 1) * query.rows + (index + 1)
+    let result = (proxy.query.page - 1) * proxy.query.rows + (index + 1)
     if (result > 999) {
       return '999+'
     }
@@ -108,39 +79,39 @@ export default function (props, context, _option) {
       background: true,
       pageSize: 20,
       currentPage: 1,
-      total: 0,
+      total: proxy.pageData.total,
       pageSizes: [10, 15, 20, 30, 40, 50, 100]
     }, {
-      pageSize: query.rows ? Number(query.rows) : 20,
-      currentPage: query.page ? Number(query.page) : 1
+      pageSize: proxy.query.rows ? Number(proxy.query.rows) : 20,
+      currentPage: proxy.query.page ? Number(proxy.query.page) : 1
     }, props)
   }
   const handleCurrentChange = value => { // 修改页数事件
-    if (value != query.page) { //eslint-disable-line
-      query.page = value
+    if (value != proxy.query.page) { //eslint-disable-line
+      proxy.query.page = value
       updateRoute({
-        ...query,
+        ...proxy.query,
         page: value
       })
     }
   }
   const handleSizeChange = value => { // 修改分页条数事件
-    query.rows = value
+    proxy.query.rows = value
     updateRoute({
-      ...query,
+      ...proxy.query,
       page: 1,
       rows: value
     })
   }
   
   const handleTab = () => {
-    updateRoute.call(this, Object.assign(query, {page: 1}), true)
+    updateRoute.call(this, Object.assign(proxy.query, {page: 1}), true)
   }
   const handleResize = () => {
-    if (fixedTableHead.value) {
+    if (proxy.fixedTableHead !== false) {
       nextTick(() => {
-        if (proxy.$el.parentNode) {
-          const node = proxy.$el.parentNode.querySelector('.ms-page-list-layout--table')
+        const node = proxy.$el.parentNode.querySelector('.ms-page-list-layout--table')
+        if (proxy.$el.parentNode && node) {
           node && (tableBodyHeight.value = node.offsetHeight)
         }
       })
@@ -154,22 +125,38 @@ export default function (props, context, _option) {
       'selection-change': handleSelectionChange
     }
   }
-  onMounted(handleResize)
+  onMounted(() => {
+    const pagerQuery = {
+      page: 1, 
+      rows: 20
+    }
+    Object.keys(pagerQuery).forEach(key => {
+      if (!proxy.query[key]) {
+        proxy.query[key] = pagerQuery[key]
+      }
+    })
+    handleResize()
+  })
   let timer = null
   onBeforeRouteUpdate(to => {
-    timer && clearTimeout(timer)
-    timer = setTimeout(() => {
-      fetch(filterQuery(to.query))
-    }, 100)
+    if (proxy.beforeFetch) {
+      timer && clearTimeout(timer)
+      timer = setTimeout(() => {
+        proxy.beforeFetch(filterQuery(to.query))
+      }, 100)
+    }
   })
+  /*
+  onBeforeRouteEnter((to, from, next) => {
+    isRouterView = true
+    next()
+  })
+  */
   onUpdated(handleResize)
   provide('msPageList', proxy)
   return {
-    ...useFetch(props, context, () => {
-      return fetch(query)
-    }),
-    query,
-    fixedTableHead,
+    ...other,
+    beforeFetch: beforeFetch2,
     RSearch,
     getFormProps,
     handleSubmit,
@@ -181,12 +168,13 @@ export default function (props, context, _option) {
     handleCurrentChange,
     handleSizeChange,
     filterQuery,
-    fetch,
-    refresh () {
-      fetch(query)
-    },
     handleTab,
     handleResize,
-    handleSelectionChange
+    handleSelectionChange,
+    onBeforeRouteEnter: ((to, from, next) => {
+      console.log('onBeforeRouteEnteronBeforeRouteEnteronBeforeRouteEnter')
+      isRouterView = true
+      next()
+    })
   }
 }
