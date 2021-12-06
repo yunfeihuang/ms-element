@@ -45,7 +45,7 @@ export default function (props, context) {
     posting.value = true
     RForm.value.validate(valid => {
       if (valid) {
-        if (submit) {
+        if (submit && typeof submit == 'function') {
           proxy.beforeSubmit ? proxy.beforeSubmit(submit) : beforeSubmit(submit)
         } else if (props.promiseSubmit) {
           proxy.beforeSubmit ? proxy.beforeSubmit(props.promiseSubmit) : beforeSubmit(props.promiseSubmit)
