@@ -1,5 +1,6 @@
+'use strict'
 import { getCurrentInstance, nextTick, onMounted, onUpdated, provide, ref, onUnmounted } from "vue"
-import { onBeforeRouteUpdate} from "vue-router"
+import { onBeforeRouteUpdate } from "vue-router"
 import useFetch from "./useFetch"
 
 export default function (props, context) {
@@ -155,10 +156,13 @@ export default function (props, context) {
         unSelection = proxy.response.data
       }
       unSelection.forEach(item => {
-        // multipleSelectionAll.value = multipleSelectionAll.value.filter(item2 => item2[idKey] != item[idKey])
+        multipleSelectionAll.value = multipleSelectionAll.value.filter(item2 => item2[idKey] != item[idKey])
       })
     }
-    console.log('selection', selection)
+  }
+  const handleClearSelection = () => {
+    multipleSelection.value = multipleSelectionAll.value = []
+    proxy.$refs.RTable.clearSelection()
   }
   const getTableListeners = () => {
     return {
@@ -201,8 +205,6 @@ export default function (props, context) {
     idKey,
     defaultQuery,
     createQuery,
-    multipleSelection,
-    multipleSelectionAll,
     beforeFetch: beforeFetch2,
     RSearch,
     getFormProps,
@@ -218,6 +220,9 @@ export default function (props, context) {
     filterQuery,
     handleTab,
     handleResize,
-    handleSelectionChange
+    multipleSelection,
+    multipleSelectionAll,
+    handleSelectionChange,
+    handleClearSelection
   }
 }

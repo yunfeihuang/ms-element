@@ -11,7 +11,7 @@ export default function (props, context) {
     msDrawer && context.emit('posting', val)
   })
   const beforeSubmit = (submit) => {
-    submit(proxy.form).then(res => {
+    submit(proxy.getFormData ? proxy.getFormData() : proxy.form).then(res => {
       const cb = () => {
         msDrawer && msDrawer.handleClose()
       }
@@ -39,16 +39,17 @@ export default function (props, context) {
       inputs && inputs.length === 1 && inputs[0].focus()
     }
   }
-  const handleSubmit = (submit) => {
+  
+  const validate = submit  => {
     posting.value = true
     RForm.value.validate(valid => {
       if (valid) {
         if (submit) {
-          beforeSubmit(submit)
+          proxy.beforeSubmit ? proxy.beforeSubmit(submit) : beforeSubmit(submit)
         } else if (props.promiseSubmit) {
-          beforeSubmit(props.promiseSubmit)
+          proxy.beforeSubmit ? proxy.beforeSubmit(props.promiseSubmit) : beforeSubmit(props.promiseSubmit)
         } else if (proxy.submit) {
-          beforeSubmit(proxy.submit)
+          proxy.beforeSubmit ? proxy.beforeSubmit(proxy.submit) : beforeSubmit(proxy.submit)
         } else {
           console.log('submit method null found')
         }
@@ -58,6 +59,13 @@ export default function (props, context) {
         proxy.validateError && proxy.validateError()
       }
     })
+  }
+  const handleSubmit = (submit) => {
+    if (proxy.validate) {
+      proxy.validate(submit, validate)
+    } else {
+      validate(submit)
+    }
   }
   const handleReset = () => {
     RForm.value && RForm.value.resetFields()
