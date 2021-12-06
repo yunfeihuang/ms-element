@@ -90,7 +90,8 @@ export default function (props, context) {
     idKey = _idKey
     return {
       type: 'selection',
-      width: 58
+      width: 58,
+      ...props
     }
   }
   const getPaginationProps = (props) => { // 获取分页默认props
@@ -139,7 +140,6 @@ export default function (props, context) {
     }
   }
   const handleSelectionChange = (selection) => {
-    console.log('handleSelectionChange')
     multipleSelection.value = selection
     if (idKey) {
       let unSelection = []

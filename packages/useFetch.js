@@ -42,6 +42,7 @@ export default function (props, {emit}) {
     loading,
     response,
     beforeFetch,
-    refresh
+    refresh,
+    parseResponse
   }
 }

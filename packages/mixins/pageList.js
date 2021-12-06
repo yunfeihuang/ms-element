@@ -38,9 +38,14 @@ export default {
   },
   data () {
     return {
+      idKey: 'id',
       multipleSelectionAll: [], // 全部选中的数据
       multipleSelection: [], // 当前页选中的数据
-      tableBodyHeight: 200
+      tableBodyHeight: 200,
+      defaultQuery: {
+        page: 1,
+        rows: 20
+      }
     }
   },
   watch: {
@@ -95,6 +100,14 @@ export default {
       fn(res)
       return result
     },
+    getSelectionProps (props, _idKey = 'id') {
+      this.idKey = _idKey
+      return {
+        type: 'selection',
+        width: 58,
+        ...props
+      }
+    },
     getIndexColumnProps () {
       return {
         label: '序号',
@@ -110,7 +123,7 @@ export default {
       }
       return result
     },
-    getQuery (query) { // 获取请求参数
+    createQuery (query) { // 获取请求参数
       if (this.params) {
         Object.keys(this.params).forEach(key => {
           if (!query[key]) {
@@ -123,7 +136,7 @@ export default {
           ...query
         }
       }
-      return Object.assign({page: 1, rows: 20}, this.params || {}, this.$route && this.isHistory ? this.$route.query : {}, query)
+      return Object.assign(this.defaultQuery, this.params || {}, this.$route && this.isHistory ? this.$route.query : {}, query)
     },
     queryFilter (query) {
       let result = {...query}
@@ -235,7 +248,7 @@ export default {
       this.updateRoute(this.query)
     },
     handleReset () {
-      this.query = Object.assign({page: 1, rows: 20}, this.$$query)
+      this.query = Object.assign(this.defaultQuery, this.$$query)
       // this.triggerFetch(this.query)
       this.$refs.search && this.$refs.search.resetFields && this.$refs.search.resetFields()
     },
@@ -281,7 +294,7 @@ export default {
   },
   beforeRouteUpdate (to, from, next) { // 监听route地址变化
     if (to.path === from.path) {
-      this.query = Object.assign({}, this.$$query, to.query, {page: to.query.page || 1, rows: to.query.rows || 20})
+      this.query = Object.assign({}, this.$$query, to.query)
       this.triggerFetch(this.query)
     }
     next()

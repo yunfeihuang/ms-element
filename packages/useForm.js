@@ -11,14 +11,15 @@ export default function (props, context) {
     msDrawer && context.emit('posting', val)
   })
   const beforeSubmit = (submit) => {
-    submit(proxy.getFormData ? proxy.getFormData() : proxy.form).then(res => {
+    const form = {...proxy.form}
+    submit(proxy.getFormData ? proxy.getFormData() : form).then(res => {
       const cb = () => {
         msDrawer && msDrawer.handleClose()
       }
       if (props.done) {
-        props.done(cb, res, proxy.form)
+        props.done(cb, res, form)
       } else if (proxy.done){
-        proxy.done(cb, res, proxy.form)
+        proxy.done(cb, res, form)
       } else {
         cb()
       }
