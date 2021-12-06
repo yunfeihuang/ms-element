@@ -3,7 +3,7 @@ import { inject, onMounted, ref, watch, getCurrentInstance } from "vue";
 export default function (props, {emit}) {
   let { proxy } = getCurrentInstance()
   const loading = ref(false)
-  const response = ref({})
+  const response = ref(null)
   const msDrawer = inject('msDrawer')
   const beforeFetch = (option) => {
     if (proxy.fetch) {

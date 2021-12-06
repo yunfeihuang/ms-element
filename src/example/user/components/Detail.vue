@@ -1,6 +1,6 @@
 <template>
   <!--v-bind="getFormProps()" @submit.native.prevent="handleSubmit"是必须的-->
-  <el-form class="form-primary" label-width="6rem">
+  <el-form class="form-primary" label-width="6rem" v-if="response">
     <el-form-item label="头像：" style="margin-bottom:0">
       <img :src="response.url" class="img-size-large">
     </el-form-item>
@@ -40,7 +40,9 @@
 <script>
 import ms from 'ms-element/ms'
 export default {
-  mixins: [ms.mixins.fetch],
+  setup (props, context) {
+    return ms.useFetch(props, context)
+  },
   methods: {
     fetch () {
       return new Promise((resolve) => {

@@ -60,9 +60,9 @@
 <script>
 import ms from 'ms-element/ms'
 export default {
-  mixins: [
-    ms.mixins.form
-  ],
+  setup (props, context) {
+    return ms.useForm(props, context)
+  },
   data () {
     return {
       form: { // 必须使用form来绑定表单数据
@@ -88,6 +88,7 @@ export default {
   methods: {
     fetch () {
       return new Promise((resolve) => {
+        this.form = this.params
         setTimeout(resolve(this.params), 2000)
       })
     },

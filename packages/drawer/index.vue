@@ -138,7 +138,6 @@ export default {
     }
   },
   mounted () {
-    console.log('ddd', this)
     this.visible = true
   },
   methods: {

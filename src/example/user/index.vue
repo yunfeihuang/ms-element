@@ -24,10 +24,10 @@
       <el-table
         v-bind="getTableProps()"
         v-on="getTableListeners()"
-        :data="response && response.data && response.data.data ? response.data.data : []">
+        v-loading="loading"
+        :data="response && response.data ? response.data : []">
         <el-table-column
-          type="selection"
-          width="58">
+          v-bind="getSelectionProps()">
         </el-table-column>
         <el-table-column
           v-bind="getIndexColumnProps()">
@@ -84,7 +84,9 @@
                 <el-dropdown-menu>
                   <el-dropdown-item @click="handleLargeDetail(scope.row)">详情大弹窗</el-dropdown-item>
                   <el-dropdown-item @click="handleCustom(scope.row)">自定义弹框</el-dropdown-item>
+                  <!--
                   <el-dropdown-item @click="handleOpen">iframe弹框</el-dropdown-item>
+                  -->
                   <el-dropdown-item @click="handleOpenComponent">引入组件弹框</el-dropdown-item>
                   <el-dropdown-item @click="$router.push({path: $route.path + '/detail', query: scope.row})">页面式详情</el-dropdown-item>
                   <el-dropdown-item @click="handleDelete">删除</el-dropdown-item>
@@ -112,7 +114,7 @@ const List = () => import('./components/List')
 export default {
   name: 'user',
   setup (props, context) {
-    return ms.use.pageList(props, context)
+    return ms.usePageList(props, context)
   },
   data () {
     return {
@@ -149,15 +151,12 @@ export default {
           }
         }
       ],
-      pageData: {
-        total: 0,
-        data: []
-      },
-      query: { // 初始化query查询条件数据，查询表单数据要绑定到query对象
+      query: this.createQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象
         active: 'first',
         start_time: '',
-        end_time: ''
-      },
+        end_time: '',
+        ...this.$route.query
+      }),
       multipleSelectionProp: 'id' // 设置返回的数据列表唯一标识属性名
     }
   },
@@ -174,7 +173,7 @@ export default {
         let data = []
         for (let i = 0; i < 20; i++) {
           data.push({
-            id: Math.random().toString(),
+            id: (query.page * query.rows + i).toString(),
             date: new Date().toLocaleString(),
             name: `张三${i}`,
             address: `上海市普陀区金沙江路${i}号`,
@@ -191,11 +190,8 @@ export default {
         }
         setTimeout(() => {
           resolve({
-            code: 200,
-            data: {
-              total: 1000,
-              data
-            }
+            total: 1000,
+            data
           })
         }, 1000)
       })
@@ -235,9 +231,9 @@ export default {
     },
     handleCustom (params) {
       const Component = {
-        mixins: [
-          ms.mixins.form
-        ],
+        setup (props, context) {
+          return ms.useForm(props, context)
+        },
         data () {
           return {
             form: {

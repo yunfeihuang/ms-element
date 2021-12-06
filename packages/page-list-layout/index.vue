@@ -31,7 +31,6 @@
         <el-pagination
           v-else
           v-bind="msPageList.getPaginationProps()"
-          :total="msPageList.response.total"
           @current-change="msPageList.handleCurrentChange"
           @size-change="msPageList.handleSizeChange">
         </el-pagination>

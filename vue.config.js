@@ -85,7 +85,10 @@ module.exports = {
         "mixins/fetch.js": "./packages/mixins/fetch.js",
         "mixins/form.js": "./packages/mixins/form.js",
         "mixins/pageList.js": "./packages/mixins/pageList.js",
-        "mixins/index.js": "./packages/mixins/index.js"
+        "mixins/index.js": "./packages/mixins/index.js",
+        "useFetch.js": "./packages/useFetch.js",
+        "useForm.js": "./packages/useForm.js",
+        "usePageList.js": "./packages/usePageList.js"
       }
       var ComponentsPath = './packages'
       const files = fs.readdirSync(ComponentsPath)

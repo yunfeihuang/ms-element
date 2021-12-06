@@ -1,24 +1,24 @@
 'use strict'
-import { inject, ref, watch } from 'vue'
+import { inject, ref, watch, getCurrentInstance } from 'vue'
 import useFetch from './useFetch'
 
-export default function (props, context, option) {
+export default function (props, context) {
+  let { proxy } = getCurrentInstance()
   const RForm = ref(null)
   const posting = ref(false)
   const msDrawer = inject('msDrawer')
   watch(posting.value, val => {
     msDrawer && context.emit('posting', val)
   })
-  const form = option.form
   const beforeSubmit = (submit) => {
-    submit(form).then(res => {
+    submit(proxy.form).then(res => {
       const cb = () => {
         msDrawer && msDrawer.handleClose()
       }
       if (props.done) {
-        props.done(cb, res, form)
-      } else if (option.done){
-        option.done(cb, res, form)
+        props.done(cb, res, proxy.form)
+      } else if (proxy.done){
+        proxy.done(cb, res, proxy.form)
       } else {
         cb()
       }
@@ -47,15 +47,15 @@ export default function (props, context, option) {
           beforeSubmit(submit)
         } else if (props.promiseSubmit) {
           beforeSubmit(props.promiseSubmit)
-        } else if (option.submit) {
-          beforeSubmit(option.submit)
+        } else if (proxy.submit) {
+          beforeSubmit(proxy.submit)
         } else {
           console.log('submit method null found')
         }
       } else {
         posting.value = false
         validateFail()
-        option.validateError && option.validateError()
+        proxy.validateError && proxy.validateError()
       }
     })
   }
@@ -64,25 +64,20 @@ export default function (props, context, option) {
   }
   const mergeForm = (data) => {
     if (data && typeof data === 'object') {
-      Object.keys(form).forEach(key => {
-        form[key] = data[key]
+      Object.keys(proxy.form).forEach(key => {
+        proxy.form[key] = data[key]
       })
     }
   }
   return {
     ...useFetch(props, context),
     posting,
-    form,
     RForm,
     mergeForm,
-    fetchDone (res) {
-      mergeForm(res)
-      return res
-    },
     getFormProps (props) {
       return Object.assign({
         ref: 'RForm',
-        model: form,
+        model: proxy.form,
         labelWidth: '100px'
       }, props)
     },
