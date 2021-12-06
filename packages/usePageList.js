@@ -17,7 +17,7 @@ export default function (props, context) {
   }
   const createQuery = query => {
     let result = defaultQuery
-    this.params && Object.assign(result, this.params)
+    proxy.params && Object.assign(result, proxy.params)
     query && Object.assign(result, query)
     return result
   }
@@ -59,8 +59,11 @@ export default function (props, context) {
       model: proxy.query
     }, props)
   }
+  const handleReset = () => {
+    proxy.$refs.RSearch && proxy.$refs.RSearch.handleReset && proxy.$refs.RSearch.handleReset()
+  }
   const handleSubmit = () => {
-    updateRoute.call(this, {...proxy.query, page: 1})
+    updateRoute.call(proxy, {...proxy.query, page: 1})
   }
   const RTable = ref(null)
   const getTableProps = props => { // 获取表格默认props
@@ -127,7 +130,7 @@ export default function (props, context) {
   }
   
   const handleTab = () => {
-    updateRoute.call(this, Object.assign(proxy.query, {page: 1}), true)
+    updateRoute.call(proxy, Object.assign(proxy.query, {page: 1}), true)
   }
   const handleResize = () => {
     if (proxy.fixedTableHead !== false) {
@@ -160,6 +163,7 @@ export default function (props, context) {
       })
     }
   }
+  
   const handleClearSelection = () => {
     multipleSelection.value = multipleSelectionAll.value = []
     proxy.$refs.RTable.clearSelection()
@@ -209,6 +213,7 @@ export default function (props, context) {
     RSearch,
     getFormProps,
     handleSubmit,
+    handleReset,
     RTable,
     getTableProps,
     getTableListeners,

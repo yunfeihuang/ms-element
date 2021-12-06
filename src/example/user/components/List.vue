@@ -15,10 +15,10 @@
       <template #table>
         <el-table
           v-bind="getTableProps()"
-          v-on="getTableListeners()">
+          v-on="getTableListeners()"
+          :data="response ? response.data : []">
           <el-table-column
-            type="selection"
-            width="58">
+            v-bind="getSelectionProps()">
           </el-table-column>
           <el-table-column
             v-bind="getIndexColumnProps()">
@@ -71,9 +71,9 @@
 import ms from 'ms-element/ms'
 const Form = () => import('./Form')
 export default {
-  mixins: [
-    ms.mixins.pageList
-  ],
+  setup (props, context) {
+    return ms.usePageList(props, context)
+  },
   props: {
     history: {
       default: false
@@ -81,7 +81,7 @@ export default {
   },
   data () {
     return {
-      query: this.getQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象
+      query: this.createQuery({ // 初始化query查询条件数据，查询表单数据要绑定到query对象
         keyword: '',
         status: [],
         start: null,
@@ -123,11 +123,8 @@ export default {
         }
         setTimeout(() => {
           resolve({
-            code: 200,
-            data: {
-              count: 1000,
-              data
-            }
+            total: 1000,
+            data
           })
         }, 1000)
       })

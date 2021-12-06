@@ -1,6 +1,7 @@
 <template>
   <el-form
     class="ms-search-form"
+    ref="form"
     v-bind="!isCollapse ? {...$props} : { ...$props, class: 'ms-search-form--layout', labelWidth:'80px', inline: false}">
     <div class="ms-search-form--prepend" v-if="$slots['prepend']">
       <slot name="prepend"></slot>
@@ -71,7 +72,7 @@ export default {
     },
     resetText: {
       type: String,
-      default: '重置'
+      default: '清空'
     }
   },
   computed: {
@@ -102,6 +103,9 @@ export default {
     this.$nextTick(this.handleResize)
   },
   methods: {
+    handleReset () {
+      this.$refs.form && this.$refs.form.resetFields && this.$refs.form.resetFields()
+    },
     handleResize () {
       this.$resizeTimer && clearTimeout(this.$resizeTimer)
       this.$resizeTimer = setTimeout(() => {

@@ -88,7 +88,9 @@ export default {
   methods: {
     fetch () {
       return new Promise((resolve) => {
-        this.form = this.params
+        if (this.params) {
+          this.form = this.params
+        }
         setTimeout(resolve(this.params), 2000)
       })
     },

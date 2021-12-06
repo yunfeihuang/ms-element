@@ -2,7 +2,6 @@
   <ms-page-list-layout>
     <template #search>
       <ms-search-form
-        :search-slots="option.map(item => item.prop)"
         v-bind="getFormProps()"
         @submit.prevent="handleSubmit">
         <template #prepend>
@@ -83,8 +82,8 @@
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item @click="handleLargeDetail(scope.row)">详情大弹窗</el-dropdown-item>
-                  <el-dropdown-item @click="handleCustom(scope.row)">自定义弹框</el-dropdown-item>
                   <!--
+                  <el-dropdown-item @click="handleCustom(scope.row)">自定义弹框</el-dropdown-item>
                   <el-dropdown-item @click="handleOpen">iframe弹框</el-dropdown-item>
                   -->
                   <el-dropdown-item @click="handleOpenComponent">引入组件弹框</el-dropdown-item>
@@ -106,6 +105,7 @@
 
 <script>
 import ms from 'ms-element/ms'
+import { defineComponent } from '@vue/runtime-core'
 const Form = () => import('./components/Form')
 const Detail = () => import('./components/Detail')
 const List = () => import('./components/List')
@@ -264,9 +264,6 @@ export default {
       ms.navigator.push(this, Component, {
         params,
         title: '详情',
-        titleSlot: {
-          template: '<div>custom title</div>'
-        },
         done (cb) {
           // ms.navigator.pop(self)
           cb()
