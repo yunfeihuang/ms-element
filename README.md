@@ -54,4 +54,6 @@ devServer: {
   }
 }
 ```
-###  3.访问当然项目启动后地址，如：http://localhost:8080/designer/
+###  3.访问当前项目启动后地址，如：http://localhost:8080/designer/
+
+###  4.登录进去可以创建自己的项目并设计列表页面
