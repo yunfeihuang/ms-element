@@ -1,5 +1,6 @@
 <template>
   <el-form
+    v-if="msPageList"
     class="ms-search-form"
     ref="form"
     v-bind="!isCollapse ? {...$props} : { ...$props, class: 'ms-search-form--layout', labelWidth:'80px', inline: false}">

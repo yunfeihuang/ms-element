@@ -1,5 +1,4 @@
-'use strict'
-import { getCurrentInstance, nextTick, onMounted, onUpdated, provide, ref, onUnmounted } from "vue"
+import { nextTick, onMounted, onUpdated, provide, ref, onUnmounted, getCurrentInstance} from "vue"
 import { onBeforeRouteUpdate } from "vue-router"
 import useFetch from "./useFetch"
 
@@ -17,7 +16,7 @@ export default function (props, context) {
   }
   const createQuery = query => {
     let result = defaultQuery
-    proxy.params && Object.assign(result, proxy.params)
+    props && props.params && Object.assign(result, props.params)
     query && Object.assign(result, query)
     return result
   }
@@ -56,7 +55,7 @@ export default function (props, context) {
       inline: true,
       size: 'small',
       ref: 'RSearch',
-      model: proxy.query
+      model: proxy ? proxy.query : null
     }, props)
   }
   const handleReset = () => {
@@ -69,7 +68,7 @@ export default function (props, context) {
   const getTableProps = props => { // 获取表格默认props
     return Object.assign({
       ref: 'RTable',
-      height: proxy.fixedTableHead !== false ? tableBodyHeight.value : undefined,
+      height: proxy && proxy.fixedTableHead !== false ? tableBodyHeight.value : undefined,
       size: 'small'
     }, props)
   }
@@ -104,11 +103,11 @@ export default function (props, context) {
       background: true,
       pageSize: 20,
       currentPage: 1,
-      total: proxy.response ? proxy.response.total : 0,
+      total: proxy && proxy.response ? proxy.response.total : 0,
       pageSizes: [10, 15, 20, 30, 40, 50, 100]
     }, {
-      pageSize: proxy.query.rows ? Number(proxy.query.rows) : 20,
-      currentPage: proxy.query.page ? Number(proxy.query.page) : 1
+      pageSize: proxy && proxy.query.rows ? Number(proxy.query.rows) : 20,
+      currentPage: proxy && proxy.query.page ? Number(proxy.query.page) : 1
     }, props)
   }
   const handleCurrentChange = value => { // 修改页数事件

@@ -1,5 +1,4 @@
-'use strict'
-import { inject, ref, watch, getCurrentInstance } from 'vue'
+import { inject, ref, watch, getCurrentInstance} from 'vue'
 import useFetch from './useFetch'
 
 export default function (props, context) {
@@ -86,7 +85,7 @@ export default function (props, context) {
     getFormProps (props) {
       return Object.assign({
         ref: 'RForm',
-        model: proxy.form,
+        model: proxy ? proxy.form : null,
         labelWidth: '100px'
       }, props)
     },

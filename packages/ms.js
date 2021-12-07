@@ -1,4 +1,3 @@
-'use strict'
 import navigator from './navigator'
 import mixins from './mixins'
 import useFetch from './useFetch'

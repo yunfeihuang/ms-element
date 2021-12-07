@@ -82,13 +82,13 @@ module.exports = {
         "ms": "./packages/ms.js",
         "navigator": "./packages/navigator.js",
         "restful": "./packages/restful.js",
-        "mixins/fetch.js": "./packages/mixins/fetch.js",
-        "mixins/form.js": "./packages/mixins/form.js",
-        "mixins/pageList.js": "./packages/mixins/pageList.js",
-        "mixins/index.js": "./packages/mixins/index.js",
-        "useFetch.js": "./packages/useFetch.js",
-        "useForm.js": "./packages/useForm.js",
-        "usePageList.js": "./packages/usePageList.js"
+        "mixins/fetch": "./packages/mixins/fetch.js",
+        "mixins/form": "./packages/mixins/form.js",
+        "mixins/pageList": "./packages/mixins/pageList.js",
+        "mixins/index": "./packages/mixins/index.js",
+        "useFetch": "./packages/useFetch.js",
+        "useForm": "./packages/useForm.js",
+        "usePageList": "./packages/usePageList.js"
       }
       var ComponentsPath = './packages'
       const files = fs.readdirSync(ComponentsPath)
@@ -104,6 +104,7 @@ module.exports = {
       config.externals = {
         vue: 'vue',
         'element-plus': 'element-plus',
+        'vue-router': 'vue-router',
         ...config.externals
       }
       config.output.filename = '[name].js'

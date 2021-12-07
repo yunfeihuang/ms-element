@@ -12,7 +12,7 @@
     </div>
     <el-row type="flex" align="middle" class="ms-page-list-layout--footer">
       <div v-if="$slots['action']">
-        <template v-if="msPageList.multipleSelectionAll && msPageList.multipleSelectionAll.length">
+        <template v-if="msPageList && msPageList.multipleSelectionAll && msPageList.multipleSelectionAll.length">
           已选
           <el-tooltip content="点击清空选中" placement="top-start">
             <a @click="msPageList.handleClearSelection" class="link">({{msPageList.multipleSelectionAll.length}})</a>

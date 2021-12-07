@@ -105,7 +105,6 @@
 
 <script>
 import ms from 'ms-element/ms'
-import { defineComponent } from '@vue/runtime-core'
 const Form = () => import('./components/Form')
 const Detail = () => import('./components/Detail')
 const List = () => import('./components/List')
