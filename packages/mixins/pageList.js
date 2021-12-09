@@ -262,7 +262,7 @@ export default {
       // this.triggerFetch(this.query)
       this.$refs.search && this.$refs.search.handleReset && this.$refs.search.handleReset()
     },
-    handleSortChange ({prop, order }) {
+    handleSortChange ({prop, order}) {
       this.query.page = 1
       if (order) {
         this.query.sort_prop = prop

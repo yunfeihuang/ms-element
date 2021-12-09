@@ -124,6 +124,11 @@ export default {
     importComponent () {
       this.loadComponent()
     },
+    component () {
+      this.$nextTick(() => {
+        this.handleMounted()
+      })
+    },
     $route (val, oldVal) {
       if (val.path !== oldVal.path) {
         this.visible = false
@@ -142,6 +147,9 @@ export default {
   },
   mounted () {
     this.visible = true
+    if (this.target && this.target.$popups) {
+      this.target.$popups.push(this) // eslint-disable-line
+    }
   },
   methods: {
     handleLoading (value) {
@@ -149,9 +157,6 @@ export default {
         this.loadingDone = null
       }
       this.loading = value
-      this.$nextTick(() => {
-        this.handleMounted()
-      })
     },
     handlePosting (value) {
       this.loading = value

@@ -25,6 +25,7 @@ export default {
     titleSlot,
     footerSlot
   }) {
+    let self = this
     if (!context.$popups) {
       context.$popups = []
     }
@@ -38,10 +39,10 @@ export default {
     }
     customClass && classnames.push(customClass)
     if (!done) {
-      if (context.query && context.pageData && context.getTableProps) {
+      if (context.query && context.getTableProps) {
         done = () => {
-          this.pop(context)
-          context.beforeFetch && context.beforeFetch()
+          self.pop(context)
+          context.beforeFetch && context.beforeFetch(context.query)
         }
       }
     }
@@ -87,13 +88,10 @@ export default {
           let vm = context.$popups.pop()
           vm.$destroy && vm.$destroy()
         }
-      },
-      ref: 'drawer'
+      }
     })
-    // let vm = createVNode('div', {}, ['aaa'])
     vm.appContext = context.$root.$.appContext.app._context
     render(vm, el)
-    context.$popups.push(vm)
   },
   replace (context, importComponent, {
     title,
@@ -114,7 +112,7 @@ export default {
   },
   pop (context) {
     if (context.$popups.length) {
-      context.$popups[context.$popups.length - 1].$refs.drawer.handleClose()
+      context.$popups.pop().handleClose()
     }
   }
 }

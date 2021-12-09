@@ -1,7 +1,7 @@
 <template>
   <div :class="[
     `ms-page-list-layout`,
-    {'is-flexbox': msPageList ? msPageList.fixedTableHead : false}]">
+    {'is-flexbox': msPageList ? msPageList.fixedTableHead !== false : false}]">
     <teleport v-if="$slots['breadcrumb']" :to="breadcrumbTeleportTo">
       <slot name="breadcrumb"></slot>
     </teleport>
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { inject } from '@vue/runtime-core'
+import {inject} from 'vue'
 export default {
   name: 'MsPageListLayout',
   props: {

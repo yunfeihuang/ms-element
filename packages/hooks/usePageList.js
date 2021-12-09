@@ -53,7 +53,7 @@ export default function (props, context) {
     return Object.assign({
       novalidate: 'novalidate',
       inline: true,
-      size: 'small',
+      size: this.getSize ? this.getSize(800) : undefined,
       ref: 'RSearch',
       model: proxy ? proxy.query : null
     }, props)
@@ -69,7 +69,11 @@ export default function (props, context) {
     return Object.assign({
       ref: 'RTable',
       height: proxy && proxy.fixedTableHead !== false ? tableBodyHeight.value : undefined,
-      size: 'small'
+      size: proxy.getSize ? proxy.getSize() : undefined,
+      defaultSort: proxy.query && proxy.query.sort_order ? {
+        prop: proxy.query.sort_prop, 
+        order: proxy.query.sort_order
+      } : {}
     }, props)
   }
   const indexMethod = (index) => {
@@ -167,9 +171,21 @@ export default function (props, context) {
     multipleSelection.value = multipleSelectionAll.value = []
     proxy.$refs.RTable.clearSelection()
   }
+  const handleSortChange = ({prop, order}) => {
+    proxy.query.page = 1
+    if (order) {
+      proxy.query.sort_prop = prop
+      proxy.query.sort_order = order
+    } else {
+      delete proxy.query.sort_prop
+      delete proxy.query.sort_order
+    }
+    updateRoute.call(proxy, proxy.query)
+  }
   const getTableListeners = () => {
     return {
-      'selection-change': handleSelectionChange
+      'selection-change': handleSelectionChange,
+      'sort-change': handleSortChange
     }
   }
   

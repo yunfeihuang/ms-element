@@ -11,7 +11,6 @@ export default {
     }
   },
   mounted () {
-    this.$emit('mounted')
     this.beforeFetch && this.beforeFetch(this.query)
   },
   methods: {

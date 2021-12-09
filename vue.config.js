@@ -86,9 +86,10 @@ module.exports = {
         "mixins/form": "./packages/mixins/form.js",
         "mixins/pageList": "./packages/mixins/pageList.js",
         "mixins/index": "./packages/mixins/index.js",
-        "useFetch": "./packages/useFetch.js",
-        "useForm": "./packages/useForm.js",
-        "usePageList": "./packages/usePageList.js"
+        "hooks/index": "./packages/hooks/index.js",
+        "hooks/useFetch": "./packages/hooks/useFetch.js",
+        "hooks/useForm": "./packages/hooks/useForm.js",
+        "hooks/usePageList": "./packages/hooks/usePageList.js"
       }
       var ComponentsPath = './packages'
       const files = fs.readdirSync(ComponentsPath)
@@ -102,7 +103,8 @@ module.exports = {
       config.entry = Components
 
       config.externals = {
-        vue: 'vue',
+        'vue': 'vue',
+        'axios': 'axios',
         'element-plus': 'element-plus',
         'vue-router': 'vue-router',
         ...config.externals
