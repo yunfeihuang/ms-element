@@ -34,8 +34,8 @@
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         value-format="timestamp"
-        :value="form.start_time ? [form.start_time, form.end_time] : null"
-        @input="handleDateRangeInput"></el-date-picker>
+        :model-value="form.start_time ? [form.start_time, form.end_time] : null"
+        @calendar-change="handleArrayChange"></el-date-picker>
     </el-form-item>
     <el-form-item label="兴趣爱好">
       <el-checkbox-group v-model="form.hoppy">
@@ -60,9 +60,7 @@
 <script>
 import ms from 'ms-element/ms'
 export default {
-  setup (props, context) {
-    return ms.useForm(props, context)
-  },
+  mixins: [ms.mixins.form],
   data () {
     return {
       form: { // 必须使用form来绑定表单数据

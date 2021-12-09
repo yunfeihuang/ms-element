@@ -71,9 +71,7 @@
 import ms from 'ms-element/ms'
 const Form = () => import('./Form')
 export default {
-  setup (props, context) {
-    return ms.usePageList(props, context)
-  },
+  mixins: [ms.mixins.pageList],
   props: {
     history: {
       default: false

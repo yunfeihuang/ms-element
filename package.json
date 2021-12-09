@@ -1,6 +1,6 @@
 {
   "name": "ms-element",
-  "version": "3.0.4-alpha",
+  "version": "3.0.5-alpha",
   "description": "A Component Library for Vue.js",
   "author": "黄运飞 <yunfei.huang@qq.com>",
   "main": "lib/index.js",
@@ -9,7 +9,8 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "build:theme": "gulp build --gulpfile packages/style/gulpfile.js",
-    "build:component": "vue-cli-service build --mode component"
+    "build:component": "vue-cli-service build --mode component",
+    "build:release": "npm run build:component && npm run build:theme"
   },
   "files": [
     "lib"

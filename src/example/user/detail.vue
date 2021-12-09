@@ -8,9 +8,7 @@
 import ms from 'ms-element/ms'
 import Detail from './components/Detail'
 export default {
-  setup (props, context) {
-    return ms.useFetch(props, context)
-  },
+  mixins: [ms.mixins.fetch],
   components: {
     Detail
   }

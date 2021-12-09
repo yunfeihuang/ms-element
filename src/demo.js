@@ -8,24 +8,18 @@ import '../packages/style/src/theme/index.scss'
 import * as MS from '../packages'
 import axios from './axios'
 
-const $createApp = (...args) => {
-  const app = createApp(...args).use(ElementPlus, {
-    inputNumber: {
-      'controls-position': 'right'
-    }
-  }).use(MS)
-  app.config.performance = true
-  app.config.globalProperties.$axios = axios
-  return app
-}
-
-const app = $createApp(App).use(createRouter({
+const app = createApp(App).use(ElementPlus, {
+  inputNumber: {
+    'controls-position': 'right'
+  }
+}).use(MS).use(createRouter({
   history: createWebHashHistory(),
   routes: routes
 }))
-
+app.config.performance = true
+app.config.globalProperties.$axios = axios
+console.log('app', app)
 window.$app = app.mount('#app')
-window.$createApp = $createApp
 
 let initRootFontSize = function () {
   let width = window.innerWidth

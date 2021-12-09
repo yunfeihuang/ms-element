@@ -40,9 +40,7 @@
 <script>
 import ms from 'ms-element/ms'
 export default {
-  setup (props, context) {
-    return ms.useFetch(props, context)
-  },
+  mixins: [ms.mixins.fetch],
   methods: {
     fetch () {
       return new Promise((resolve) => {
@@ -50,7 +48,7 @@ export default {
       })
     },
     handleClose () {
-      this.msDrawer && ms.navigator.pop(this.msDrawer.target)
+      this.$emit('close')
     }
   },
   mounted () {

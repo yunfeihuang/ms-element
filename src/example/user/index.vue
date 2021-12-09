@@ -3,7 +3,8 @@
     <template #search>
       <ms-search-form
         v-bind="getFormProps()"
-        @submit.prevent="handleSubmit">
+        @submit.prevent="handleSubmit"
+        @create="handleCreate()">
         <template #prepend>
           <el-tabs v-model="query.active" type="card" @tab-click="handleTab">
             <el-tab-pane label="黄金" name="first"></el-tab-pane>
@@ -16,7 +17,6 @@
             <component :is="item.component || 'el-input'" v-model="query[item.prop]" clearable></component>
           </el-form-item>
         </template>
-        <el-button size="small" @click="handleCreate()">创建</el-button>
       </ms-search-form>
     </template>
     <template #table>
@@ -38,6 +38,8 @@
           </template>
         </el-table-column>
         <el-table-column
+          sortable
+          prop="name"
           label="姓名">
           <template v-slot="scope">
             {{scope.row.name}}
@@ -112,9 +114,7 @@ const List = () => import('./components/List')
 
 export default {
   name: 'user',
-  setup (props, context) {
-    return ms.usePageList(props, context)
-  },
+  mixins: [ms.mixins.pageList],
   data () {
     return {
       option: [
@@ -155,8 +155,7 @@ export default {
         start_time: '',
         end_time: '',
         ...this.$route.query
-      }),
-      multipleSelectionProp: 'id' // 设置返回的数据列表唯一标识属性名
+      })
     }
   },
   methods: {
@@ -230,9 +229,7 @@ export default {
     },
     handleCustom (params) {
       const Component = {
-        setup (props, context) {
-          return ms.useForm(props, context)
-        },
+        mixins: [ms.mixins.form],
         data () {
           return {
             form: {
