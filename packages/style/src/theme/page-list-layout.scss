@@ -42,6 +42,11 @@
         &:before{
           display: none;
         }
+        .el-button--text{
+          padding:0;
+          min-height: 0;
+          height:auto
+        }
         td, th{
           padding: 8px 0;
         }

@@ -13,6 +13,14 @@ export default {
     params: {
       type: Object
     },
+    defaultQuery: {
+      default () {
+        return {
+          page: 1,
+          rows: 20
+        }
+      }
+    },
     fixedTableHead: {
       type: Boolean,
       default () {
@@ -26,11 +34,6 @@ export default {
       }
     }
   },
-  computed: {
-    isHistory () {
-      return this.isRouterView || this.history
-    }
-  },
   beforeRouteEnter (to, from, next) {
     next(vm => {
       vm.isRouterView = true
@@ -41,33 +44,35 @@ export default {
       idKey: 'id',
       multipleSelectionAll: [], // 全部选中的数据
       multipleSelection: [], // 当前页选中的数据
-      tableBodyHeight: 200,
-      defaultQuery: {
-        page: 1,
-        rows: 20
-      }
+      tableBodyHeight: 200
     }
   },
   watch: {
-    pageData (value) { // 监听pageData更新列表选中的数据
-      if (this.multipleSelectionProp && value && value.data && value.data.filter) {
-        let multipleSelectionId = this.multipleSelectionAll.map(item => item[this.multipleSelectionProp])
-        let multipleSelection = value.data.filter(item => {
-          return multipleSelectionId.indexOf(item[this.multipleSelectionProp]) > -1
-        })
-        this.$$disabledSelectionChange = true
-        this.$nextTick(() => {
-          multipleSelection.forEach(item => {
-            this.$refs.table && this.$refs.table.toggleRowSelection(item, true)
+    $route: {
+      handler (value, oldValue) {
+        if (this.isRouterView && oldValue && oldValue.path == value.path) {
+          this.query = Object.assign({}, value.query)
+          this.triggerFetch(this.query)
+        }
+      },
+      deep: true
+    },
+    response (value) { // 监听response更新列表选中的数据
+      this.$nextTick(() => {
+        const idKey = this.idKey
+        if (this.multipleSelectionAll.length && value && value.data && value.data.length) {
+          let ids = this.multipleSelectionAll.map(item => item[idKey])
+          value.data.forEach((row) => {
+            ids.includes(row[idKey]) && this.$refs.table.toggleRowSelection(row)
           })
-        })
-        setTimeout(() => {
-          this.$$disabledSelectionChange = false
-        }, 500)
-      }
+        }
+      })
     }
   },
   mounted () {
+    if (this.$parent && this.$parent.$options && this.$parent.$options.name && ['keepalive', 'routerview'].includes(this.$parent.$options.name.toLocaleLowerCase())) {
+      this.isRouterView = true
+    }
     this.handleResize()
     window.addEventListener('resize', this.handleResize, false)
   },
@@ -84,9 +89,11 @@ export default {
         this.beforeFetch && this.beforeFetch(query)
       })
     },
+    /*
     fetch (query) { // 需要被重写并返回Promise， 初始化会执行，路由参数变化也会执行
       console.log(query)
     },
+    */
     parseResponse (res) {
       let result = res
       const fn = (obj) => {
@@ -100,20 +107,23 @@ export default {
       fn(res)
       return result
     },
-    getSelectionProps (props, _idKey = 'id') {
-      this.idKey = _idKey
+    getSelectionProps (props, idKey) {
+      if (idKey) {
+        this.idKey = idKey
+      }
       return {
         type: 'selection',
         width: 58,
         ...props
       }
     },
-    getIndexColumnProps () {
+    getIndexColumnProps (props) {
       return {
         label: '序号',
         type: 'index',
         className: 'el-table-column--index',
-        index: this.indexMethod
+        index: this.indexMethod,
+        ...props
       }
     },
     indexMethod (index) {
@@ -123,7 +133,7 @@ export default {
       }
       return result
     },
-    createQuery (query) { // 获取请求参数
+    createQuery (query = {}) { // 获取请求参数
       if (this.params) {
         Object.keys(this.params).forEach(key => {
           if (!query[key]) {
@@ -131,16 +141,14 @@ export default {
           }
         })
       }
-      if (!this.$$query && query) { // 保存初始化查询对象
-        this.$$query = {
-          ...query
-        }
-      }
-      return Object.assign(this.defaultQuery, this.params || {}, this.$route && this.isHistory ? this.$route.query : {}, query)
+      return Object.assign(this.defaultQuery, query)
     },
     queryFilter (query) {
       let result = {...query}
       for (let name in result) {
+        if (['page', 'rows'].includes(name)){
+          result[name] = Number(result[name])
+        }
         if (this.excludeValue.includes(result[name])) {
           delete result[name]
         }
@@ -154,7 +162,7 @@ export default {
         background: true,
         pageSize: 20,
         currentPage: 1,
-        total: 0,
+        total: this.response ? this.response.total : 0,
         pageSizes: [10, 15, 20, 30, 40, 50, 100]
       }
       if (this.query) {
@@ -172,7 +180,12 @@ export default {
       return Object.assign({
         ref: 'table',
         class: 'table-primary',
-        height: !this.fixedTableHead ? undefined : this.tableBodyHeight
+        size: this.getSize ? this.getSize() : undefined,
+        height: !this.fixedTableHead ? undefined : this.tableBodyHeight,
+        defaultSort: this.query && this.query.sort_order ? {
+          prop: this.query.sort_prop, 
+          order: this.query.sort_order
+        } : {}
       }, props)
     },
     getTableListeners () {
@@ -185,36 +198,33 @@ export default {
       return Object.assign({
         novalidate: 'novalidate',
         inline: true,
-        size: 'small',
+        size: this.getSize ? this.getSize(800) : undefined,
         ref: 'search',
         model: this.query
       }, props)
     },
     handleTab () {
       let query = this.queryFilter(Object.assign(this.query, {page: 1}))
-      if (this.isHistory) {
+      if (this.isRouterView) {
         this.$router.replace({
           path: this.$route.path,
           query
         })
       } else {
-        this.query = query
-        this.triggerFetch(query)
+        this.query = this.queryFilter(query)
+        this.triggerFetch({...this.query})
       }
     },
-    handleRangeInput (value, keys = ['start_time', 'end_time']) {
-      if (value && value[0]) {
-        this.query[keys[0]] = value[0]
-        this.query[keys[1]] = value[1]
+    handleArrayChange (value, keys = ['start_time', 'end_time']) {
+      if (value && value.length) {
+        keys.forEach((item, index) => {
+          this.query[item] = value[index]
+        })
       } else {
         keys.forEach(item => {
           this.query[item] = null
         })
       }
-    },
-    handleClearSelection () {
-      this.$refs.table && this.$refs.table.clearSelection && this.$refs.table.clearSelection()
-      this.multipleSelection = this.multipleSelectionAll = []
     },
     handleResize () {
       this.$nextTick(() => {
@@ -235,11 +245,12 @@ export default {
       this.updateRoute && this.updateRoute(query)
     },
     updateRoute (query) { // 更新URL地址
-      if (this.isHistory) {
-        this.$router.push({path: this.$route.path, query: this.queryFilter(query)})
+      query = this.queryFilter(query)
+      if (this.isRouterView) {
+        this.$router.push({path: this.$route.path, query})
       } else {
-        this.query = this.queryFilter(query)
-        this.triggerFetch(this.queryFilter(query))
+        this.query = query
+        this.triggerFetch({...query})
       }
     },
     handleSubmit (e) { // 表单提交事件
@@ -248,9 +259,8 @@ export default {
       this.updateRoute(this.query)
     },
     handleReset () {
-      this.query = Object.assign(this.defaultQuery, this.$$query)
       // this.triggerFetch(this.query)
-      this.$refs.search && this.$refs.search.resetFields && this.$refs.search.resetFields()
+      this.$refs.search && this.$refs.search.handleReset && this.$refs.search.handleReset()
     },
     handleSortChange ({prop, order }) {
       this.query.page = 1
@@ -263,41 +273,32 @@ export default {
       }
       this.updateRoute(this.query)
     },
-    handleSelectionChange (value) {
-      let oldValue = JSON.parse(JSON.stringify(this.multipleSelection))
-      if (this.multipleSelectionProp && !this.$$disabledSelectionChange) {
-        let multipleSelectionAll = JSON.parse(JSON.stringify(this.multipleSelectionAll))
-        let multipleSelectionId = multipleSelectionAll.map(item => item[this.multipleSelectionProp])
-        if (value.length > oldValue.length) {
-          value.forEach(item => {
-            if (multipleSelectionId.indexOf(item[this.multipleSelectionProp]) === -1) {
-              multipleSelectionAll.push(item)
+    handleClearSelection () {
+      this.$refs.table && this.$refs.table.clearSelection && this.$refs.table.clearSelection()
+      this.multipleSelection = this.multipleSelectionAll = []
+    },
+    handleSelectionChange (selection) {
+      this.multipleSelection = selection
+      const idKey = this.idKey
+      if (idKey) {
+        let unSelection = []
+        let ids = []
+        if (selection.length) {
+          selection.forEach(item => {
+            ids.push(item[idKey])
+            if (!this.multipleSelectionAll.some(item2 => item2[idKey] == item[idKey])) {
+              this.multipleSelectionAll.push(item)
             }
           })
-          this.multipleSelectionAll = multipleSelectionAll
-        } else if (value.length < oldValue.length) {
-          let valueId = value.map(item => item[this.multipleSelectionProp])
-          let deleteId = []
-          oldValue.forEach(item => {
-            let prop = item[this.multipleSelectionProp]
-            if (valueId.indexOf(prop) === -1) {
-              deleteId.push(prop)
-            }
-          })
-          this.multipleSelectionAll = this.multipleSelectionAll.filter(item => {
-            return deleteId.indexOf(item[this.multipleSelectionProp]) === -1
-          })
+          unSelection = this.response.data.filter(item => !ids.includes(item[idKey]))
+        } else {
+          unSelection = this.response.data
         }
+        unSelection.forEach(item => {
+          this.multipleSelectionAll = this.multipleSelectionAll.filter(item2 => item2[idKey] != item[idKey])
+        })
       }
-      this.multipleSelection = value
     }
-  },
-  beforeRouteUpdate (to, from, next) { // 监听route地址变化
-    if (to.path === from.path) {
-      this.query = Object.assign({}, this.$$query, to.query)
-      this.triggerFetch(this.query)
-    }
-    next()
   },
   updated () {
     this.handleResize()

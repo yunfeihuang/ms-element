@@ -1,5 +1,4 @@
-import Drawer from '../packages/drawer'
-import {h} from 'vue'
+import {render, h } from 'vue'
 
 export default {
   push (context, importComponent, {
@@ -31,7 +30,6 @@ export default {
     }
     let el = document.createElement('div')
     document.body.appendChild(el)
-
     let classnames = ['ms-drawer']
     if (['ltr', 'rtl'].indexOf(direction) > -1 && size) {
       if (['mini', 'small', 'default', 'large'].indexOf(size) > -1) {
@@ -52,55 +50,50 @@ export default {
       to = `${context.$router.mode === 'history' ? '' : window.location.pathname}${context.$router.resolve(importComponent).href}`
       classnames.push('is-frame')
     }
-    const vm = window.$createApp({ // eslint-disable-line
-      parent: context,
-      router: context.$router,
-      store: context.$store,
-      render: () => h(Drawer, {
-        target: context,
-        importComponent,
-        to,
-        mode,
-        drawer: {
-          title,
-          direction,
-          size,
-          destroyOnClose,
-          customClass: classnames.join(' '),
-          modal,
-          closeOnPressEscape,
-          beforeClose,
-          appendToBody,
-          modalAppendToBody,
-          wrapperClosable,
-          withHeader,
-          showClose,
-          top: '10vh',
-          closeOnClickModal: false
-        },
-        props: {
-          params,
-          promiseSubmit,
-          done
-        },
-        confirmText,
-        resetText,
-        cancelText,
-        titleSlot,
-        footerSlot,
-        onClose () {
-          if (context.$popups.length) {
-            let vm = context.$popups.pop()
-            vm.$destroy && vm.$destroy()
-          }
-        },
-        ref: 'drawer'
-      }),
-      destroyed () {
-        this.$el.parentNode && this.$el.parentNode.removeChild(this.$el)
-      }
+    const vm = h(context.$root.$.appContext.components['MsDrawer'], {
+      target: context,
+      importComponent,
+      to,
+      mode,
+      drawer: {
+        title,
+        direction,
+        size,
+        destroyOnClose,
+        customClass: classnames.join(' '),
+        modal,
+        closeOnPressEscape,
+        beforeClose,
+        appendToBody,
+        modalAppendToBody,
+        wrapperClosable,
+        withHeader,
+        showClose,
+        top: '10vh',
+        closeOnClickModal: false
+      },
+      props: {
+        params,
+        promiseSubmit,
+        done
+      },
+      confirmText,
+      resetText,
+      cancelText,
+      titleSlot,
+      footerSlot,
+      onClose () {
+        if (context.$popups.length) {
+          let vm = context.$popups.pop()
+          vm.$destroy && vm.$destroy()
+        }
+      },
+      ref: 'drawer'
     })
-    context.$popups.push(vm.mount(el))
+    // let vm = createVNode('div', {}, ['aaa'])
+    vm.appContext = context.$root.$.appContext.app._context
+    render(vm, el)
+    context.$popups.push(vm)
   },
   replace (context, importComponent, {
     title,

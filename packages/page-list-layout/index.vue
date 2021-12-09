@@ -1,7 +1,7 @@
 <template>
   <div :class="[
     `ms-page-list-layout`,
-    {'is-flexbox': msPageList ? msPageList.fixedTableHead !== false : false}]">
+    {'is-flexbox': msPageList ? msPageList.fixedTableHead : false}]">
     <teleport v-if="$slots['breadcrumb']" :to="breadcrumbTeleportTo">
       <slot name="breadcrumb"></slot>
     </teleport>
@@ -15,7 +15,7 @@
         <template v-if="msPageList && msPageList.multipleSelectionAll && msPageList.multipleSelectionAll.length">
           已选
           <el-tooltip content="点击清空选中" placement="top-start">
-            <a @click="msPageList.handleClearSelection" class="link">({{msPageList.multipleSelectionAll.length}})</a>
+            <span style="cursor: pointer;" @click="msPageList.handleClearSelection" class="el-button--text">({{msPageList.multipleSelectionAll.length}})</span>
           </el-tooltip>
         </template>
         <template v-else>
@@ -29,7 +29,7 @@
       <div class="ms-page-list-layout--pagination">
         <slot v-if="$slots.pagination" name="pagination"></slot>
         <el-pagination
-          v-else
+          v-else-if="msPageList && msPageList.response"
           v-bind="msPageList.getPaginationProps()"
           @current-change="msPageList.handleCurrentChange"
           @size-change="msPageList.handleSizeChange">

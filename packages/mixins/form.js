@@ -45,7 +45,8 @@ export default {
         model: this.form,
         labelWidth: '6.66rem',
         novalidate: 'novalidate',
-        class: 'ms-form-default'
+        class: 'ms-form-default',
+        size: this.getSize ? this.getSize() : undefined
       }, props)
     },
     validate (cb) { // 表单校验
@@ -65,7 +66,9 @@ export default {
       }
     },
     getFormData () {
-      return this.form
+      return {
+        ...this.form
+      }
     },
     beforeSubmit () {
       if (!this.posting) {
@@ -97,13 +100,13 @@ export default {
     afterSubmit (res) { // 提交成功后处理
       if (this.done) {
         const cb = () => {
-          this.msDrawer && this.msDrawer.handleClose && this.msDrawer.handleClose()
+          this.$emit('close')
         }
         this.done(cb.bind(this), res)
       } else if (this.isRouterView) {
         this.isRouterView && history.back()
       } else {
-        this.msDrawer && this.msDrawer.handleClose && this.msDrawer.handleClose()
+        this.$emit('close')
       }
     },
     validateFail () { // 出现错误滚动到首个错误输入框并聚焦
@@ -116,16 +119,10 @@ export default {
               node.scrollIntoView({behavior: 'smooth'})
             }
           }
-          let inputs = node.querySelectorAll('input,textarea')
-          inputs && inputs.length === 1 && inputs[0].focus()
         }
       })
     },
-    parseResponse (res) {
-      res && this.assignFormData(res)
-      return res
-    },
-    assignFormData (data) { // 合并请示返回的数据到表单form
+    mergeForm (data) { // 合并请示返回的数据到表单form
       Object.keys(this.form).forEach(item => {
         if (data[item]) {
           this.form[item] = data[item]
@@ -146,10 +143,11 @@ export default {
     resetForm () { // 重置表单
       this.$refs.form && this.$refs.form.resetFields()
     },
-    handleDateRangeInput (value, keys = ['start_time', 'end_time']) {
-      if (value && value[0]) {
-        this.form[keys[0]] = value[0]
-        this.form[keys[1]] = value[1]
+    handleArrayChange (value, keys = ['start_time', 'end_time']) {
+      if (value && value.length) {
+        keys.forEach((item, index) => {
+          this.form[item] = value[index]
+        })
       } else {
         keys.forEach(item => {
           this.form[item] = null

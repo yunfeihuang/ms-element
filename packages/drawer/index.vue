@@ -1,6 +1,6 @@
 <template>
   <component
-    :is="`el-${mode}`"
+    :is="`el-${mode || 'drawer'}`"
     v-bind="drawer"
     :title="drawerTitle || drawer.title"
     :model-value="visible"
@@ -17,9 +17,9 @@
         ref="component"
         :is="component"
         v-bind="componentProps || props"
-        @mounted="handleMounted"
         @loading="handleLoading"
         @posting="handlePosting"
+        @close="handleClose"
       />
     </div>
     <template #footer v-if="mode=='dialog' && isFormComponent">
@@ -43,9 +43,9 @@
           ref="component"
           :is="component"
           v-bind="componentProps || props"
-          @mounted="handleMounted"
           @loading="handleLoading"
           @posting="handlePosting"
+          @close="handleClose"
         />
       </div>
       <div class="ms-drawer--footer" v-if="footerSlot">
@@ -53,17 +53,20 @@
       </div>
       <div class="ms-drawer--footer" v-else-if="isFormComponent">
         <el-button
+          :size="getSize ? getSize() : undefined"
           type="primary"
           nativeType="button"
           @click="handleSubmit">
           {{confirmText}}
         </el-button>
         <el-button
+          :size="getSize ? getSize() : undefined"
           nativeType="button"
           @click="handleReset">
           {{resetText}}
         </el-button>
         <el-button
+          :size="getSize ? getSize() : undefined"
           nativeType="button"
           @click="handleClose">
           {{cancelText}}
@@ -103,7 +106,7 @@ export default {
     },
     resetText: {
       type: String,
-      default: '重置'
+      default: '清空'
     },
     cancelText: {
       type: String,
@@ -146,6 +149,9 @@ export default {
         this.loadingDone = null
       }
       this.loading = value
+      this.$nextTick(() => {
+        this.handleMounted()
+      })
     },
     handlePosting (value) {
       this.loading = value

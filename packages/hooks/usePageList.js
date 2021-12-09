@@ -34,7 +34,7 @@ export default function (props, context) {
       let node = proxy.$el.parentNode.querySelector('.el-table__body-wrapper')
       node && (node.scrollTop = 0)
     }
-    return beforeFetch(proxy.query)
+    return beforeFetch.call(proxy, proxy.query)
   }
   const updateRoute = (_query, replace) => { // 更新URL地址
     let query = filterQuery(_query)

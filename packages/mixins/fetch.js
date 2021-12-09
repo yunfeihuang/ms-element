@@ -2,7 +2,7 @@ export default {
   data () {
     return {
       loading: false,
-      response: {}
+      response: null
     }
   },
   watch: {
@@ -12,11 +12,11 @@ export default {
   },
   mounted () {
     this.$emit('mounted')
-    this.beforeFetch && this.beforeFetch()
+    this.beforeFetch && this.beforeFetch(this.query)
   },
   methods: {
     refresh () {
-      return this.beforeFetch()
+      return this.beforeFetch(this.query)
     },
     beforeFetch (query) {
       if (this.fetch) {
@@ -25,7 +25,7 @@ export default {
           this.loading = true
           return promise.then(res => {
             if (res) {
-              this.response = this.parseResponse(res)
+              this.response = res
             }
             return res
           }).finally(() => {
@@ -39,7 +39,7 @@ export default {
       }
     },
     parseResponse (res) {
-      let result = res
+      let result = null
       const fn = (obj) => {
         let keys = Object.keys(obj)
         if (keys.includes('code') && keys.includes('data')) {

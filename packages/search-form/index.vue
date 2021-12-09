@@ -32,7 +32,7 @@
       </component>
       <template v-if="!isCollapse">
         <el-tooltip
-          v-if="searchSlots && searchSlots.length && isSearchMore"
+          v-if="searchSlotKeys && searchSlotKeys.length && isSearchMore"
           effect="dark"
           content="更多"
           placement="bottom">
@@ -41,15 +41,19 @@
           </div>
         </el-tooltip>
         <!--native-type="submit"是修改button type属性为submit-->
-        <el-button v-if="searchSlotKeys.length" native-type="submit" size="small">{{searchText}}</el-button>
-        <el-button v-if="searchSlotKeys.length" @click="msPageList.handleReset" size="small">{{resetText}}</el-button>
+        <el-form-item>
+          <el-button v-if="searchSlotKeys.length" native-type="submit">{{searchText}}</el-button>
+          <el-button v-if="searchSlotKeys.length" @click="msPageList.handleReset">{{resetText}}</el-button>
+          <el-button v-if="onCreate" @click="onCreate">{{createText}}</el-button>
+          <slot name="append-button"></slot>
+        </el-form-item>
         <slot></slot>
       </template>
       <el-row v-else>
         <el-form-item label=" ">
-          <el-button native-type="submit" type="primary" size="small">{{searchText}}</el-button>
-          <el-button size="small" @click="isCollapse = false">收起</el-button>
-          <el-button @click="msPageList.handleReset" size="small">{{resetText}}</el-button>
+          <el-button native-type="submit" type="primary" >{{searchText}}</el-button>
+          <el-button @click="isCollapse = false">收起</el-button>
+          <el-button @click="msPageList.handleReset">{{resetText}}</el-button>
         </el-form-item>
       </el-row>
     </div>
@@ -74,6 +78,13 @@ export default {
     resetText: {
       type: String,
       default: '清空'
+    },
+    createText: {
+      type: String,
+      default: '创建'
+    },
+    onCreate: {
+      type: Function
     }
   },
   computed: {
