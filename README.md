@@ -18,8 +18,8 @@ config.resolve.alias.set('vue', path.resolve('./node_modules/vue'))
 import {createApp} from 'vue'
 import App from './App'
 import 'ms-element/lib/style/theme/index.css'
-import MSElement from 'ms-element'
-createApp(App).use(MSElement)
+import MsElement from 'ms-element'
+createApp(App).use(MsElement)
 ```
 
 ### 单个注册组件(FrameLayout示例)
