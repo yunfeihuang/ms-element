@@ -1,3 +1,4 @@
+import {h, resolveComponent} from 'vue'
 import fetch from './fetch'
 export default {
   mixins: [fetch],
@@ -290,12 +291,57 @@ export default {
               this.multipleSelectionAll.push(item)
             }
           })
-          unSelection = this.response.data.filter(item => !ids.includes(item[idKey]))
+          if (this.response && this.response.data) {
+            unSelection = this.response.data.filter(item => !ids.includes(item[idKey]))
+          }
         } else {
-          unSelection = this.response.data
+          if (this.response && this.response.data) {
+            unSelection = this.response.data
+          }
         }
         unSelection.forEach(item => {
           this.multipleSelectionAll = this.multipleSelectionAll.filter(item2 => item2[idKey] != item[idKey])
+        })
+      }
+    },
+    handleColumnSetting () {
+      let self = this
+      if (this.column && this.column.length) {
+        this.$navigator.push(this, {
+          render () {
+            return h('div', {}, this.form.map(item => {
+              return h(resolveComponent('ElCheckbox'), {
+                checked: item.show,
+                style: 'display:block;margin-bottom:10px;',
+                onChange (value) {
+                  item.show = value
+                }
+              }, item.label)
+            }))
+          },
+          data () {
+            return {
+              form: JSON.parse(JSON.stringify(this.params))
+            }
+          },
+          methods: {
+            handleSubmit () {
+              if (this.promiseSubmit) {
+                this.promiseSubmit(this.form).then(res => {
+                  this.$emit('close')
+                })
+              }
+            }
+          }
+        } , {
+          title: '表格列显示',
+          params: this.column,
+          size: 'mini',
+          resetText: '',
+          promiseSubmit (form) {
+            self.column = form
+            return Promise.resolve()
+          }
         })
       }
     }

@@ -32,12 +32,15 @@
           v-bind="getIndexColumnProps()">
         </el-table-column>
         <el-table-column
+          v-if="column && column.length ? column.some(item => item.prop == 'avatar' && item.show) : true"
+          prop="avatar"
           label="头像">
-          <template>
-            <el-image src="/images/img_qr.jpg" style="width:30px;height:30px"/>
+          <template v-slot>
+            avatar
           </template>
         </el-table-column>
         <el-table-column
+          v-if="column && column.length ? column.some(item => item.prop == 'name' && item.show) : true"
           sortable
           prop="name"
           label="姓名">
@@ -46,6 +49,8 @@
           </template>
         </el-table-column>
         <el-table-column
+          v-if="column && column.length ? column.some(item => item.prop == 'age' && item.show) : true"
+          prop="age"
           width="60"
           label="年龄">
           <template v-slot="scope">
@@ -53,12 +58,16 @@
           </template>
         </el-table-column>
         <el-table-column
+          v-if="column && column.length ? column.some(item => item.prop == 'email' && item.show) : true"
+          prop="email"
           label="邮箱">
           <template v-slot="scope">
             {{scope.row.email}}
           </template>
         </el-table-column>
         <el-table-column
+          v-if="column && column.length ? column.some(item => item.prop == 'status' && item.show) : true"
+          prop="status"
           width="60"
           label="状态">
           <template v-slot="scope">
@@ -66,16 +75,20 @@
           </template>
         </el-table-column>
         <el-table-column
+          v-if="column && column.length ? column.some(item => item.prop == 'address' && item.show) : true"
           prop="address"
           label="地址" show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          sortable="custom"
+          v-if="column && column.length ? column.some(item => item.prop == 'date' && item.show) : true"
           prop="date"
           label="创建日期" show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           label="操作">
+          <template v-slot:header>
+            操作 <el-button type="text" @click="handleColumnSetting"><i class="el-icon-s-operation"></i></el-button>
+          </template>
           <template v-slot="scope">
             <el-button type="text" @click="handleCreate(scope.row)">编辑</el-button>
             <el-button type="text" @click="handleDetail(scope.row)">详情</el-button>
@@ -155,7 +168,39 @@ export default {
         start_time: '',
         end_time: '',
         ...this.$route.query
-      })
+      }),
+      column: [
+        {
+          prop: 'avatar',
+          label: '头像',
+          show: true
+        },
+        {
+          prop: 'name',
+          label: '姓名',
+          show: true
+        },
+        {
+          prop: 'age',
+          label: '年龄',
+          show: true
+        },
+        {
+          prop: 'email',
+          label: '邮箱',
+          show: true
+        },
+        {
+          prop: 'status',
+          label: '状态',
+          show: true
+        },
+        {
+          prop: 'date',
+          label: '创建时间',
+          show: true
+        }
+      ]
     }
   },
   methods: {
@@ -205,6 +250,7 @@ export default {
       })
     },
     handleCreate (params) {
+      console.log(this.response.data.find)
       ms.navigator.push(this, Form, {
         params,
         title: params ? '编辑' : '创建',

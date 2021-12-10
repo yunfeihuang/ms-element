@@ -53,6 +53,7 @@
       </div>
       <div class="ms-drawer--footer" v-else-if="isFormComponent">
         <el-button
+          v-if="confirmText"
           :size="getSize ? getSize() : undefined"
           type="primary"
           nativeType="button"
@@ -60,12 +61,14 @@
           {{confirmText}}
         </el-button>
         <el-button
+          v-if="resetText"
           :size="getSize ? getSize() : undefined"
           nativeType="button"
           @click="handleReset">
           {{resetText}}
         </el-button>
         <el-button
+          v-if="cancelText"
           :size="getSize ? getSize() : undefined"
           nativeType="button"
           @click="handleClose">

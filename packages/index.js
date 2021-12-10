@@ -2,6 +2,7 @@ import FrameLayout from './frame-layout'
 import PageListLayout from './page-list-layout'
 import SearchForm from './search-form'
 import Drawer from './drawer'
+import navigator from './navigator'
 
 const components = [
   FrameLayout,
@@ -28,6 +29,7 @@ const install = (app) => {
     }
     return result
   }
+  app.config.globalProperties.$navigator = navigator
 }
 
 export {

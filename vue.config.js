@@ -103,7 +103,7 @@ module.exports = {
       config.entry = Components
 
       config.externals = {
-        'vue': 'vue',
+        vue: 'vue',
         'axios': 'axios',
         'element-plus': 'element-plus',
         'vue-router': 'vue-router',
@@ -117,6 +117,8 @@ module.exports = {
   },
   chainWebpack: config => {
     config.resolve.alias.set('ms-element', resolve('packages'))
+    config.resolve.symlinks(false)
+    config.resolve.alias.set('vue', path.resolve('./node_modules/vue'))
     config.module
     .rule("md")
     .test(/\.md/)

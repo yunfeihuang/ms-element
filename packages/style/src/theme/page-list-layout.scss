@@ -100,6 +100,9 @@
       line-height:32px;
       height:34px;
     }
+    .el-pagination .btn-next .el-icon, .el-pagination .btn-prev .el-icon{
+      margin:auto;
+    }
   }
 }
 .is-iframe{

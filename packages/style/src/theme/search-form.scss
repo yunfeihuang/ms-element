@@ -32,21 +32,20 @@
         width: max-content;
       }
       &-more{
-        height: 32px;
-        line-height: 32px;
-        background:linear-gradient(90deg, rgba(255,255,255,0.1) 0%,rgba(255,255,255,1) 100%);
+        background:linear-gradient(90deg, rgba(255,255,255,0.1) 0%,rgba(255,255,255,1) 100%)!important;
         width: 40px;
         margin-left:-40px;
-        display: inline-block;
+        min-width:0!important;
+        border:0;
         // margin-right:10px;
         text-align: right;
         padding-right:10px;
         z-index: 100;
         position: relative;
         cursor: pointer;
-        >i{
+        i{
           transform: rotate(90deg);
-          font-size: 1.25em;
+          font-size: 1.35em;
           background: #fff;
         }
       }

@@ -36,9 +36,11 @@
           effect="dark"
           content="更多"
           placement="bottom">
-          <div class="ms-search-form--items-more" @click="isCollapse = true">
-            <i class="el-icon-d-arrow-right"></i>
-          </div>
+          <el-form-item>
+            <el-button class="ms-search-form--items-more" @click="isCollapse = true">
+              <i class="el-icon-d-arrow-right"></i>
+            </el-button>
+          </el-form-item>
         </el-tooltip>
         <!--native-type="submit"是修改button type属性为submit-->
         <el-form-item>

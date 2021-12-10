@@ -1,4 +1,4 @@
-import { nextTick, onMounted, onUpdated, provide, ref, onUnmounted, getCurrentInstance} from "vue"
+import { nextTick, onMounted, onUpdated, provide, ref, onUnmounted, getCurrentInstance, h, resolveComponent} from "vue"
 import { onBeforeRouteUpdate } from "vue-router"
 import useFetch from "./useFetch"
 
@@ -157,9 +157,13 @@ export default function (props, context) {
             multipleSelectionAll.value.push(item)
           }
         })
-        unSelection = proxy.response.data.filter(item => !ids.includes(item[idKey]))
+        if (proxy.response && proxy.response.data) {
+          unSelection = proxy.response.data.filter(item => !ids.includes(item[idKey]))
+        }
       } else {
-        unSelection = proxy.response.data
+        if (proxy.response && proxy.response.data) {
+          unSelection = proxy.response.data
+        }
       }
       unSelection.forEach(item => {
         multipleSelectionAll.value = multipleSelectionAll.value.filter(item2 => item2[idKey] != item[idKey])
@@ -186,6 +190,48 @@ export default function (props, context) {
     return {
       'selection-change': handleSelectionChange,
       'sort-change': handleSortChange
+    }
+  }
+
+  const handleColumnSetting = () => {
+    let self = proxy
+    if (self.column && self.column.length) {
+      self.$navigator.push(self, {
+        render () {
+          return h('div', {}, this.form.map(item => {
+            return h(resolveComponent('ElCheckbox'), {
+              checked: item.show,
+              style: 'display:block;margin-bottom:10px;',
+              onChange (value) {
+                item.show = value
+              }
+            }, item.label)
+          }))
+        },
+        data () {
+          return {
+            form: JSON.parse(JSON.stringify(this.params))
+          }
+        },
+        methods: {
+          handleSubmit () {
+            if (this.promiseSubmit) {
+              this.promiseSubmit(this.form).then(res => {
+                this.$emit('close')
+              })
+            }
+          }
+        }
+      } , {
+        title: '表格列显示',
+        params: self.column,
+        size: 'mini',
+        resetText: '',
+        promiseSubmit (form) {
+          self.column = form
+          return Promise.resolve()
+        }
+      })
     }
   }
   
@@ -243,6 +289,7 @@ export default function (props, context) {
     multipleSelection,
     multipleSelectionAll,
     handleSelectionChange,
-    handleClearSelection
+    handleClearSelection,
+    handleColumnSetting
   }
 }
