@@ -8,6 +8,11 @@ http://mselement.bittyos.com
 ```
 npm install ms-element --save-dev
 ```
+如果出现这错误：Cannot read properties of null (reading 'isCE') 需要在vue.config.js chainWebpack 添加以下代码
+```
+config.resolve.symlinks(false)
+config.resolve.alias.set('vue', path.resolve('./node_modules/vue'))
+```
 ### 全局注册组件
 ```
 import {createApp} from 'vue'
