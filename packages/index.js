@@ -31,10 +31,10 @@ const install = (app) => {
   }
   app.config.globalProperties.$navigator = navigator
 }
-
-export {
+export default {
   install,
   FrameLayout,
   PageListLayout,
-  SearchForm
+  SearchForm,
+  Drawer
 }

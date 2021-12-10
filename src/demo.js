@@ -5,14 +5,14 @@ import App from './Demo.vue'
 import 'element-plus/lib/theme-chalk/index.css'
 import ElementPlus from 'element-plus'
 import '../packages/style/src/theme/index.scss'
-import * as MS from '../packages'
+import MsElement from '../packages'
 import axios from './axios'
 
 const app = createApp(App).use(ElementPlus, {
   inputNumber: {
     'controls-position': 'right'
   }
-}).use(MS).use(createRouter({
+}).use(MsElement).use(createRouter({
   history: createWebHashHistory(),
   routes: routes
 }))
