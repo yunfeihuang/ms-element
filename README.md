@@ -1,4 +1,4 @@
-# MS Element
+# Ms Element
 基于Vue3.x后台管理系统设计解决方案
 
 ## 示例浏览地址
