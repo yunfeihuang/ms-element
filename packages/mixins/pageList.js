@@ -327,7 +327,7 @@ export default {
           methods: {
             handleSubmit () {
               if (this.promiseSubmit) {
-                this.promiseSubmit(this.form).then(res => {
+                this.promiseSubmit(this.form).then(() => {
                   this.$emit('close')
                 })
               }

@@ -117,6 +117,7 @@ module.exports = {
   },
   chainWebpack: config => {
     config.resolve.alias.set('ms-element', resolve('packages'))
+    config.resolve.alias.set('ms-element/lib/', resolve('packages'))
     config.resolve.symlinks(false)
     config.resolve.alias.set('vue', path.resolve('./node_modules/vue'))
     config.module
