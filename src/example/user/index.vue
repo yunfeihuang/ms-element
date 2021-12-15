@@ -32,7 +32,7 @@
           v-bind="getIndexColumnProps()">
         </el-table-column>
         <el-table-column
-          v-if="column && column.length ? column.some(item => item.prop == 'avatar' && item.show) : true"
+          v-if="includesProp('avatar')"
           prop="avatar"
           label="头像">
           <template v-slot>
@@ -40,7 +40,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="column && column.length ? column.some(item => item.prop == 'name' && item.show) : true"
+          v-if="includesProp('name')"
           sortable
           prop="name"
           label="姓名">
@@ -49,7 +49,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="column && column.length ? column.some(item => item.prop == 'age' && item.show) : true"
+          v-if="includesProp('age')"
           prop="age"
           width="60"
           label="年龄">
@@ -58,7 +58,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="column && column.length ? column.some(item => item.prop == 'email' && item.show) : true"
+          v-if="includesProp('email')"
           prop="email"
           label="邮箱">
           <template v-slot="scope">
@@ -66,7 +66,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="column && column.length ? column.some(item => item.prop == 'status' && item.show) : true"
+          v-if="includesProp('status')"
           prop="status"
           width="60"
           label="状态">
@@ -75,12 +75,12 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="column && column.length ? column.some(item => item.prop == 'address' && item.show) : true"
+          v-if="includesProp('address')"
           prop="address"
           label="地址" show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          v-if="column && column.length ? column.some(item => item.prop == 'date' && item.show) : true"
+          v-if="includesProp('date')"
           prop="date"
           label="创建日期" show-overflow-tooltip>
         </el-table-column>

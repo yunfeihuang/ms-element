@@ -1,6 +1,6 @@
 {
   "name": "ms-element",
-  "version": "3.0.6-alpha",
+  "version": "3.0.7-alpha",
   "description": "A Component Library for Vue.js",
   "author": "黄运飞 <yunfei.huang@qq.com>",
   "main": "lib/index.js",
@@ -52,7 +52,7 @@
     "gulp-sass": "^4.0.2",
     "js-beautify": "^1.14.0",
     "markdown-it": "^12.0.6",
-    "ms-designer": "^1.0.1-alpha",
+    "ms-designer": "^1.0.3-alpha",
     "node-sass": "^6.0.0",
     "nprogress": "^0.2.0",
     "photoswipe": "^4.1.2",

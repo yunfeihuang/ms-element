@@ -304,6 +304,12 @@ export default {
         })
       }
     },
+    includesProp (prop) {
+      if (this.column && this.column.length) {
+        return this.column.some(item => item.prop == prop && item.show)
+      }
+      return true
+    },
     handleColumnSetting () {
       let self = this
       if (this.column && this.column.length) {
@@ -344,13 +350,16 @@ export default {
           }
         })
       }
+    },
+    scrollTop () {
+      if (this.loading) {
+        let node = this.$el.querySelector('.el-table__body-wrapper') || this.$el.querySelector('.ms-scroller')
+        node && (node.scrollTop = 0)
+      }
     }
   },
   updated () {
     this.handleResize()
-    if (this.loading) {
-      let node = this.$el.querySelector('.el-table__body-wrapper') || this.$el.querySelector('.ms-scroller')
-      node && (node.scrollTop = 0)
-    }
+    this.scrollTop()
   }
 }

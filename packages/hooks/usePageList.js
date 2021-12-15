@@ -29,11 +29,14 @@ export default function (props, context) {
     }
     return result
   }
-  const beforeFetch2 = () => {
+  const scrollTop = function () {
     if (proxy.$el && proxy.$el.parentNode) {
       let node = proxy.$el.parentNode.querySelector('.el-table__body-wrapper')
       node && (node.scrollTop = 0)
     }
+  }
+  const beforeFetch2 = () => {
+    proxy.scrollTop && proxy.scrollTop()
     return beforeFetch.call(proxy, proxy.query)
   }
   const updateRoute = (_query, replace) => { // 更新URL地址
@@ -193,6 +196,13 @@ export default function (props, context) {
     }
   }
 
+  const includesProp = function (prop) {
+    let self = proxy
+    if (self.column && self.column.length) {
+      return self.column.some(item => item.prop == prop && item.show)
+    }
+    return true
+  }
   const handleColumnSetting = () => {
     let self = proxy
     if (self.column && self.column.length) {
@@ -271,6 +281,7 @@ export default function (props, context) {
     defaultQuery,
     createQuery,
     beforeFetch: beforeFetch2,
+    scrollTop,
     RSearch,
     getFormProps,
     handleSubmit,
@@ -290,6 +301,7 @@ export default function (props, context) {
     multipleSelectionAll,
     handleSelectionChange,
     handleClearSelection,
+    includesProp,
     handleColumnSetting
   }
 }
