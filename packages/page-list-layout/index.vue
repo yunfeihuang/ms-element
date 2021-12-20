@@ -11,30 +11,28 @@
       <slot name="table"></slot>
     </div>
     <el-row type="flex" align="middle" class="ms-page-list-layout--footer">
-      <div v-if="$slots['action']">
+      <template v-if="$slots['action']">
         <template v-if="msPageList && msPageList.multipleSelectionAll && msPageList.multipleSelectionAll.length">
-          已选
+          {{checkedText}}
           <el-tooltip content="点击清空选中" placement="top-start">
             <span style="cursor: pointer;" @click="msPageList.handleClearSelection" class="el-button--text">({{msPageList.multipleSelectionAll.length}})</span>
           </el-tooltip>
         </template>
         <template v-else>
-          批量
+          {{batchText}}
         </template>
         &nbsp;&nbsp;
-      </div>
-      <el-col class="ms-page-list-layout--action">
+      </template>
+      <div class="ms-page-list-layout--action">
         <slot name="action"></slot>
-      </el-col>
-      <div class="ms-page-list-layout--pagination">
-        <slot v-if="$slots.pagination" name="pagination"></slot>
-        <el-pagination
-          v-else-if="msPageList && msPageList.response"
-          v-bind="msPageList.getPaginationProps()"
-          @current-change="msPageList.handleCurrentChange"
-          @size-change="msPageList.handleSizeChange">
-        </el-pagination>
       </div>
+      <slot v-if="$slots.pagination" name="pagination"></slot>
+      <el-pagination
+        v-else-if="msPageList && msPageList.response"
+        v-bind="msPageList.getPaginationProps()"
+        @current-change="msPageList.handleCurrentChange"
+        @size-change="msPageList.handleSizeChange">
+      </el-pagination>
     </el-row>
     <slot></slot>
   </div>
@@ -45,6 +43,14 @@ import {inject} from 'vue'
 export default {
   name: 'MsPageListLayout',
   props: {
+    checkedText: {
+      type: String,
+      default: '已选'
+    },
+    batchText: {
+      type: String,
+      default: '批量'
+    },
     isScroll: {
       type: Boolean,
       default: false

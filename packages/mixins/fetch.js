@@ -60,16 +60,6 @@ export default {
     watchLoading (value) {
       if (this['msDrawer']) {
         this.$emit('loading', value)
-      } else {
-        if (value) {
-          this.$loadingInstance = this.$loading({ // 实例化loading对象
-            target: this.$el.parentNode.querySelector('.ms-loading-element') || this.$el.parentNode
-          })
-        } else {
-          if (this.$loadingInstance) {
-            this.$loadingInstance.close()
-          }
-        }
       }
     }
   }

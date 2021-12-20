@@ -9,24 +9,30 @@
     </div>
     <div :class="{'ms-search-form--body': !isCollapse}">
       <component :is="!isCollapse ? 'div': 'el-row'" :class="{'ms-search-form--items': !isCollapse}" :gutter="10">
-        <div :class="{'ms-search-form--items-inner': !isCollapse}">
+        <template v-if="isCollapse">
           <template v-if="searchSlots && searchSlots.length">
-            <component
-              :is="!isCollapse ? 'span': 'el-col'"
+            <el-col
               v-for="(item, index) in searchSlots"
               :key="index"
               v-bind="getColProps()">
               <slot v-if="$slots[item+'-slot']" :name="item+'-slot'"></slot>
-            </component>
+            </el-col>
           </template>
           <template v-else>
-            <component
-              :is="!isCollapse ? 'span': 'el-col'"
+            <el-col
               v-for="(item, index) in searchSlotKeys"
               :key="index"
               v-bind="getColProps()">
               <slot v-if="$slots[item]" :name="item"></slot>
-            </component>
+            </el-col>
+          </template>
+        </template>
+        <div v-else class="ms-search-form--items-inner">
+          <template v-if="searchSlots && searchSlots.length">
+            <slot v-for="(item, index) in searchSlots" :key="index" :name="item+'-slot'"></slot>
+          </template>
+          <template v-else>
+            <slot v-for="(item, index) in searchSlotKeys" :key="index" :name="item"></slot>
           </template>
         </div>
       </component>
@@ -95,8 +101,13 @@ export default {
     }
   },
   watch: {
-    isCollapse () {
+    isCollapse (value) {
       this.msPageList && this.msPageList.handleResize()
+      if (value) {
+        this.$nextTick(() => {
+          this.$el.classList.remove('el-form--inline')
+        })
+      }
     }
   },
   data () {
@@ -131,7 +142,7 @@ export default {
     },
     getColProps (props) {
       return {
-        xl: 5,
+        xl: 4,
         lg: 6,
         md: 8,
         sm: 12,
