@@ -3,14 +3,13 @@
     <el-config-provider :locale="locale">
       <el-row type="flex" tag="header" align="middle" style="padding:10px;">
         <div style="flex:1">
-          <img :src="'/images/logo.png'"/>
           <h2>Ms Element</h2>
         </div>
         <el-link type="primary" target="_blank" href="https://github.com/yunfeihuang/ms-element">github</el-link>
       </el-row>
       <el-row :gutter="30">
         <el-col :span="4">
-          <div v-for="(item,index) in navConfig" :key="index" style="padding-left:20px">
+          <div v-for="(item,index) in navConfig" :key="index" style="padding-left:20px;line-height:2">
             <template v-if="item.children">
               <h4>{{item.title}}</h4>
               <router-link v-for="(childItem,childIndex) in item.children" class="el-link el-link--primary" :to="childItem.path" :key="childIndex">{{childItem.title}}</router-link>

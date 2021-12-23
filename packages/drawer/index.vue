@@ -214,6 +214,7 @@ export default {
     },
     handleClose () {
       this.visible = false
+      this.$emit('close')
     },
     handleClosed () {
       this.$emit('closed')

@@ -3,7 +3,7 @@
     v-if="msPageList"
     class="ms-search-form"
     ref="form"
-    v-bind="!isCollapse ? {...$props} : { ...$props, class: 'ms-search-form--layout', labelWidth:'80px', inline: false}">
+    v-bind="!isCollapse ? {...$props} : { class: 'ms-search-form--layout', labelWidth:'80px', ...$props, inline: false}">
     <div class="ms-search-form--prepend" v-if="$slots['prepend']">
       <slot name="prepend"></slot>
     </div>
@@ -117,7 +117,6 @@ export default {
     }
   },
   mounted () {
-    console.log('slots', this)
     window.addEventListener('resize', this.handleResize, false)
     this.handleResize()
   },

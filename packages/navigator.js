@@ -112,7 +112,8 @@ export default {
   },
   pop (context) {
     if (context.$popups.length) {
-      context.$popups.pop().handleClose()
+      const vm = context.$popups[context.$popups.length - 1]
+      vm.handleClose && vm.handleClose()
     }
   }
 }

@@ -21,7 +21,7 @@
             :router="true"
             :default-active="$route.path"
             v-bind="menuProps">
-            <template v-for="(item,index) in _menus">
+            <template v-for="(item,index) in menu">
               <el-submenu
                 v-if="item.options"
                 :index="item.index || item.title"
@@ -73,7 +73,7 @@
               <div class="ms-frame-layout--title" v-else>{{title}}&nbsp;</div>
               <div class="ms-frame-layout--breadcrumb"></div>
             </el-col>
-            <slot name="navbar-menu"></slot>
+            <slot name="navbar-submenu"></slot>
           </template>
           <slot v-else name="navbar"></slot>
         </el-row>
@@ -142,7 +142,7 @@ export default {
     title: {
       type: String
     },
-    menus: {
+    menu: {
       type: Array
     },
     menuProps: {
@@ -236,8 +236,8 @@ export default {
         })
       }
     },
-    _menus () {
-      return this.menus.map(item => {
+    _menu () {
+      return this.menu.map(item => {
         if (item.route) {
           item.index = item.route.path ? item.route.path : item.route
         }

@@ -1,12 +1,12 @@
 <template>
   <ms-frame-layout
       title="后台管理系统"
-      :menus="menus"
+      :menu="menu"
       :menuProps="menuProps">
       <template v-slot:logo="scope">
         <i :style="`font-size:${scope.isCollapse?14:26}px;font-style:normal;`">LOGO</i>
       </template>
-      <template #navbar-menu>
+      <template #navbar-submenu>
         <div class="actions">
           <span @click="handleThemeChange">切换菜单栏颜色</span>
           <router-link to="/profile">个人中心</router-link>
@@ -29,7 +29,7 @@ export default {
   data () {
     return {
       menuProps: {},
-      menus: [
+      menu: [
         {
           iconClass: 'el-icon-monitor',
           title: '控制台',

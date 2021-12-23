@@ -8,6 +8,7 @@ export default {
       type: Function
     }
   },
+  inject: ['msDrawer'],
   data () {
     return {
       posting: false,
@@ -100,13 +101,13 @@ export default {
     afterSubmit (res) { // 提交成功后处理
       if (this.done) {
         const cb = () => {
-          this.$emit('close')
+          this.msDrawer && this.msDrawer.handleClose && this.msDrawer.handleClose()
         }
         this.done(cb.bind(this), res)
       } else if (this.isRouterView) {
         this.isRouterView && history.back()
       } else {
-        this.$emit('close')
+        this.msDrawer && this.msDrawer.handleClose && this.msDrawer.handleClose()
       }
     },
     validateFail () { // 出现错误滚动到首个错误输入框并聚焦
