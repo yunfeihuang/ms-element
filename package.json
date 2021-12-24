@@ -1,6 +1,6 @@
 {
   "name": "ms-element",
-  "version": "3.0.10-alpha",
+  "version": "3.0.11-alpha",
   "description": "A Component Library for Vue.js",
   "author": "黄运飞 <yunfei.huang@qq.com>",
   "main": "lib/index.js",

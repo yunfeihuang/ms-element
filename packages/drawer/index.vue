@@ -178,11 +178,14 @@ export default {
         }
       }
       let addMixins = component => {
-        if (!component.mixins) {
-          component.mixins = []
+        if (!component.props) {
+          component.props = {}
         }
-        if (!component.mixins.find(item => item.inject && (item.inject.msDrawer || (item.inject.indexOf && item.inject.indexOf('msDrawer') > -1)))) {
-          component.mixins.push(mixin)
+        Object.assign(component.props, mixin.props)
+        if (component.inject && component.inject.indexOf('msDrawer') == -1) {
+          component.inject.push('msDrawer')
+        } else {
+          component.inject = mixin.inject
         }
         return component
       }
@@ -213,8 +216,10 @@ export default {
       this.$refs['component'].handleReset && this.$refs['component'].handleReset()
     },
     handleClose () {
+      if (this.visible) {
+        this.$emit('pop-close')
+      }
       this.visible = false
-      this.$emit('close')
     },
     handleClosed () {
       this.$emit('closed')

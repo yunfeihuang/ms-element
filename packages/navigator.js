@@ -83,7 +83,7 @@ export default {
       cancelText,
       titleSlot,
       footerSlot,
-      onClose () {
+      onPopClose () {
         if (context.$popups.length) {
           let vm = context.$popups.pop()
           vm.$destroy && vm.$destroy()
