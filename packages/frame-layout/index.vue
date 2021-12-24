@@ -37,7 +37,7 @@
                 </template>
                 <el-menu-item v-for="child in item.options"
                   :route="child.route"
-                  :index="child.index"
+                  :index="child.route"
                   :key="child.index">
                     {{child.title}}
                 </el-menu-item>
@@ -46,7 +46,7 @@
                 v-else
                 class="el-submenu__title"
                 :route="item.route"
-                :index="item.index"
+                :index="item.route"
                 :key="item.index">
                   <template v-if="item.icon">
                     <div style="display:inline" v-if="item.icon.indexOf('</i>')>-1" v-html="item.icon"></div>

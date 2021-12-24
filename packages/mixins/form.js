@@ -8,7 +8,6 @@ export default {
       type: Function
     }
   },
-  inject: ['msDrawer'],
   data () {
     return {
       posting: false,
