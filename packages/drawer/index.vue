@@ -53,11 +53,12 @@
       </div>
       <div class="ms-drawer--footer" v-else-if="isFormComponent">
         <el-button
+          :form="formId"
           v-if="confirmText"
           :size="getSize ? getSize() : undefined"
           type="primary"
-          nativeType="button"
-          @click="handleSubmit">
+          :nativeType="formId ? 'submit':'button'"
+          @click.prevent="handleSubmit">
           {{confirmText}}
         </el-button>
         <el-button
@@ -145,7 +146,8 @@ export default {
       isFormComponent: false,
       drawerTitle: '',
       componentProps: null,
-      component: null
+      component: null,
+      formId: ''
     }
   },
   mounted () {
@@ -254,6 +256,8 @@ export default {
     handleMounted () {
       if (this.$refs.component && this.$refs.component.handleSubmit && this.$refs.component.form) {
         this.isFormComponent = true
+        const node = this.$refs.body.querySelector('.ms-form-default')
+        node && (this.formId = node.id)
       } else {
         this.isFormComponent = false
       }

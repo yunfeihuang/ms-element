@@ -43,9 +43,10 @@ export default {
       return Object.assign({
         ref: 'form',
         model: this.form,
-        labelWidth: '6.66rem',
+        labelWidth: '100px',
         novalidate: 'novalidate',
         class: 'ms-form-default',
+        id: Math.random().toString(36).substr(2),
         size: this.getSize ? this.getSize() : undefined
       }, props)
     },

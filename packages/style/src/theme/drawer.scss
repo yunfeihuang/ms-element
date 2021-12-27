@@ -1,7 +1,7 @@
 @import 'common/variable.scss';
 @import 'common/mixins.scss';
 .#{$--css-prefix}{
-  $width: 42rem;
+  $width: 44rem;
   &drawer{
     max-height: 100%;
     max-width: 100%;
@@ -93,7 +93,6 @@
         padding-bottom:0;
         line-height:1;
         >span{
-          font-size:1.2rem;
           outline: none;
         }
         button{
@@ -113,9 +112,6 @@
       &__body{
         padding-top:10px;
         padding-bottom:10px;
-      }
-      &__title{
-        font-size:1.2rem;
       }
     }
     &.el-dialog{
