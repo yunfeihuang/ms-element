@@ -101,7 +101,7 @@
         &__item{
           line-height: 38px;
           height:38px;
-          .el-icon-close{
+          .el-icon-close,.el-icon.is-icon-close{
             opacity: 0;
             position: absolute;
             right: 0;
@@ -110,7 +110,7 @@
             font-size:14px;
           }
           &:hover, &.is-active{
-            .el-icon-close{
+            .el-icon-close,.el-icon.is-icon-close{
               opacity: 1;
             }
           }

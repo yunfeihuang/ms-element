@@ -23,14 +23,15 @@ export default {
     done,
     params,
     titleSlot,
-    footerSlot
+    footerSlot,
+    mounteTo= document.body
   }) {
     let self = this
     if (!context.$popups) {
       context.$popups = []
     }
     let el = document.createElement('div')
-    document.body.appendChild(el)
+    mounteTo.appendChild(el)
     let classnames = ['ms-drawer']
     if (['ltr', 'rtl'].indexOf(direction) > -1 && size) {
       if (['mini', 'small', 'default', 'large'].indexOf(size) > -1) {
@@ -65,7 +66,7 @@ export default {
         modal,
         closeOnPressEscape,
         beforeClose,
-        appendToBody,
+        appendToBody: mounteTo ? false : appendToBody,
         modalAppendToBody,
         wrapperClosable,
         withHeader,

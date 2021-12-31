@@ -92,6 +92,12 @@
           <template v-slot="scope">
             <el-button type="text" @click="handleCreate(scope.row)">编辑</el-button>
             <el-button type="text" @click="handleDetail(scope.row)">详情</el-button>
+            <el-popconfirm
+              title="确认删除此数据？">
+              <template #reference>
+                <el-button type="text">删除</el-button>
+              </template>
+            </el-popconfirm>
             <el-dropdown trigger="click">
               <el-button type="text" style="margin-left: 10px;">更多</el-button>
               <template #dropdown>
@@ -112,6 +118,12 @@
       </el-table>
     </template>
     <template #action>
+      <el-popconfirm
+        title="确认删除选中的数据？">
+        <template #reference>
+          <el-button size="small">删除</el-button>
+        </template>
+      </el-popconfirm>
       <el-button size="small">导入</el-button>
       <el-button size="small" @click="handleExport">导出</el-button>
     </template>

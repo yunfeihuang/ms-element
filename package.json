@@ -1,6 +1,6 @@
 {
   "name": "ms-element",
-  "version": "3.0.12-alpha",
+  "version": "3.0.13-alpha",
   "description": "A Component Library for Vue.js",
   "author": "黄运飞 <yunfei.huang@qq.com>",
   "main": "lib/index.js",
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
-    "vue": "^3.0.4",
+    "vue": "^3.2.0",
     "vue-router": "^4.0.3"
   },
   "devDependencies": {
