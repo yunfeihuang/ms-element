@@ -455,6 +455,9 @@ export default {
         }
       }
     },
+    clearTabs () {
+      this.handleCommand('all')
+    },
     handleCommand (value) {
       if (value === 'refresh') {
         this.refresh()

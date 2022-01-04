@@ -318,7 +318,7 @@ export default {
             return h('div', {}, this.form.map(item => {
               return h(resolveComponent('ElCheckbox'), {
                 checked: item.show,
-                style: 'display:block;margin-bottom:10px;',
+                style: 'display:block;margin-bottom:10px;height:auto',
                 onChange (value) {
                   item.show = value
                 }
