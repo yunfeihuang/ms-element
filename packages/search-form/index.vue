@@ -52,7 +52,7 @@
         <el-form-item>
           <el-button v-if="searchSlotKeys.length" native-type="submit">{{searchText}}</el-button>
           <el-button v-if="searchSlotKeys.length" @click="msPageList.handleReset">{{resetText}}</el-button>
-          <el-button v-if="onCreate" @click="onCreate">{{createText}}</el-button>
+          <slot name="create"></slot>
           <slot name="append-button"></slot>
         </el-form-item>
         <slot></slot>

@@ -124,7 +124,7 @@
           <el-button size="small">删除</el-button>
         </template>
       </el-popconfirm>
-      <el-button size="small">导入</el-button>
+      <el-button size="small" v-ms-permission="'import'">导入</el-button>
       <el-button size="small" @click="handleExport">导出</el-button>
     </template>
   </ms-page-list-layout>
@@ -140,6 +140,20 @@ const List = () => import('./components/List')
 export default {
   name: 'user',
   mixins: [ms.mixins.pageList],
+  directives: {
+    'ms-permission': { // 此指令也可以写在全局指令，根据自己的需要调整
+      updated(el, binding) { // eslint-disable-line
+        /*
+        // 权限控制示例代码
+        if (!['update'].includes(binding.value)) {
+          el.style.display = 'none'
+        } else {
+          el.style.display = ''
+        }
+        */
+      }
+    }
+  },
   data () {
     return {
       option: [
