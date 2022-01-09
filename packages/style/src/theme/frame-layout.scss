@@ -143,7 +143,7 @@
       border-right:0;
       .el-menu{
         &--collapse{
-          .el-submenu{
+          .el-sub-menu{
             &.is-active{
               background:$--color-primary!important;
             }
@@ -161,7 +161,11 @@
           color:#fff;
         }
       }
-      .el-submenu{
+      .el-submenu__title{
+        height: 3.2rem;
+        line-height: 3.2rem;
+      }
+      .el-sub-menu{
         .el-menu-item{
           min-width:0;
           height: 3rem;
@@ -175,6 +179,13 @@
         &__title{
           height: 3.2rem;
           line-height: 3.2rem;
+          >i{
+            margin-right: 5px;
+            width: 24px;
+            text-align: center;
+            font-size: 18px;
+            vertical-align: middle;
+          }
         }
       }
     }
@@ -193,7 +204,7 @@
           box-shadow:0 0 10px rgba(0,0,0,0.1);
         }
       }
-      .el-submenu{
+      .el-sub-menu{
         &__title{
           height:auto;
           line-height: normal;

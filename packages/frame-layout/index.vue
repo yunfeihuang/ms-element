@@ -22,7 +22,7 @@
             :default-active="$route.path"
             v-bind="menuProps">
             <template v-for="(item,index) in menu">
-              <el-submenu
+              <el-sub-menu
                 v-if="item.options"
                 :index="item.index || item.title"
                 :key="index"
@@ -41,7 +41,7 @@
                   :key="child.index">
                     {{child.title}}
                 </el-menu-item>
-              </el-submenu>
+              </el-sub-menu>
               <el-menu-item
                 v-else
                 class="el-submenu__title"

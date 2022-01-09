@@ -1,6 +1,6 @@
 {
   "name": "ms-element",
-  "version": "3.0.14-alpha",
+  "version": "3.0.16-alpha",
   "description": "A Component Library for Vue.js",
   "author": "黄运飞 <yunfei.huang@qq.com>",
   "main": "lib/index.js",
@@ -43,7 +43,7 @@
     "blueimp-md5": "^2.18.0",
     "body-parser": "^1.19.0",
     "echarts": "^5.1.2",
-    "element-plus": "^1.0.2-beta.70",
+    "element-plus": "^1.2.0-beta.6",
     "eslint": "^7.20.0",
     "eslint-plugin-vue": "^7.2.0",
     "gulp": "^4.0.0",

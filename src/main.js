@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
-import 'element-plus/lib/theme-chalk/index.css'
+import 'element-plus/theme-chalk/index.css'
+import './assets/styles/el-icon.css'
 import ElementPlus from 'element-plus'
 import '../packages/style/src/theme/index.scss'
 import routes from './route.config.js'
