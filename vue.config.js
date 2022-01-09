@@ -9,7 +9,7 @@ function resolve (dir) {
 }
 
 module.exports = {
-  productionSourceMap: process.env.Component === 'component' ? false : true,
+  productionSourceMap: process.env.Component === 'component' ? false : false,
   outputDir: process.env.Component === 'component' ? 'lib' : 'dist',
   devServer: {
     overlay: {

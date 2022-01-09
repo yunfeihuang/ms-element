@@ -43,6 +43,7 @@ export default {
 <style lang="scss">
   .console{
     background-color:inherit;
+    margin:12px;
     >.el-row{
       >.el-col{
         margin:5px 0;

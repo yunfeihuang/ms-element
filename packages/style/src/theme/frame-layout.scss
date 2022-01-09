@@ -137,6 +137,19 @@
     &--body{
       display:flex;
       min-height: 0;
+      .ms-frame-layout--slot{
+        &.el-form{
+          padding:40px 20px;
+        }
+      }
+    }
+    &--menu-icon{
+      display:inline-block;
+    }
+    &--slot{
+      box-sizing: border-box;
+      margin:10px;
+      background-color: #fff;
     }
     &--menus{
       width:100%;
