@@ -3,7 +3,7 @@ import axios from 'axios'
 /*
 * 参考 https://www.npmjs.com/package/restful-api
 */
-export default (rootUrl) => {
+export default (rootUrl, axios = axios) => {
   return {
     fetch (option) {
       let {url, ...other} = option

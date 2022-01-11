@@ -137,6 +137,7 @@
     &--body{
       display:flex;
       min-height: 0;
+      transition: opacity 0.3s ease 0s;
       .ms-frame-layout--slot{
         &.el-form{
           padding:40px 20px;
@@ -241,5 +242,11 @@ div.ms-dialog{
     &__close{
       font-size:22px;
     }
+  }
+}
+.nprogress-busy{
+  .ms-frame-layout--body{
+    pointer-events: none;
+    opacity: 0.5;
   }
 }
