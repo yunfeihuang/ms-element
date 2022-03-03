@@ -79,7 +79,11 @@
         </el-row>
         <div class="ms-frame-layout--tabs" v-if="isTabs && apps.length">
           <el-tabs :modelValue="currentAppIndex + ''" @tab-click="handleTab" editable @edit="handleTabsEdit">
-            <el-tab-pane v-for="(item,index) in apps" :label="item.title" :name="index + ''" :key="index + item.route.path"></el-tab-pane>
+            <el-tab-pane v-for="(item,index) in apps" :label="item.title" :name="index + ''" :key="index + item.route.path">
+              <template v-slot:label>
+                <div :draggable="true" @dragstart="handleDragstart($event, index)" @dragover="handleDragover" @drop="handleDrop($event, index)">{{item.title}}</div>
+              </template>
+            </el-tab-pane>
           </el-tabs>
           <i class="el-icon-refresh ms-frame-layout--tabs-action" title="刷新" @click="refresh"></i>
           <i class="el-icon-full-screen ms-frame-layout--tabs-action" @click="handleFullScreen"></i>
@@ -277,8 +281,22 @@ export default {
     })
   },
   methods: {
+    handleDragstart (e, index) {
+      e.dataTransfer.setData("data", index)
+    },
+    handleDragover (e) {
+      e.preventDefault()
+    },
+    handleDrop (e, index) {
+      const moveIndex = e.dataTransfer.getData("data")
+      let apps = [...this.apps]
+      let app = apps[moveIndex]
+      apps[moveIndex] = apps[index]
+      apps[index] = app
+      this.apps = apps
+    },
     parseRoute (value) {
-      console.log('route', value)
+      // console.log('route', value)
       this.pushRouterViewInclude(this.getRouteInclude(value))
       const findIndex = value.matched.findIndex(item => item.components.default === this.$parent.$options)
       if (this.isTabs && findIndex > -1) {
