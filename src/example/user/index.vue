@@ -99,7 +99,7 @@
               </template>
             </el-popconfirm>
             <el-dropdown trigger="click">
-              <el-button type="text" style="margin-left: 10px;">更多</el-button>
+              <el-button type="text" style="margin-left: 10px;font-size:12px">更多</el-button>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item @click="handleLargeDetail(scope.row)">详情大弹窗</el-dropdown-item>
