@@ -156,7 +156,7 @@ export default {
       }
       return result
     },
-    getPaginationProps () { // 获取分页默认props
+    getPaginationProps (_props) { // 获取分页默认props
       let props = {
         pagerCount: 5,
         layout: 'total, prev, pager, next, sizes, jumper',
@@ -164,7 +164,8 @@ export default {
         pageSize: 20,
         currentPage: 1,
         total: this.response ? this.response.total : 0,
-        pageSizes: [10, 15, 20, 30, 40, 50, 100]
+        pageSizes: [10, 15, 20, 30, 40, 50, 100],
+        ..._props
       }
       if (this.query) {
         let query = this.query

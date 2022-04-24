@@ -1,3 +1,17 @@
+
+const parseResponse = (res) => {
+  let result = null
+  const fn = (obj) => {
+    let keys = Object.keys(obj)
+    if (keys.includes('code') && keys.includes('data')) {
+      result = obj.data
+    } else if (obj.data) {
+      fn(obj.data)
+    }
+  }
+  fn(res)
+  return result
+}
 export default {
   data () {
     return {
@@ -11,9 +25,22 @@ export default {
     }
   },
   mounted () {
+    this.fetchDataSource && this.fetchDataSource()
     this.beforeFetch && this.beforeFetch(this.query)
   },
   methods: {
+    fetchDataSource () {
+      const f = (ds) => {
+        ds.option && this.$axios(ds.option).then(res => {
+          ds.data = parseResponse(res)
+        })
+      }
+      if (this.dataSource && this.$axios) {
+        for (let name in this.dataSource) {
+          f(this.dataSource[name])
+        }
+      }
+    },
     refresh () {
       return this.beforeFetch(this.query)
     },
@@ -37,19 +64,7 @@ export default {
         return Promise.resolve()
       }
     },
-    parseResponse (res) {
-      let result = null
-      const fn = (obj) => {
-        let keys = Object.keys(obj)
-        if (keys.includes('code') && keys.includes('data')) {
-          result = obj.data
-        } else if (obj.data) {
-          fn(obj.data)
-        }
-      }
-      fn(res)
-      return result
-    },
+    parseResponse: parseResponse,
     /*
     fetch () {
       return new Promise((resolve, reject) => {
