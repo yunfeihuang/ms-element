@@ -80,7 +80,6 @@ export default function (props, context) {
       ref: 'RForm',
       model: this.form,
       labelWidth: '100px',
-      size: this.getSize ? this.getSize() : undefined,
     }, props)
   }
   return {

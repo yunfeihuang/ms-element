@@ -56,7 +56,6 @@ export default function (props, context) {
     return Object.assign({
       novalidate: 'novalidate',
       inline: true,
-      size: this.getSize ? this.getSize(800) : undefined,
       ref: 'RSearch',
       model: proxy ? proxy.query : null
     }, props)
@@ -72,7 +71,6 @@ export default function (props, context) {
     return Object.assign({
       ref: 'RTable',
       height: proxy && proxy.fixedTableHead !== false ? tableBodyHeight.value : undefined,
-      size: proxy.getSize ? proxy.getSize() : undefined,
       defaultSort: proxy.query && proxy.query.sort_order ? {
         prop: proxy.query.sort_prop, 
         order: proxy.query.sort_order

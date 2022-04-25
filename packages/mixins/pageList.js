@@ -182,7 +182,6 @@ export default {
       return Object.assign({
         ref: 'table',
         class: 'table-primary',
-        size: this.getSize ? this.getSize() : undefined,
         height: !this.fixedTableHead ? undefined : this.tableBodyHeight,
         defaultSort: this.query && this.query.sort_order ? {
           prop: this.query.sort_prop, 
@@ -200,7 +199,6 @@ export default {
       return Object.assign({
         novalidate: 'novalidate',
         inline: true,
-        size: this.getSize ? this.getSize(800) : undefined,
         ref: 'search',
         model: this.query
       }, props)

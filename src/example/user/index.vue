@@ -98,21 +98,21 @@
                 <el-button type="text">删除</el-button>
               </template>
             </el-popconfirm>
+            <!--
             <el-dropdown trigger="click">
-              <el-button type="text" style="margin-left: 10px;font-size:12px">更多</el-button>
+              <el-button type="text" style="margin-left: 10px;">更多</el-button>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item @click="handleLargeDetail(scope.row)">详情大弹窗</el-dropdown-item>
-                  <!--
                   <el-dropdown-item @click="handleCustom(scope.row)">自定义弹框</el-dropdown-item>
                   <el-dropdown-item @click="handleOpen">iframe弹框</el-dropdown-item>
-                  -->
                   <el-dropdown-item @click="handleOpenComponent">引入组件弹框</el-dropdown-item>
                   <el-dropdown-item @click="$router.push({path: $route.path + '/detail', query: scope.row})">页面式详情</el-dropdown-item>
                   <el-dropdown-item @click="handleDelete">删除</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
+            -->
           </template>
         </el-table-column>
       </el-table>
@@ -121,11 +121,11 @@
       <el-popconfirm
         title="确认删除选中的数据？">
         <template #reference>
-          <el-button size="small">删除</el-button>
+          <el-button>删除</el-button>
         </template>
       </el-popconfirm>
-      <el-button size="small" v-ms-permission="'import'">导入</el-button>
-      <el-button size="small" @click="handleExport">导出</el-button>
+      <el-button v-ms-permission="'import'">导入</el-button>
+      <el-button @click="handleExport">导出</el-button>
     </template>
   </ms-page-list-layout>
 </template>

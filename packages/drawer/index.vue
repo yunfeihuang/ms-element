@@ -24,14 +24,12 @@
     </div>
     <template #footer v-if="mode=='dialog' && isFormComponent">
       <el-button
-        size="small"
         nativeType="button"
         @click="handleClose">
         {{cancelText}}
       </el-button>
       <el-button
         type="primary"
-        size="small"
         nativeType="button"
         @click="handleSubmit">
         {{confirmText}}
@@ -55,7 +53,6 @@
         <el-button
           :form="formId"
           v-if="confirmText"
-          :size="getSize ? getSize() : undefined"
           type="primary"
           :nativeType="formId ? 'submit':'button'"
           @click.prevent="handleSubmit">
@@ -63,14 +60,12 @@
         </el-button>
         <el-button
           v-if="resetText"
-          :size="getSize ? getSize() : undefined"
           nativeType="button"
           @click="handleReset">
           {{resetText}}
         </el-button>
         <el-button
           v-if="cancelText"
-          :size="getSize ? getSize() : undefined"
           nativeType="button"
           @click="handleClose">
           {{cancelText}}

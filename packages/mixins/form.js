@@ -46,8 +46,7 @@ export default {
         labelWidth: '100px',
         novalidate: 'novalidate',
         class: 'ms-form-default',
-        id: Math.random().toString(36).substr(2),
-        size: this.getSize ? this.getSize() : undefined
+        id: Math.random().toString(36).substr(2)
       }, props)
     },
     validate (cb) { // 表单校验
